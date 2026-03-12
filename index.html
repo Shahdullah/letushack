@@ -303,7 +303,7 @@ footer span{color:var(--accent);font-family:'Share Tech Mono',monospace}
       </div>
     </div>
   </section>
-  <footer><span>// LETUSHACK</span> &nbsp;·&nbsp; Hack Ethically &nbsp;·&nbsp; © 2026</footer>
+  <footer><span>// LETUSHACK</span> &nbsp;·&nbsp; Hack Ethically &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Made with ❤️ by <span style="color:var(--accent2);font-family:'Share Tech Mono',monospace">Shahdullah</span></footer>
 </div>
 
 <!-- ==================== CTF PAGE ==================== -->
@@ -394,7 +394,56 @@ footer span{color:var(--accent);font-family:'Share Tech Mono',monospace}
   </div>
 </div>
 
-<!-- ==================== AUTH MODAL ==================== -->
+<!-- ==================== SPLASH LOGIN PAGE ==================== -->
+<div id="splashPage" style="display:flex;position:fixed;inset:0;z-index:5000;background:var(--bg);align-items:center;justify-content:center;flex-direction:column">
+  <canvas id="splashCanvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.07"></canvas>
+  <div style="position:relative;z-index:1;text-align:center;width:100%;max-width:460px;padding:2rem">
+    <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:2rem;color:var(--accent);text-shadow:0 0 30px rgba(0,255,229,0.6);letter-spacing:3px;margin-bottom:0.4rem">LET<span style="color:var(--accent2)">US</span>HACK</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:3px;margin-bottom:2.5rem">// CYBERSECURITY TRAINING PLATFORM</div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:2rem">
+      <div id="splashTabLogin" onclick="splashTab('login')" style="flex:1;padding:0.7rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:2px;cursor:pointer;color:var(--accent);border-bottom:2px solid var(--accent);margin-bottom:-1px;text-align:center">LOGIN</div>
+      <div id="splashTabRegister" onclick="splashTab('register')" style="flex:1;padding:0.7rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:2px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;text-align:center;transition:color 0.2s">REGISTER</div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="splashLogin">
+      <div style="margin-bottom:1rem;text-align:left">
+        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Username</label>
+        <input id="slUser" type="text" placeholder="your_hacker_alias" autocomplete="username" onkeydown="if(event.key==='Enter')splashLogin()" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+      <div style="margin-bottom:0.5rem;text-align:left">
+        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Password</label>
+        <input id="slPass" type="password" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')splashLogin()" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+      <div id="slErr" style="display:none;color:var(--accent2);font-family:'Share Tech Mono',monospace;font-size:0.78rem;margin-bottom:0.75rem;text-align:left"></div>
+      <button onclick="splashLogin()" style="width:100%;padding:0.85rem;background:var(--accent);color:var(--bg);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.boxShadow='0 0 20px rgba(0,255,229,0.4)'" onmouseout="this.style.boxShadow='none'">Enter Platform</button>
+      <div style="margin-top:1rem;font-size:0.82rem;color:var(--text2)">No account? <span onclick="splashTab('register')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Register here</span></div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="splashRegister" style="display:none">
+      <div style="margin-bottom:1rem;text-align:left">
+        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Username</label>
+        <input id="srUser" type="text" placeholder="your_hacker_alias" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+      <div style="margin-bottom:1rem;text-align:left">
+        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Email</label>
+        <input id="srEmail" type="email" placeholder="hacker@example.com" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+      <div style="margin-bottom:0.5rem;text-align:left">
+        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Password</label>
+        <input id="srPass" type="password" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')splashRegister()" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+      <div id="srErr" style="display:none;color:var(--accent2);font-family:'Share Tech Mono',monospace;font-size:0.78rem;margin-bottom:0.75rem;text-align:left"></div>
+      <button onclick="splashRegister()" style="width:100%;padding:0.85rem;background:var(--accent);color:var(--bg);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.boxShadow='0 0 20px rgba(0,255,229,0.4)'" onmouseout="this.style.boxShadow='none'">Create Account</button>
+      <div style="margin-top:1rem;font-size:0.82rem;color:var(--text2)">Already registered? <span onclick="splashTab('login')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Login here</span></div>
+    </div>
+
+    <div style="margin-top:2.5rem;font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:rgba(255,255,255,0.15);letter-spacing:1px">Made with ❤️ by <span style="color:var(--accent2)">Shahdullah</span> &nbsp;·&nbsp; © 2026 LetUsHack</div>
+  </div>
+</div>
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -723,6 +772,11 @@ function logout() {
   localStorage.removeItem('luh_currentUser');
   updateNavUser();
   showPage('home');
+  // Show splash login page again
+  const sp = document.getElementById('splashPage');
+  sp.style.display = 'flex';
+  sp.style.opacity = '1';
+  initSplashMatrix();
   showToast('👋 Logged out. See you soon!');
 }
 
@@ -877,21 +931,15 @@ function checkBadges() {
 // ==================== LEADERBOARD ====================
 function renderLeaderboard() {
   const users = getUsers();
-  // Add some fake players
-  const fakes = [
-    {username:'z3r0_d4y',hc:98420,solved:Array(24).fill(0).map((_,i)=>'m'+i),avatarColor:0},
-    {username:'xpl0it_queen',hc:87150,solved:Array(20).fill(0).map((_,i)=>'m'+i),avatarColor:1},
-    {username:'n1ghtcrawler',hc:75880,solved:Array(18).fill(0).map((_,i)=>'m'+i),avatarColor:2},
-    {username:'pwn_sensei',hc:68310,solved:Array(15).fill(0).map((_,i)=>'m'+i),avatarColor:3},
-    {username:'h4ck3rm4n',hc:61200,solved:Array(14).fill(0).map((_,i)=>'m'+i),avatarColor:4},
-  ];
-  let all = [...fakes, ...Object.values(users)];
-  // deduplicate by username (real user overrides fake)
-  const seen = {}; all = all.filter(u => { if(seen[u.username]) return false; seen[u.username]=true; return true; });
+  let all = Object.values(users);
   all.sort((a,b) => (b.hc||0) - (a.hc||0));
   const medals = ['gold','silver','bronze'];
   const body = document.getElementById('lbBody');
-  body.innerHTML = all.slice(0,20).map((u,i) => {
+  if (all.length === 0) {
+    body.innerHTML = '<div style="padding:3rem;text-align:center;font-family:Share Tech Mono,monospace;color:var(--text2)">No hackers ranked yet. Be the first to register and solve challenges!</div>';
+    return;
+  }
+  body.innerHTML = all.slice(0,50).map((u,i) => {
     const isMe = currentUser && u.username === currentUser.username;
     const c = AVATAR_COLORS[u.avatarColor % AVATAR_COLORS.length];
     return `<div class="lb-row${isMe?' me':''}">
@@ -965,7 +1013,80 @@ function renderProfile() {
   document.getElementById('profileContent').innerHTML = html;
 }
 
-// ==================== MATRIX ====================
+// ==================== SPLASH PAGE ====================
+function splashTab(tab) {
+  document.getElementById('splashLogin').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('splashRegister').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('splashTabLogin').style.color = tab === 'login' ? 'var(--accent)' : 'var(--text2)';
+  document.getElementById('splashTabLogin').style.borderBottom = tab === 'login' ? '2px solid var(--accent)' : '2px solid transparent';
+  document.getElementById('splashTabRegister').style.color = tab === 'register' ? 'var(--accent)' : 'var(--text2)';
+  document.getElementById('splashTabRegister').style.borderBottom = tab === 'register' ? '2px solid var(--accent)' : '2px solid transparent';
+}
+function hideSplash() {
+  const sp = document.getElementById('splashPage');
+  sp.style.transition = 'opacity 0.5s';
+  sp.style.opacity = '0';
+  setTimeout(() => sp.style.display = 'none', 500);
+}
+function splashLogin() {
+  const user = document.getElementById('slUser').value.trim();
+  const pass = document.getElementById('slPass').value;
+  const err = document.getElementById('slErr');
+  err.style.display = 'none';
+  if (!user || !pass) { err.textContent = 'All fields required.'; err.style.display = 'block'; return; }
+  const users = getUsers();
+  if (!users[user]) { err.textContent = 'Username not found.'; err.style.display = 'block'; return; }
+  if (users[user].password !== btoa(pass)) { err.textContent = 'Wrong password.'; err.style.display = 'block'; return; }
+  currentUser = users[user];
+  saveUser();
+  hideSplash();
+  showToast('🎉 Welcome back, ' + currentUser.username + '!');
+}
+function splashRegister() {
+  const user = document.getElementById('srUser').value.trim();
+  const email = document.getElementById('srEmail').value.trim();
+  const pass = document.getElementById('srPass').value;
+  const err = document.getElementById('srErr');
+  err.style.display = 'none';
+  if (!user || !email || !pass) { err.textContent = 'All fields required.'; err.style.display = 'block'; return; }
+  if (user.length < 3) { err.textContent = 'Username must be at least 3 characters.'; err.style.display = 'block'; return; }
+  if (pass.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.style.display = 'block'; return; }
+  const users = getUsers();
+  if (users[user]) { err.textContent = 'Username already taken.'; err.style.display = 'block'; return; }
+  const colorIdx = Math.floor(Math.random() * AVATAR_COLORS.length);
+  currentUser = {
+    username: user, email: email, password: btoa(pass),
+    hc: 100, xp: 0, level: 1, solved: [], badges: [],
+    avatarColor: colorIdx, joinDate: new Date().toLocaleDateString()
+  };
+  saveUser();
+  hideSplash();
+  showToast('🚀 Account created! +100 HC welcome bonus!');
+}
+function initSplashMatrix() {
+  const canvas = document.getElementById('splashCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const chars = '01アイウエオABCDEFGHIJKLMNOP';
+  const fs = 12; let drops = [];
+  function reset() { drops = Array(Math.floor(canvas.width/fs)).fill(1); }
+  reset();
+  setInterval(() => {
+    ctx.fillStyle = 'rgba(7,11,15,0.05)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#00ffe5';
+    ctx.font = fs + 'px Share Tech Mono';
+    drops.forEach((d,i) => {
+      ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, d*fs);
+      if (d*fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  }, 55);
+}
+
+
 function initMatrix() {
   const canvas = document.getElementById('matrixCanvas');
   if (!canvas) return;
@@ -1018,6 +1139,12 @@ function showToast(msg) {
 // ==================== INIT ====================
 window.addEventListener('load', () => {
   loadState();
+  // Show splash if not logged in, skip if already logged in
+  if (currentUser) {
+    document.getElementById('splashPage').style.display = 'none';
+  } else {
+    initSplashMatrix();
+  }
   initMatrix();
   const hs = document.querySelector('.hero-stats');
   if (hs) obs.observe(hs);
