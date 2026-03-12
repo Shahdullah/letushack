@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LetUsHack – Master Cybersecurity</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #070b0f;
+    --bg2: #0d1520;
+    --bg3: #111d2e;
+    --accent: #00ffe5;
+    --accent2: #ff3c6e;
+    --accent3: #ffd700;
+    --green: #39ff14;
+    --text: #c8d8e8;
+    --text2: #7a9ab8;
+    --border: rgba(0,255,229,0.15);
+    --glow: 0 0 20px rgba(0,255,229,0.3);
+    --glow2: 0 0 20px rgba(255,60,110,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    overflow-x: hidden;
+    cursor: default;
+  }
+  a { text-decoration: none; color: inherit; }
+
+  /* SCANLINE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; height: 64px;
+    background: rgba(7,11,15,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900; font-size: 1.2rem;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,255,229,0.6);
+    letter-spacing: 2px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-links {
+    display: flex; gap: 2rem; align-items: center;
+  }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text2);
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 1px; background: var(--accent);
+    transform: scaleX(0); transition: transform 0.2s;
+  }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-right { display: flex; gap: 1rem; align-items: center; }
+  .btn {
+    padding: 0.5rem 1.25rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    clip-path: none;
+  }
+  .btn-outline:hover { background: rgba(0,255,229,0.1); box-shadow: var(--glow); }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .btn-primary:hover { box-shadow: var(--glow); transform: translateY(-1px); }
+  .btn-danger {
+    background: var(--accent2);
+    color: white;
+  }
+  .btn-danger:hover { box-shadow: var(--glow2); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 6rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,229,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,60,110,0.05) 0%, transparent 60%);
+  }
+  .matrix-rain {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.07;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(0,255,229,0.3);
+    border-radius: 2px;
+    font-size: 0.75rem; font-family: 'Share Tech Mono', monospace;
+    color: var(--accent); letter-spacing: 2px;
+    margin-bottom: 2rem; position: relative; z-index: 1;
+    background: rgba(0,255,229,0.05);
+  }
+  .blink { animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 900; line-height: 1.05;
+    margin-bottom: 1.5rem;
+    position: relative; z-index: 1;
+    text-transform: uppercase; letter-spacing: 2px;
+  }
+  h1 .line1 { color: #fff; display: block; }
+  h1 .line2 {
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,255,229,0.5);
+    display: block;
+  }
+  .hero-sub {
+    max-width: 580px; font-size: 1.05rem;
+    color: var(--text2); line-height: 1.7;
+    margin-bottom: 2.5rem; position: relative; z-index: 1;
+  }
+  .hero-ctas {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1; margin-bottom: 4rem;
+  }
+  .hero-stats {
+    display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding-top: 3rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem; font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,255,229,0.4);
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text2); letter-spacing: 1px; margin-top: 4px; }
+
+  /* TERMINAL WINDOW */
+  .terminal {
+    position: relative; z-index: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 100%; max-width: 680px;
+    margin: 3rem auto;
+    box-shadow: 0 0 60px rgba(0,255,229,0.08);
+    overflow: hidden;
+  }
+  .terminal-bar {
+    background: var(--bg3);
+    padding: 0.6rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #28ca40; }
+  .terminal-title { font-size: 0.75rem; color: var(--text2); font-family: 'Share Tech Mono', monospace; margin-left: 0.5rem; }
+  .terminal-body { padding: 1.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
+  .t-line { display: flex; align-items: flex-start; gap: 0.5rem; }
+  .t-prompt { color: var(--green); flex-shrink: 0; }
+  .t-cmd { color: #fff; }
+  .t-out { color: var(--text2); padding-left: 1.2rem; }
+  .t-out.success { color: var(--green); }
+  .t-out.warn { color: var(--accent3); }
+  .t-out.accent { color: var(--accent); }
+  .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s infinite; vertical-align: middle; }
+
+  /* SECTION */
+  section { padding: 5rem 2rem; position: relative; }
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem; color: var(--accent); letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 0.75rem;
+  }
+  h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700; margin-bottom: 1rem;
+    color: #fff; text-transform: uppercase; letter-spacing: 1px;
+  }
+  h2 span { color: var(--accent); }
+  .section-sub { color: var(--text2); max-width: 500px; line-height: 1.7; margin-bottom: 3rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* FEATURES GRID */
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;
+  }
+  .feature-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative; overflow: hidden;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+  .feature-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,229,0.04) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feature-card:hover { border-color: rgba(0,255,229,0.4); box-shadow: 0 0 30px rgba(0,255,229,0.1); transform: translateY(-4px); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px; height: 48px;
+    background: rgba(0,255,229,0.1);
+    border: 1px solid rgba(0,255,229,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 1.25rem;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  .feature-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem; font-weight: 700;
+    color: #fff; margin-bottom: 0.75rem; letter-spacing: 1px;
+  }
+  .feature-card p { color: var(--text2); font-size: 0.9rem; line-height: 1.65; }
+
+  /* CHALLENGES SECTION */
+  .challenges-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem;
+  }
+  .challenge-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    display: flex; flex-direction: column; gap: 1rem;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .challenge-card:hover { border-color: rgba(0,255,229,0.35); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .challenge-header { display: flex; align-items: center; justify-content: space-between; }
+  .challenge-cat {
+    font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 2px; padding: 3px 8px;
+    border-radius: 2px;
+  }
+  .cat-web { background: rgba(0,255,229,0.12); color: var(--accent); }
+  .cat-pwn { background: rgba(255,60,110,0.12); color: var(--accent2); }
+  .cat-crypto { background: rgba(255,215,0,0.12); color: var(--accent3); }
+  .cat-re { background: rgba(57,255,20,0.12); color: var(--green); }
+  .cat-osint { background: rgba(150,100,255,0.12); color: #aa7fff; }
+  .diff-badge {
+    font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px; padding: 3px 8px;
+    border-radius: 2px;
+  }
+  .diff-easy { background: rgba(57,255,20,0.1); color: var(--green); }
+  .diff-medium { background: rgba(255,215,0,0.1); color: var(--accent3); }
+  .diff-hard { background: rgba(255,60,110,0.1); color: var(--accent2); }
+  .diff-insane { background: rgba(200,0,255,0.1); color: #cc44ff; }
+  .challenge-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem; font-weight: 700; color: #fff;
+  }
+  .challenge-desc { font-size: 0.88rem; color: var(--text2); line-height: 1.5; }
+  .challenge-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text2); }
+  .challenge-pts {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--accent3);
+  }
+  .solvers { display: flex; align-items: center; gap: 4px; }
+  .progress-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; }
+
+  /* LEADERBOARD */
+  .leaderboard-wrapper {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+  }
+  .leaderboard-table {
+    background: var(--bg2); border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .lb-header {
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Orbitron', monospace; font-size: 0.85rem;
+    color: var(--accent); letter-spacing: 1px;
+  }
+  .lb-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.2s; cursor: pointer;
+  }
+  .lb-row:hover { background: rgba(0,255,229,0.04); }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-rank {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem; width: 24px; text-align: center;
+    color: var(--text2); flex-shrink: 0;
+  }
+  .lb-rank.gold { color: #ffd700; font-weight: 700; }
+  .lb-rank.silver { color: #c0c0c0; font-weight: 700; }
+  .lb-rank.bronze { color: #cd7f32; font-weight: 700; }
+  .lb-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: #000; flex-shrink: 0;
+  }
+  .lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  .lb-score {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem; color: var(--accent3);
+  }
+  .lb-badge { font-size: 0.85rem; }
+
+  /* GAMIFICATION */
+  .gamification-section { background: var(--bg2); }
+  .gamification-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+  }
+  .gam-card {
+    text-align: center; padding: 2.5rem 1.5rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition: all 0.3s;
+  }
+  .gam-card:hover { border-color: rgba(0,255,229,0.3); transform: translateY(-4px); }
+  .gam-icon { font-size: 3rem; margin-bottom: 1.25rem; display: block; }
+  .gam-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; font-weight: 700; color: #fff;
+    margin-bottom: 0.75rem; text-transform: uppercase;
+  }
+  .gam-card p { color: var(--text2); font-size: 0.9rem; line-height: 1.6; }
+
+  /* BADGES */
+  .badges-grid {
+    display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center;
+  }
+  .badge-item {
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .badge-item:hover { transform: scale(1.1); }
+  .badge-hex {
+    width: 64px; height: 72px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; font-weight: 700; transition: all 0.2s;
+  }
+  .badge-locked { background: rgba(255,255,255,0.05); filter: grayscale(1) brightness(0.4); }
+  .badge-earned { background: linear-gradient(135deg, rgba(0,255,229,0.3), rgba(0,255,229,0.1)); box-shadow: 0 0 20px rgba(0,255,229,0.3); }
+  .badge-earned-red { background: linear-gradient(135deg, rgba(255,60,110,0.3), rgba(255,60,110,0.1)); box-shadow: 0 0 20px rgba(255,60,110,0.3); }
+  .badge-earned-gold { background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,215,0,0.1)); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+  .badge-label { font-size: 0.7rem; font-family: 'Share Tech Mono', monospace; color: var(--text2); letter-spacing: 1px; text-align: center; }
+
+  /* CURRENCY / SHOP */
+  .currency-section { background: var(--bg); }
+  .currency-display {
+    display: flex; align-items: center; gap: 2rem;
+    background: var(--bg2); border: 1px solid rgba(255,215,0,0.2);
+    padding: 1.5rem 2rem; margin-bottom: 2rem;
+    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  }
+  .currency-icon { font-size: 2.5rem; }
+  .currency-info h3 {
+    font-family: 'Orbitron', monospace; color: var(--accent3);
+    font-size: 1.1rem; margin-bottom: 0.25rem;
+  }
+  .currency-info p { color: var(--text2); font-size: 0.88rem; }
+  .shop-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
+  }
+  .shop-item {
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: 1.25rem; text-align: center;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .shop-item:hover { border-color: rgba(255,215,0,0.3); transform: translateY(-2px); }
+  .shop-item-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
+  .shop-item-name { font-weight: 700; font-size: 0.9rem; color: #fff; margin-bottom: 0.4rem; }
+  .shop-item-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem; color: var(--accent3);
+  }
+
+  /* STREAK SECTION */
+  .streak-widget {
+    background: var(--bg2); border: 1px solid rgba(255,100,0,0.2);
+    padding: 2rem; max-width: 500px;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+  .streak-top { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .streak-fire { font-size: 3.5rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+  .streak-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem; font-weight: 900;
+    color: #ff6b00;
+    text-shadow: 0 0 30px rgba(255,107,0,0.5);
+  }
+  .streak-label { font-size: 0.85rem; color: var(--text2); letter-spacing: 1px; }
+  .week-grid { display: flex; gap: 0.5rem; }
+  .day-box {
+    flex: 1; height: 36px; border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-family: 'Share Tech Mono', monospace;
+    color: var(--text2);
+  }
+  .day-done { background: rgba(255,107,0,0.3); color: #ff6b00; border: 1px solid rgba(255,107,0,0.4); }
+  .day-today { background: rgba(255,107,0,0.5); color: #ff6b00; border: 1px solid #ff6b00; box-shadow: 0 0 10px rgba(255,107,0,0.4); }
+  .day-miss { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+
+  /* LEARNING PATHS */
+  .path-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
+  }
+  .path-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: 1.75rem; transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden;
+  }
+  .path-card:hover { border-color: rgba(0,255,229,0.3); transform: translateY(-3px); }
+  .path-card::after {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .path-card.web::after { background: var(--accent); }
+  .path-card.forensics::after { background: #aa7fff; }
+  .path-card.crypto::after { background: var(--accent3); }
+  .path-card.pwn::after { background: var(--accent2); }
+  .path-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .path-icon { font-size: 1.8rem; }
+  .path-level {
+    font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
+    padding: 3px 8px; letter-spacing: 1px;
+    background: rgba(0,255,229,0.08); color: var(--accent);
+    border: 1px solid rgba(0,255,229,0.15);
+  }
+  .path-card h3 { font-family: 'Orbitron', monospace; font-size: 1rem; color: #fff; margin-bottom: 0.5rem; }
+  .path-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.25rem; }
+  .path-meta { display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--text2); }
+  .path-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem 2rem;
+  }
+  .footer-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand .nav-logo { margin-bottom: 1rem; font-size: 1.1rem; }
+  .footer-brand p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; max-width: 280px; }
+  .footer-col h4 {
+    font-family: 'Orbitron', monospace; font-size: 0.75rem;
+    color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .footer-col a { color: var(--text2); font-size: 0.88rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--accent); }
+  .footer-bottom {
+    max-width: 1200px; margin: 0 auto;
+    border-top: 1px solid var(--border); padding-top: 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.8rem; color: var(--text2);
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8); z-index: 2000;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid rgba(0,255,229,0.2);
+    max-width: 480px; width: 90%; padding: 2.5rem;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
+  }
+  .modal h3 {
+    font-family: 'Orbitron', monospace; font-size: 1.2rem;
+    color: var(--accent); margin-bottom: 1.5rem;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; color: var(--text2);
+    cursor: pointer; font-size: 1.2rem;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--accent2); }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label {
+    display: block; font-size: 0.8rem; font-family: 'Share Tech Mono', monospace;
+    color: var(--text2); letter-spacing: 1px; margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+  .form-group input {
+    width: 100%; padding: 0.75rem 1rem;
+    background: var(--bg); border: 1px solid var(--border);
+    color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,229,0.1); }
+  .form-group input::placeholder { color: var(--text2); }
+  .modal-actions { display: flex; gap: 1rem; margin-top: 1.75rem; }
+  .modal-actions .btn { flex: 1; padding: 0.75rem; font-size: 0.9rem; clip-path: none; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
+  .tab {
+    padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 1px; cursor: pointer; color: var(--text2);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: all 0.2s; text-transform: uppercase;
+    font-family: 'Rajdhani', sans-serif;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover:not(.active) { color: var(--text); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* NOTIFICATION TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 3000;
+    background: var(--bg2); border: 1px solid rgba(0,255,229,0.3);
+    padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+    font-size: 0.9rem; max-width: 320px;
+    transform: translateY(200%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .toast.show { transform: translateY(0); }
+  .toast-icon { font-size: 1.2rem; }
+  .toast-text { color: var(--text); }
+
+  /* UTILITY */
+  .text-accent { color: var(--accent); }
+  .text-accent2 { color: var(--accent2); }
+  .text-gold { color: var(--accent3); }
+  .mt-1 { margin-top: 0.5rem; }
+  .mt-2 { margin-top: 1rem; }
+  .mt-3 { margin-top: 1.5rem; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .divider { height: 1px; background: var(--border); margin: 1rem 0; }
+
+  /* CANVAS */
+  #matrixCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    h1 { font-size: 2.2rem; }
+    .hero-stats { gap: 2rem; }
+    .leaderboard-wrapper { grid-template-columns: 1fr; }
+    .gamification-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LET<span>US</span>HACK</div>
+  <div class="nav-links">
+    <a href="#challenges">Challenges</a>
+    <a href="#paths">Paths</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#shop">Shop</a>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-outline" onclick="openModal('login')">Login</button>
+    <button class="btn btn-primary" onclick="openModal('signup')">Start Hacking</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <canvas id="matrixCanvas" class="matrix-rain"></canvas>
+
+  <div class="hero-badge">
+    <span class="blink">▶</span> CYBERSECURITY TRAINING PLATFORM
+  </div>
+
+  <h1>
+    <span class="line1">MASTER THE</span>
+    <span class="line2">DIGITAL FRONTIER</span>
+  </h1>
+
+  <p class="hero-sub">
+    Earn badges, maintain streaks, level up, and compete on leaderboards while mastering cybersecurity through hands-on challenges and real-world scenarios.
+  </p>
+
+  <div class="hero-ctas">
+    <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;" onclick="openModal('signup')">Begin Your Mission</button>
+    <button class="btn btn-outline" style="padding:0.75rem 2rem;font-size:1rem;" onclick="scrollTo('challenges')">Explore Challenges</button>
+  </div>
+
+  <div class="terminal" style="margin-bottom:3rem;">
+    <div class="terminal-bar">
+      <span class="dot dot-r"></span>
+      <span class="dot dot-y"></span>
+      <span class="dot dot-g"></span>
+      <span class="terminal-title">letushack@terminal:~$</span>
+    </div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"> whoami</span></div>
+      <div class="t-out accent">anonymous_hacker</div>
+      <div class="t-line mt-1"><span class="t-prompt">$</span><span class="t-cmd"> nmap -sV letushack.com</span></div>
+      <div class="t-out success">PORT    STATE  SERVICE   VERSION</div>
+      <div class="t-out success">80/tcp  open   http      LetUsHack v2.4</div>
+      <div class="t-out success">443/tcp open   https     TLS 1.3</div>
+      <div class="t-line mt-1"><span class="t-prompt">$</span><span class="t-cmd"> cat /etc/challenges.txt</span></div>
+      <div class="t-out warn">1,200+ challenges across 8 categories...</div>
+      <div class="t-out accent">Level up your skills. Earn HackCoins. Dominate the leaderboard.</div>
+      <div class="t-line mt-1"><span class="t-prompt">$</span><span class="t-cmd"> join --platform letushack<span class="t-cursor"></span></span></div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num" data-target="98500">0</div>
+      <div class="stat-label">Hackers Enrolled</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="1200">0</div>
+      <div class="stat-label">Challenges</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="48">0</div>
+      <div class="stat-label">Learning Paths</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="350">0</div>
+      <div class="stat-label">Badges to Earn</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">// PLATFORM FEATURES</div>
+    <h2>WHY <span>LETUSHACK</span></h2>
+    <p class="section-sub">Everything you need to go from zero to ethical hacking hero — all in one gamified platform.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Hands-On Labs</h3>
+        <p>Practice on real vulnerable applications in sandboxed browser environments. No setup required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>CTF Competitions</h3>
+        <p>Join live Capture the Flag events, compete globally, and win prizes and exclusive badges.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Skill Tracking</h3>
+        <p>Visualize your growth across categories with detailed progress maps and skill radar charts.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <h3>Daily Streaks</h3>
+        <p>Build consistency with daily challenges. Maintain streaks to unlock bonus HackCoins and exclusive rewards.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>HackCoin Economy</h3>
+        <p>Earn HackCoins by solving challenges. Spend them in the shop for hints, avatars, and premium content.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <h3>Team Mode</h3>
+        <p>Form teams, compete in team leaderboards, and collaborate on multi-stage challenges together.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGES -->
+<section id="challenges" style="background: var(--bg2);">
+  <div class="container">
+    <div class="section-label">// CHALLENGES</div>
+    <h2>PICK YOUR <span>BATTLE</span></h2>
+    <p class="section-sub">1200+ challenges across Web, Pwn, Crypto, Reverse Engineering, Forensics, OSINT, and more.</p>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(event, 'all')">All</div>
+      <div class="tab" onclick="switchTab(event, 'web')">Web</div>
+      <div class="tab" onclick="switchTab(event, 'pwn')">Pwn</div>
+      <div class="tab" onclick="switchTab(event, 'crypto')">Crypto</div>
+      <div class="tab" onclick="switchTab(event, 're')">Rev Eng</div>
+    </div>
+
+    <div class="challenges-grid">
+      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
+        <div class="challenge-header">
+          <span class="challenge-cat cat-web">WEB</span>
+          <span class="diff-badge diff-easy">EASY</span>
+        </div>
+        <div class="challenge-name">SQL Injection Basics</div>
+        <div class="challenge-desc">Bypass a login form using classic SQL injection. Understand how unsanitized queries can be exploited.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div>
+        <div class="challenge-footer">
+          <span class="challenge-pts">💰 50 HC</span>
+          <span class="solvers">👤 4,821 solvers</span>
+        </div>
+      </div>
+      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
+        <div class="challenge-header">
+          <span class="challenge-cat cat-crypto">CRYPTO</span>
+          <span class="diff-badge diff-medium">MEDIUM</span>
+        </div>
+        <div class="challenge-name">RSA Broken Key</div>
+        <div class="challenge-desc">Factor a weak RSA modulus to recover the private key and decrypt the hidden message.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+        <div class="challenge-footer">
+          <span class="challenge-pts">💰 150 HC</span>
+          <span class="solvers">👤 1,204 solvers</span>
+        </div>
+      </div>
+      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
+        <div class="challenge-header">
+          <span class="challenge-cat cat-pwn">PWN</span>
+          <span class="diff-badge diff-hard">HARD</span>
+        </div>
+        <div class="challenge-name">Stack Smash Redux</div>
+        <div class="challenge-desc">Exploit a buffer overflow vulnerability with ASLR and NX bit enabled. ROP chains required.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:18%"></div></div>
+        <div class="challenge-footer">
+          <span class="challenge-pts">💰 400 HC</span>
+          <span class="solvers">👤 287 solvers</span>
+        </div>
+      </div>
+      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
+        <div class="challenge-header">
+          <span class="challenge-cat cat-re">REV ENG</span>
+          <span class="diff-badge diff-medium">MEDIUM</span>
+        </div>
+        <div class="challenge-name">CrackMe v4.2</div>
+        <div class="challenge-desc">Reverse engineer a packed binary to find the hidden serial key. Anti-debug tricks included.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
+        <div class="challenge-footer">
+          <span class="challenge-pts">💰 200 HC</span>
+          <span class="solvers">👤 892 solvers</span>
+        </div>
+      </div>
+      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
+        <div class="challenge-header">
+          <span class="challenge-cat cat-web">WEB</span>
+          <span class="diff-badge diff-hard">HARD</span>
+        </div>
+        <div class="challenge-name">XSS Maze</div>
+        <div class="challenge-desc">Chain multiple XSS vectors through a CSP-hardened application to steal admin cookies.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:22%"></div></div>
+        <div class="challenge-footer">
+          <span class="challenge-pts">💰 350 HC</span>
+          <span class="solvers">👤 541 solvers</span>
+        </div>
+      </div>
+      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
+        <div class="challenge-header">
+          <span class="challenge-cat cat-osint">OSINT</span>
+          <span class="diff-badge diff-easy">EASY</span>
+        </div>
+        <div class="challenge-name">Ghost Protocol</div>
+        <div class="challenge-desc">Track down a fictional threat actor using only public OSINT tools and social media footprints.</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:71%"></div></div>
+        <div class="challenge-footer">
+          <span class="challenge-pts">💰 75 HC</span>
+          <span class="solvers">👤 3,108 solvers</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <button class="btn btn-outline" style="padding:0.75rem 2rem;" onclick="showToast('🔍 Loading all challenges...')">View All Challenges →</button>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING PATHS -->
+<section id="paths">
+  <div class="container">
+    <div class="section-label">// LEARNING PATHS</div>
+    <h2>STRUCTURED <span>PROGRESSION</span></h2>
+    <p class="section-sub">Guided paths that take you from beginner to expert in your chosen specialty.</p>
+    <div class="path-grid">
+      <div class="path-card web" onclick="showToast('📚 Web Hacking path loaded!')">
+        <div class="path-top">
+          <span class="path-icon">🌐</span>
+          <span class="path-level">BEGINNER → ADVANCED</span>
+        </div>
+        <h3>Web Application Hacking</h3>
+        <p>OWASP Top 10, SQL injection, XSS, CSRF, SSRF, and beyond. Master modern web vulnerabilities.</p>
+        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="path-meta">
+          <span>📚 42 modules</span>
+          <span>⏱ ~60 hrs</span>
+          <span>🏆 8 badges</span>
+        </div>
+      </div>
+      <div class="path-card pwn" onclick="showToast('📚 Binary Exploitation path loaded!')">
+        <div class="path-top">
+          <span class="path-icon">💣</span>
+          <span class="path-level">INTERMEDIATE</span>
+        </div>
+        <h3>Binary Exploitation</h3>
+        <p>Stack/heap overflows, format strings, ROP chains, and kernel exploitation fundamentals.</p>
+        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="path-meta">
+          <span>📚 38 modules</span>
+          <span>⏱ ~80 hrs</span>
+          <span>🏆 10 badges</span>
+        </div>
+      </div>
+      <div class="path-card crypto" onclick="showToast('📚 Cryptography path loaded!')">
+        <div class="path-top">
+          <span class="path-icon">🔐</span>
+          <span class="path-level">ALL LEVELS</span>
+        </div>
+        <h3>Applied Cryptography</h3>
+        <p>From Caesar ciphers to breaking RSA, AES padding oracles, and elliptic curve attacks.</p>
+        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="path-meta">
+          <span>📚 31 modules</span>
+          <span>⏱ ~50 hrs</span>
+          <span>🏆 7 badges</span>
+        </div>
+      </div>
+      <div class="path-card forensics" onclick="showToast('📚 Digital Forensics path loaded!')">
+        <div class="path-top">
+          <span class="path-icon">🔍</span>
+          <span class="path-level">BEGINNER → MID</span>
+        </div>
+        <h3>Digital Forensics</h3>
+        <p>Memory analysis, disk forensics, network packet analysis, and malware investigation techniques.</p>
+        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
+        <div class="path-meta">
+          <span>📚 27 modules</span>
+          <span>⏱ ~45 hrs</span>
+          <span>🏆 6 badges</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMIFICATION -->
+<section class="gamification-section" id="gamification">
+  <div class="container">
+    <div class="section-label">// GAMIFICATION</div>
+    <h2>EARN. LEVEL. <span>DOMINATE.</span></h2>
+    <p class="section-sub">Our gamification system makes learning addictive — in the best possible way.</p>
+    <div class="gamification-grid">
+      <div class="gam-card">
+        <span class="gam-icon">🏅</span>
+        <h3>Earn Badges</h3>
+        <p>Unlock hundreds of achievement badges across skill categories. Show off your expertise on your public profile.</p>
+      </div>
+      <div class="gam-card">
+        <span class="gam-icon">🔥</span>
+        <h3>Maintain Streaks</h3>
+        <p>Log in and solve at least one challenge daily to maintain your streak. Longer streaks unlock exclusive rewards.</p>
+      </div>
+      <div class="gam-card">
+        <span class="gam-icon">⬆️</span>
+        <h3>Level Up</h3>
+        <p>Gain XP from every action. Rise through 20 hacker ranks from Script Kiddie to Elite Zero-Day Researcher.</p>
+      </div>
+    </div>
+
+    <!-- Badges showcase -->
+    <div style="margin-top:4rem;">
+      <h3 style="font-family:'Orbitron',monospace;color:#fff;margin-bottom:2rem;font-size:1rem;letter-spacing:1px;">ACHIEVEMENT BADGES</h3>
+      <div class="badges-grid">
+        <div class="badge-item" onclick="showToast('🏅 SQL Master badge earned!')">
+          <div class="badge-hex badge-earned">🗡️</div>
+          <div class="badge-label">SQL Master</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🏅 Crypto King badge earned!')">
+          <div class="badge-hex badge-earned-gold">🔑</div>
+          <div class="badge-label">Crypto King</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🏅 Web Slayer badge earned!')">
+          <div class="badge-hex badge-earned">🌐</div>
+          <div class="badge-label">Web Slayer</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🏅 Binary Beast badge earned!')">
+          <div class="badge-hex badge-earned-red">💣</div>
+          <div class="badge-label">Binary Beast</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🔒 Complete 10 OSINT challenges to unlock!')">
+          <div class="badge-hex badge-locked">🕵️</div>
+          <div class="badge-label">Ghost Hunter</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🔒 Achieve a 30-day streak to unlock!')">
+          <div class="badge-hex badge-locked">🔥</div>
+          <div class="badge-label">30-Day Streak</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🔒 Top 100 leaderboard required!')">
+          <div class="badge-hex badge-locked">👑</div>
+          <div class="badge-label">Elite Hacker</div>
+        </div>
+        <div class="badge-item" onclick="showToast('🔒 Solve an INSANE challenge to unlock!')">
+          <div class="badge-hex badge-locked">💀</div>
+          <div class="badge-label">Zero Day</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Streak widget -->
+    <div style="margin-top:4rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+      <div>
+        <h3 style="font-family:'Orbitron',monospace;color:#fff;margin-bottom:1.5rem;font-size:1rem;letter-spacing:1px;">CURRENT STREAK</h3>
+        <div class="streak-widget">
+          <div class="streak-top">
+            <div class="streak-fire">🔥</div>
+            <div>
+              <div class="streak-num">7</div>
+              <div class="streak-label">DAY STREAK</div>
+            </div>
+          </div>
+          <div class="week-grid">
+            <div class="day-box day-done">MON</div>
+            <div class="day-box day-done">TUE</div>
+            <div class="day-box day-done">WED</div>
+            <div class="day-box day-done">THU</div>
+            <div class="day-box day-done">FRI</div>
+            <div class="day-box day-done">SAT</div>
+            <div class="day-box day-today">SUN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section id="leaderboard">
+  <div class="container">
+    <div class="section-label">// LEADERBOARD</div>
+    <h2>GLOBAL <span>RANKINGS</span></h2>
+    <p class="section-sub">Compete with hackers worldwide. Climb the ranks. Claim your place at the top.</p>
+    <div class="leaderboard-wrapper">
+      <div class="leaderboard-table">
+        <div class="lb-header">
+          <span>🌍 Global Leaderboard</span>
+          <span style="font-size:0.7rem;color:var(--text2)">LIVE</span>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#ff6b00)">Z</div>
+          <div class="lb-name">z3r0_d4y</div>
+          <div class="lb-score">98,420 pts</div>
+          <div class="lb-badge">💀</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank silver">2</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#00ffe5,#0080ff)">X</div>
+          <div class="lb-name">xpl0it_queen</div>
+          <div class="lb-score">87,150 pts</div>
+          <div class="lb-badge">👑</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank bronze">3</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#ff3c6e,#ff6b00)">N</div>
+          <div class="lb-name">n1ghtcrawler</div>
+          <div class="lb-score">75,880 pts</div>
+          <div class="lb-badge">🔥</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#39ff14,#00ffe5)">P</div>
+          <div class="lb-name">pwn_sensei</div>
+          <div class="lb-score">68,310 pts</div>
+          <div class="lb-badge">🏆</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">5</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#aa7fff,#ff3c6e)">H</div>
+          <div class="lb-name">h4ck3rm4n</div>
+          <div class="lb-score">61,200 pts</div>
+          <div class="lb-badge">⚡</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">6</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#39ff14)">C</div>
+          <div class="lb-name">cr1pt0_wolf</div>
+          <div class="lb-score">54,760 pts</div>
+          <div class="lb-badge">🔐</div>
+        </div>
+      </div>
+
+      <div class="leaderboard-table">
+        <div class="lb-header">
+          <span>📅 This Week</span>
+          <span style="font-size:0.7rem;color:var(--text2)">WEEKLY</span>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#00ffe5,#aa7fff)">S</div>
+          <div class="lb-name">shadow_byte</div>
+          <div class="lb-score">3,840 pts</div>
+          <div class="lb-badge">⚡</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank silver">2</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#ff3c6e,#ffd700)">D</div>
+          <div class="lb-name">d4rk_f0rce</div>
+          <div class="lb-score">3,210 pts</div>
+          <div class="lb-badge">🔥</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank bronze">3</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#39ff14,#00ffe5)">V</div>
+          <div class="lb-name">vuln_v3ntur3</div>
+          <div class="lb-score">2,980 pts</div>
+          <div class="lb-badge">🏅</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#aa7fff,#00ffe5)">B</div>
+          <div class="lb-name">b1n4ry_bl4de</div>
+          <div class="lb-score">2,450 pts</div>
+          <div class="lb-badge">🗡️</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">5</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#ff3c6e)">K</div>
+          <div class="lb-name">k3rn3l_panic</div>
+          <div class="lb-score">1,820 pts</div>
+          <div class="lb-badge">💣</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">6</div>
+          <div class="lb-avatar" style="background:linear-gradient(135deg,#ff6b00,#aa7fff)">R</div>
+          <div class="lb-name">r00t_run3r</div>
+          <div class="lb-score">1,640 pts</div>
+          <div class="lb-badge">🛡️</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop" class="currency-section">
+  <div class="container">
+    <div class="section-label">// HACKCOIN SHOP</div>
+    <h2>SPEND YOUR <span>HACKCOINS</span></h2>
+    <p class="section-sub">Use your earned HackCoins to unlock hints, cosmetics, and premium content.</p>
+    <div class="currency-display">
+      <div class="currency-icon">💰</div>
+      <div class="currency-info">
+        <h3>HackCoin (HC) — Platform Currency</h3>
+        <p>Earned by solving challenges, maintaining streaks, and competing in CTFs. Never purchasable with real money.</p>
+      </div>
+      <button class="btn btn-outline" style="margin-left:auto;" onclick="showToast('💰 You need to log in to view your balance!')">My Balance</button>
+    </div>
+    <div class="shop-grid">
+      <div class="shop-item" onclick="showToast('💡 Hint purchased! -25 HC')">
+        <span class="shop-item-icon">💡</span>
+        <div class="shop-item-name">Challenge Hint</div>
+        <div class="shop-item-price">25 HC</div>
+      </div>
+      <div class="shop-item" onclick="showToast('🎨 Avatar unlocked! -200 HC')">
+        <span class="shop-item-icon">🎨</span>
+        <div class="shop-item-name">Custom Avatar</div>
+        <div class="shop-item-price">200 HC</div>
+      </div>
+      <div class="shop-item" onclick="showToast('✨ Profile frame equipped! -500 HC')">
+        <span class="shop-item-icon">✨</span>
+        <div class="shop-item-name">Elite Frame</div>
+        <div class="shop-item-price">500 HC</div>
+      </div>
+      <div class="shop-item" onclick="showToast('🎟️ CTF entry unlocked! -300 HC')">
+        <span class="shop-item-icon">🎟️</span>
+        <div class="shop-item-name">CTF Entry Pass</div>
+        <div class="shop-item-price">300 HC</div>
+      </div>
+      <div class="shop-item" onclick="showToast('🗺️ Path unlocked! -800 HC')">
+        <span class="shop-item-icon">🗺️</span>
+        <div class="shop-item-name">Premium Path</div>
+        <div class="shop-item-price">800 HC</div>
+      </div>
+      <div class="shop-item" onclick="showToast('⚡ Streak shield activated! -150 HC')">
+        <span class="shop-item-icon">⚡</span>
+        <div class="shop-item-name">Streak Shield</div>
+        <div class="shop-item-price">150 HC</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:1.1rem;">LET<span>US</span>HACK</div>
+      <p>The ultimate gamified cybersecurity training platform. Earn badges, maintain streaks, and dominate leaderboards.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="#">Challenges</a></li>
+        <li><a href="#">Learning Paths</a></li>
+        <li><a href="#">CTF Events</a></li>
+        <li><a href="#">Leaderboard</a></li>
+        <li><a href="#">Shop</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Write-ups</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Discord</a></li>
+        <li><a href="#">Twitter/X</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 LetUsHack. All rights reserved.</span>
+    <span style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--accent)">// HACK ETHICALLY</span>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')">✕</button>
+    <h3>// Login</h3>
+    <div class="form-group">
+      <label>Username / Email</label>
+      <input type="text" placeholder="h4ck3r@example.com" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••••" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+      <button class="btn btn-outline" onclick="switchModal('login','signup')">Register</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup')">✕</button>
+    <h3>// Create Account</h3>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" placeholder="your_hacker_alias" />
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="h4ck3r@example.com" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" placeholder="••••••••••" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="handleSignup()">Create Account</button>
+      <button class="btn btn-outline" onclick="switchModal('signup','login')">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span class="toast-text" id="toastText">Action successful!</span>
+</div>
+
+<script>
+// Matrix rain
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const fontSize = 12;
+let columns = Math.floor(canvas.width / fontSize);
+let drops = Array(columns).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(7,11,15,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00ffe5';
+  ctx.font = fontSize + 'px Share Tech Mono';
+  for (let i = 0; i < drops.length; i++) {
+    const text = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 50);
+
+// Counter animation
+function animateCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = Math.floor(current).toLocaleString() + (target >= 1000 ? '' : '');
+    }, 16);
+  });
+}
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); observer.disconnect(); } });
+});
+observer.observe(document.querySelector('.hero-stats'));
+
+// Modal
+function openModal(type) {
+  document.getElementById(type + 'Modal').classList.add('active');
+}
+function closeModal(type) {
+  document.getElementById(type + 'Modal').classList.remove('active');
+}
+function switchModal(from, to) {
+  closeModal(from); openModal(to);
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+});
+
+// Handle auth
+function handleLogin() {
+  closeModal('login');
+  showToast('🎉 Welcome back, hacker!');
+}
+function handleSignup() {
+  closeModal('signup');
+  showToast('🚀 Account created! +100 HC welcome bonus!');
+}
+
+// Toast
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Tabs
+function switchTab(e, name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  showToast('🔍 Showing ' + name.toUpperCase() + ' challenges');
+}
+
+// Scroll
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
