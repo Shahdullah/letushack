@@ -1,1319 +1,1033 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LetUsHack – Master Cybersecurity</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #070b0f;
-    --bg2: #0d1520;
-    --bg3: #111d2e;
-    --accent: #00ffe5;
-    --accent2: #ff3c6e;
-    --accent3: #ffd700;
-    --green: #39ff14;
-    --text: #c8d8e8;
-    --text2: #7a9ab8;
-    --border: rgba(0,255,229,0.15);
-    --glow: 0 0 20px rgba(0,255,229,0.3);
-    --glow2: 0 0 20px rgba(255,60,110,0.3);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 16px;
-    overflow-x: hidden;
-    cursor: default;
-  }
-  a { text-decoration: none; color: inherit; }
+:root{
+  --bg:#070b0f;--bg2:#0d1520;--bg3:#111d2e;
+  --accent:#00ffe5;--accent2:#ff3c6e;--accent3:#ffd700;
+  --green:#39ff14;--text:#c8d8e8;--text2:#7a9ab8;
+  --border:rgba(0,255,229,0.15);
+  --glow:0 0 20px rgba(0,255,229,0.3);
+  --glow2:0 0 20px rgba(255,60,110,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:16px;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);pointer-events:none;z-index:9999}
 
-  /* SCANLINE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px);
-    pointer-events: none;
-    z-index: 9999;
-  }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;background:rgba(7,11,15,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.2rem;color:var(--accent);text-shadow:0 0 20px rgba(0,255,229,0.6);letter-spacing:2px;cursor:pointer}
+.nav-logo span{color:var(--accent2)}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{font-size:0.85rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);transition:color 0.2s;cursor:pointer}
+.nav-links a:hover{color:var(--accent)}
+.nav-right{display:flex;gap:1rem;align-items:center}
+.nav-user{display:none;align-items:center;gap:1rem}
+.nav-username{font-family:'Share Tech Mono',monospace;font-size:0.85rem;color:var(--accent)}
+.nav-hc{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--accent3)}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2rem; height: 64px;
-    background: rgba(7,11,15,0.95);
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-  }
-  .nav-logo {
-    font-family: 'Orbitron', monospace;
-    font-weight: 900; font-size: 1.2rem;
-    color: var(--accent);
-    text-shadow: 0 0 20px rgba(0,255,229,0.6);
-    letter-spacing: 2px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .nav-logo span { color: var(--accent2); }
-  .nav-links {
-    display: flex; gap: 2rem; align-items: center;
-  }
-  .nav-links a {
-    font-size: 0.85rem; font-weight: 600; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--text2);
-    transition: color 0.2s;
-    position: relative;
-  }
-  .nav-links a:hover { color: var(--accent); }
-  .nav-links a::after {
-    content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
-    height: 1px; background: var(--accent);
-    transform: scaleX(0); transition: transform 0.2s;
-  }
-  .nav-links a:hover::after { transform: scaleX(1); }
-  .nav-right { display: flex; gap: 1rem; align-items: center; }
-  .btn {
-    padding: 0.5rem 1.25rem;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.85rem; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    border: none; cursor: pointer;
-    transition: all 0.2s;
-    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-  }
-  .btn-outline {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    clip-path: none;
-  }
-  .btn-outline:hover { background: rgba(0,255,229,0.1); box-shadow: var(--glow); }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--bg);
-  }
-  .btn-primary:hover { box-shadow: var(--glow); transform: translateY(-1px); }
-  .btn-danger {
-    background: var(--accent2);
-    color: white;
-  }
-  .btn-danger:hover { box-shadow: var(--glow2); transform: translateY(-1px); }
+/* BUTTONS */
+.btn{padding:0.5rem 1.25rem;font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.2s}
+.btn-outline{background:transparent;border:1px solid var(--accent);color:var(--accent)}
+.btn-outline:hover{background:rgba(0,255,229,0.1);box-shadow:var(--glow)}
+.btn-primary{background:var(--accent);color:var(--bg);clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
+.btn-primary:hover{box-shadow:var(--glow);transform:translateY(-1px)}
+.btn-danger{background:var(--accent2);color:#fff}
+.btn-danger:hover{box-shadow:var(--glow2)}
+.btn-sm{padding:0.35rem 0.9rem;font-size:0.78rem}
+.btn-gold{background:var(--accent3);color:#000;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 6rem 2rem 4rem;
-    position: relative; overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0; z-index: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,229,0.06) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 40% at 80% 80%, rgba(255,60,110,0.05) 0%, transparent 60%);
-  }
-  .matrix-rain {
-    position: absolute; inset: 0; z-index: 0; opacity: 0.07;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 0.4rem 1rem;
-    border: 1px solid rgba(0,255,229,0.3);
-    border-radius: 2px;
-    font-size: 0.75rem; font-family: 'Share Tech Mono', monospace;
-    color: var(--accent); letter-spacing: 2px;
-    margin-bottom: 2rem; position: relative; z-index: 1;
-    background: rgba(0,255,229,0.05);
-  }
-  .blink { animation: blink 1s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-  h1 {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(2.5rem, 7vw, 5.5rem);
-    font-weight: 900; line-height: 1.05;
-    margin-bottom: 1.5rem;
-    position: relative; z-index: 1;
-    text-transform: uppercase; letter-spacing: 2px;
-  }
-  h1 .line1 { color: #fff; display: block; }
-  h1 .line2 {
-    color: var(--accent);
-    text-shadow: 0 0 40px rgba(0,255,229,0.5);
-    display: block;
-  }
-  .hero-sub {
-    max-width: 580px; font-size: 1.05rem;
-    color: var(--text2); line-height: 1.7;
-    margin-bottom: 2.5rem; position: relative; z-index: 1;
-  }
-  .hero-ctas {
-    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
-    position: relative; z-index: 1; margin-bottom: 4rem;
-  }
-  .hero-stats {
-    display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
-    position: relative; z-index: 1;
-    border-top: 1px solid var(--border);
-    padding-top: 3rem;
-  }
-  .stat-item { text-align: center; }
-  .stat-num {
-    font-family: 'Orbitron', monospace;
-    font-size: 2rem; font-weight: 700;
-    color: var(--accent);
-    text-shadow: 0 0 20px rgba(0,255,229,0.4);
-  }
-  .stat-label { font-size: 0.8rem; color: var(--text2); letter-spacing: 1px; margin-top: 4px; }
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:64px}
+.page.active{display:block}
 
-  /* TERMINAL WINDOW */
-  .terminal {
-    position: relative; z-index: 1;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    width: 100%; max-width: 680px;
-    margin: 3rem auto;
-    box-shadow: 0 0 60px rgba(0,255,229,0.08);
-    overflow: hidden;
-  }
-  .terminal-bar {
-    background: var(--bg3);
-    padding: 0.6rem 1rem;
-    display: flex; align-items: center; gap: 0.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot-r { background: #ff5f57; }
-  .dot-y { background: #ffbd2e; }
-  .dot-g { background: #28ca40; }
-  .terminal-title { font-size: 0.75rem; color: var(--text2); font-family: 'Share Tech Mono', monospace; margin-left: 0.5rem; }
-  .terminal-body { padding: 1.5rem; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; line-height: 1.8; }
-  .t-line { display: flex; align-items: flex-start; gap: 0.5rem; }
-  .t-prompt { color: var(--green); flex-shrink: 0; }
-  .t-cmd { color: #fff; }
-  .t-out { color: var(--text2); padding-left: 1.2rem; }
-  .t-out.success { color: var(--green); }
-  .t-out.warn { color: var(--accent3); }
-  .t-out.accent { color: var(--accent); }
-  .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s infinite; vertical-align: middle; }
+/* ===== HOME PAGE ===== */
+.hero{min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(0,255,229,0.06) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(255,60,110,0.05) 0%,transparent 60%)}
+#matrixCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:0.07}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:0.4rem 1rem;border:1px solid rgba(0,255,229,0.3);font-size:0.75rem;font-family:'Share Tech Mono',monospace;color:var(--accent);letter-spacing:2px;margin-bottom:2rem;position:relative;z-index:1;background:rgba(0,255,229,0.05)}
+.blink{animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+h1{font-family:'Orbitron',monospace;font-size:clamp(2.5rem,7vw,5rem);font-weight:900;line-height:1.05;margin-bottom:1.5rem;position:relative;z-index:1;text-transform:uppercase;letter-spacing:2px}
+h1 .l1{color:#fff;display:block}
+h1 .l2{color:var(--accent);text-shadow:0 0 40px rgba(0,255,229,0.5);display:block}
+.hero-sub{max-width:560px;font-size:1.05rem;color:var(--text2);line-height:1.7;margin-bottom:2.5rem;position:relative;z-index:1}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;margin-bottom:3rem}
+.hero-stats{display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;border-top:1px solid var(--border);padding-top:3rem}
+.stat-item{text-align:center}
+.stat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;color:var(--accent);text-shadow:0 0 20px rgba(0,255,229,0.4)}
+.stat-label{font-size:0.8rem;color:var(--text2);letter-spacing:1px;margin-top:4px}
 
-  /* SECTION */
-  section { padding: 5rem 2rem; position: relative; }
-  .section-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.75rem; color: var(--accent); letter-spacing: 3px;
-    text-transform: uppercase; margin-bottom: 0.75rem;
-  }
-  h2 {
-    font-family: 'Orbitron', monospace;
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 700; margin-bottom: 1rem;
-    color: #fff; text-transform: uppercase; letter-spacing: 1px;
-  }
-  h2 span { color: var(--accent); }
-  .section-sub { color: var(--text2); max-width: 500px; line-height: 1.7; margin-bottom: 3rem; }
-  .container { max-width: 1200px; margin: 0 auto; }
+/* TERMINAL */
+.terminal{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--border);width:100%;max-width:660px;margin:0 auto 3rem;box-shadow:0 0 60px rgba(0,255,229,0.08);overflow:hidden}
+.terminal-bar{background:var(--bg3);padding:0.6rem 1rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--border)}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot-r{background:#ff5f57}.dot-y{background:#ffbd2e}.dot-g{background:#28ca40}
+.terminal-title{font-size:0.75rem;color:var(--text2);font-family:'Share Tech Mono',monospace;margin-left:0.5rem}
+.terminal-body{padding:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.85rem;line-height:1.8}
+.t-prompt{color:var(--green)}.t-cmd{color:#fff}.t-out{color:var(--text2);padding-left:1.2rem}
+.t-out.s{color:var(--green)}.t-out.w{color:var(--accent3)}.t-out.a{color:var(--accent)}
+.t-cursor{display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink 1s infinite;vertical-align:middle}
 
-  /* FEATURES GRID */
-  .features-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;
-  }
-  .feature-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    padding: 2rem;
-    position: relative; overflow: hidden;
-    transition: all 0.3s;
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-  }
-  .feature-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(0,255,229,0.04) 0%, transparent 60%);
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .feature-card:hover { border-color: rgba(0,255,229,0.4); box-shadow: 0 0 30px rgba(0,255,229,0.1); transform: translateY(-4px); }
-  .feature-card:hover::before { opacity: 1; }
-  .feature-icon {
-    width: 48px; height: 48px;
-    background: rgba(0,255,229,0.1);
-    border: 1px solid rgba(0,255,229,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; margin-bottom: 1.25rem;
-    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
-  }
-  .feature-card h3 {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.95rem; font-weight: 700;
-    color: #fff; margin-bottom: 0.75rem; letter-spacing: 1px;
-  }
-  .feature-card p { color: var(--text2); font-size: 0.9rem; line-height: 1.65; }
+/* SECTION */
+section{padding:5rem 2rem;position:relative}
+.section-label{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem}
+h2{font-family:'Orbitron',monospace;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:1rem;color:#fff;text-transform:uppercase;letter-spacing:1px}
+h2 span{color:var(--accent)}
+.section-sub{color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:3rem}
+.container{max-width:1200px;margin:0 auto}
 
-  /* CHALLENGES SECTION */
-  .challenges-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem;
-  }
-  .challenge-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 1rem;
-    transition: all 0.3s;
-    cursor: pointer;
-  }
-  .challenge-card:hover { border-color: rgba(0,255,229,0.35); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
-  .challenge-header { display: flex; align-items: center; justify-content: space-between; }
-  .challenge-cat {
-    font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 2px; padding: 3px 8px;
-    border-radius: 2px;
-  }
-  .cat-web { background: rgba(0,255,229,0.12); color: var(--accent); }
-  .cat-pwn { background: rgba(255,60,110,0.12); color: var(--accent2); }
-  .cat-crypto { background: rgba(255,215,0,0.12); color: var(--accent3); }
-  .cat-re { background: rgba(57,255,20,0.12); color: var(--green); }
-  .cat-osint { background: rgba(150,100,255,0.12); color: #aa7fff; }
-  .diff-badge {
-    font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 1px; padding: 3px 8px;
-    border-radius: 2px;
-  }
-  .diff-easy { background: rgba(57,255,20,0.1); color: var(--green); }
-  .diff-medium { background: rgba(255,215,0,0.1); color: var(--accent3); }
-  .diff-hard { background: rgba(255,60,110,0.1); color: var(--accent2); }
-  .diff-insane { background: rgba(200,0,255,0.1); color: #cc44ff; }
-  .challenge-name {
-    font-family: 'Orbitron', monospace;
-    font-size: 0.95rem; font-weight: 700; color: #fff;
-  }
-  .challenge-desc { font-size: 0.88rem; color: var(--text2); line-height: 1.5; }
-  .challenge-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text2); }
-  .challenge-pts {
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--accent3);
-  }
-  .solvers { display: flex; align-items: center; gap: 4px; }
-  .progress-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; }
+/* FEATURE CARDS */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.feature-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;position:relative;overflow:hidden;transition:all 0.3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.feature-card:hover{border-color:rgba(0,255,229,0.4);box-shadow:0 0 30px rgba(0,255,229,0.1);transform:translateY(-4px)}
+.feature-icon{width:48px;height:48px;background:rgba(0,255,229,0.1);border:1px solid rgba(0,255,229,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.25rem}
+.feature-card h3{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.75rem;letter-spacing:1px}
+.feature-card p{color:var(--text2);font-size:0.9rem;line-height:1.65}
 
-  /* LEADERBOARD */
-  .leaderboard-wrapper {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
-  }
-  .leaderboard-table {
-    background: var(--bg2); border: 1px solid var(--border);
-    overflow: hidden;
-  }
-  .lb-header {
-    padding: 1rem 1.5rem;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Orbitron', monospace; font-size: 0.85rem;
-    color: var(--accent); letter-spacing: 1px;
-  }
-  .lb-row {
-    display: flex; align-items: center; gap: 1rem;
-    padding: 0.85rem 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    transition: background 0.2s; cursor: pointer;
-  }
-  .lb-row:hover { background: rgba(0,255,229,0.04); }
-  .lb-row:last-child { border-bottom: none; }
-  .lb-rank {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.8rem; width: 24px; text-align: center;
-    color: var(--text2); flex-shrink: 0;
-  }
-  .lb-rank.gold { color: #ffd700; font-weight: 700; }
-  .lb-rank.silver { color: #c0c0c0; font-weight: 700; }
-  .lb-rank.bronze { color: #cd7f32; font-weight: 700; }
-  .lb-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 700; color: #000; flex-shrink: 0;
-  }
-  .lb-name { flex: 1; font-weight: 600; font-size: 0.9rem; color: #fff; }
-  .lb-score {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.85rem; color: var(--accent3);
-  }
-  .lb-badge { font-size: 0.85rem; }
+/* ===== CTF PAGE ===== */
+.ctf-page{padding:2rem;max-width:1200px;margin:0 auto}
+.ctf-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.ctf-header h2{margin-bottom:0}
+.ctf-filters{display:flex;gap:0.5rem;flex-wrap:wrap}
+.filter-btn{padding:0.4rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:1px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,255,229,0.05)}
+.missions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+.mission-card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.mission-card:hover{border-color:rgba(0,255,229,0.35);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.mission-card.solved{border-color:rgba(57,255,20,0.3)}
+.mission-card.solved::after{content:'✓ SOLVED';position:absolute;top:1rem;right:1rem;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--green);background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);padding:2px 8px;letter-spacing:1px}
+.mission-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.cat-badge{font-size:0.68rem;font-family:'Share Tech Mono',monospace;letter-spacing:2px;padding:3px 8px;border-radius:2px}
+.cat-web{background:rgba(0,255,229,0.12);color:var(--accent)}
+.cat-crypto{background:rgba(255,215,0,0.12);color:var(--accent3)}
+.cat-forensics{background:rgba(170,127,255,0.12);color:#aa7fff}
+.cat-pwn{background:rgba(255,60,110,0.12);color:var(--accent2)}
+.cat-osint{background:rgba(57,255,20,0.12);color:var(--green)}
+.diff-easy{font-size:0.68rem;font-family:'Share Tech Mono',monospace;padding:3px 8px;background:rgba(57,255,20,0.1);color:var(--green)}
+.diff-medium{font-size:0.68rem;font-family:'Share Tech Mono',monospace;padding:3px 8px;background:rgba(255,215,0,0.1);color:var(--accent3)}
+.diff-hard{font-size:0.68rem;font-family:'Share Tech Mono',monospace;padding:3px 8px;background:rgba(255,60,110,0.1);color:var(--accent2)}
+.mission-name{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.5rem}
+.mission-desc{color:var(--text2);font-size:0.88rem;line-height:1.5;margin-bottom:1rem}
+.mission-footer{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text2)}
+.mission-pts{font-family:'Share Tech Mono',monospace;color:var(--accent3)}
 
-  /* GAMIFICATION */
-  .gamification-section { background: var(--bg2); }
-  .gamification-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
-  }
-  .gam-card {
-    text-align: center; padding: 2.5rem 1.5rem;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    transition: all 0.3s;
-  }
-  .gam-card:hover { border-color: rgba(0,255,229,0.3); transform: translateY(-4px); }
-  .gam-icon { font-size: 3rem; margin-bottom: 1.25rem; display: block; }
-  .gam-card h3 {
-    font-family: 'Orbitron', monospace;
-    font-size: 1rem; font-weight: 700; color: #fff;
-    margin-bottom: 0.75rem; text-transform: uppercase;
-  }
-  .gam-card p { color: var(--text2); font-size: 0.9rem; line-height: 1.6; }
+/* ===== MISSION MODAL (CHALLENGE ROOM) ===== */
+.challenge-room{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;overflow-y:auto;backdrop-filter:blur(8px)}
+.challenge-room.open{display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+.room-inner{background:var(--bg2);border:1px solid rgba(0,255,229,0.2);width:100%;max-width:860px;position:relative;margin:auto}
+.room-header{background:var(--bg3);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.room-title{font-family:'Orbitron',monospace;font-size:1rem;color:var(--accent);letter-spacing:1px}
+.room-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.3rem;transition:color 0.2s}
+.room-close:hover{color:var(--accent2)}
+.room-body{padding:2rem}
+.room-desc{color:var(--text2);line-height:1.7;margin-bottom:1.5rem;font-size:0.95rem}
+.room-hint-box{background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);padding:1rem 1.25rem;margin-bottom:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.82rem;color:var(--accent3);display:none}
+.room-challenge-area{background:var(--bg);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.88rem}
+.room-challenge-area pre{white-space:pre-wrap;word-break:break-all;color:#c8d8e8;line-height:1.7}
+.flag-input-row{display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap}
+.flag-input{flex:1;padding:0.75rem 1rem;background:var(--bg);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;min-width:200px;transition:border-color 0.2s}
+.flag-input:focus{border-color:var(--accent);box-shadow:0 0 15px rgba(0,255,229,0.1)}
+.flag-input::placeholder{color:var(--text2)}
+.flag-feedback{margin-top:1rem;padding:0.75rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.85rem;display:none}
+.flag-feedback.correct{background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);color:var(--green)}
+.flag-feedback.wrong{background:rgba(255,60,110,0.1);border:1px solid rgba(255,60,110,0.3);color:var(--accent2)}
+.room-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
+.room-tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.room-tab{padding:0.6rem 1.25rem;font-size:0.8rem;font-weight:600;letter-spacing:1px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;text-transform:uppercase;font-family:'Share Tech Mono',monospace}
+.room-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.room-section{display:none}
+.room-section.active{display:block}
 
-  /* BADGES */
-  .badges-grid {
-    display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center;
-  }
-  .badge-item {
-    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-    cursor: pointer; transition: transform 0.2s;
-  }
-  .badge-item:hover { transform: scale(1.1); }
-  .badge-hex {
-    width: 64px; height: 72px;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; font-weight: 700; transition: all 0.2s;
-  }
-  .badge-locked { background: rgba(255,255,255,0.05); filter: grayscale(1) brightness(0.4); }
-  .badge-earned { background: linear-gradient(135deg, rgba(0,255,229,0.3), rgba(0,255,229,0.1)); box-shadow: 0 0 20px rgba(0,255,229,0.3); }
-  .badge-earned-red { background: linear-gradient(135deg, rgba(255,60,110,0.3), rgba(255,60,110,0.1)); box-shadow: 0 0 20px rgba(255,60,110,0.3); }
-  .badge-earned-gold { background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,215,0,0.1)); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
-  .badge-label { font-size: 0.7rem; font-family: 'Share Tech Mono', monospace; color: var(--text2); letter-spacing: 1px; text-align: center; }
+/* ===== LEADERBOARD PAGE ===== */
+.lb-page{padding:2rem;max-width:900px;margin:0 auto}
+.lb-table{background:var(--bg2);border:1px solid var(--border);overflow:hidden;margin-bottom:2rem}
+.lb-head{padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent);letter-spacing:1px}
+.lb-row{display:flex;align-items:center;gap:1rem;padding:0.85rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s}
+.lb-row:hover{background:rgba(0,255,229,0.04)}
+.lb-row:last-child{border-bottom:none}
+.lb-row.me{background:rgba(0,255,229,0.06);border-left:2px solid var(--accent)}
+.lb-rank{font-family:'Share Tech Mono',monospace;font-size:0.8rem;width:28px;text-align:center;color:var(--text2);flex-shrink:0}
+.lb-rank.gold{color:#ffd700;font-weight:700}
+.lb-rank.silver{color:#c0c0c0;font-weight:700}
+.lb-rank.bronze{color:#cd7f32;font-weight:700}
+.lb-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#000;flex-shrink:0}
+.lb-name{flex:1;font-weight:600;font-size:0.9rem;color:#fff}
+.lb-solved{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--text2);width:60px;text-align:center}
+.lb-score{font-family:'Share Tech Mono',monospace;font-size:0.88rem;color:var(--accent3);min-width:80px;text-align:right}
 
-  /* CURRENCY / SHOP */
-  .currency-section { background: var(--bg); }
-  .currency-display {
-    display: flex; align-items: center; gap: 2rem;
-    background: var(--bg2); border: 1px solid rgba(255,215,0,0.2);
-    padding: 1.5rem 2rem; margin-bottom: 2rem;
-    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
-  }
-  .currency-icon { font-size: 2.5rem; }
-  .currency-info h3 {
-    font-family: 'Orbitron', monospace; color: var(--accent3);
-    font-size: 1.1rem; margin-bottom: 0.25rem;
-  }
-  .currency-info p { color: var(--text2); font-size: 0.88rem; }
-  .shop-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;
-  }
-  .shop-item {
-    background: var(--bg2); border: 1px solid var(--border);
-    padding: 1.25rem; text-align: center;
-    transition: all 0.2s; cursor: pointer;
-  }
-  .shop-item:hover { border-color: rgba(255,215,0,0.3); transform: translateY(-2px); }
-  .shop-item-icon { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
-  .shop-item-name { font-weight: 700; font-size: 0.9rem; color: #fff; margin-bottom: 0.4rem; }
-  .shop-item-price {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.85rem; color: var(--accent3);
-  }
+/* ===== PROFILE PAGE ===== */
+.profile-page{padding:2rem;max-width:900px;margin:0 auto}
+.profile-header{display:flex;align-items:center;gap:2rem;background:var(--bg2);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;flex-wrap:wrap}
+.profile-avatar-big{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#000;flex-shrink:0;border:2px solid var(--accent);box-shadow:0 0 20px rgba(0,255,229,0.3)}
+.profile-info h3{font-family:'Orbitron',monospace;font-size:1.3rem;color:#fff;margin-bottom:0.4rem}
+.profile-info p{color:var(--text2);font-size:0.88rem;font-family:'Share Tech Mono',monospace}
+.profile-stats-row{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1rem}
+.pstat{text-align:center}
+.pstat-num{font-family:'Orbitron',monospace;font-size:1.4rem;color:var(--accent);font-weight:700}
+.pstat-label{font-size:0.75rem;color:var(--text2);letter-spacing:1px}
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.profile-card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem}
+.profile-card h4{font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent);letter-spacing:1px;margin-bottom:1.25rem;text-transform:uppercase}
+.solved-list{display:flex;flex-direction:column;gap:0.6rem;max-height:300px;overflow-y:auto}
+.solved-item{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;background:rgba(57,255,20,0.05);border:1px solid rgba(57,255,20,0.15);font-size:0.85rem}
+.solved-item-name{color:#fff;font-weight:600}
+.solved-item-pts{font-family:'Share Tech Mono',monospace;color:var(--accent3);font-size:0.8rem}
+.badge-grid-small{display:flex;flex-wrap:wrap;gap:0.75rem}
+.badge-sm{display:flex;flex-direction:column;align-items:center;gap:0.3rem;cursor:default}
+.badge-hex-sm{width:48px;height:54px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.badge-hex-sm.earned{background:linear-gradient(135deg,rgba(0,255,229,0.3),rgba(0,255,229,0.1));box-shadow:0 0 15px rgba(0,255,229,0.2)}
+.badge-hex-sm.locked{background:rgba(255,255,255,0.04);filter:grayscale(1) brightness(0.4)}
+.badge-lbl{font-size:0.6rem;font-family:'Share Tech Mono',monospace;color:var(--text2);text-align:center;max-width:52px}
+.xp-bar-wrap{margin-top:0.75rem}
+.xp-label{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem}
+.xp-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 0.8s ease}
 
-  /* STREAK SECTION */
-  .streak-widget {
-    background: var(--bg2); border: 1px solid rgba(255,100,0,0.2);
-    padding: 2rem; max-width: 500px;
-    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-  }
-  .streak-top { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
-  .streak-fire { font-size: 3.5rem; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-  .streak-num {
-    font-family: 'Orbitron', monospace;
-    font-size: 3rem; font-weight: 900;
-    color: #ff6b00;
-    text-shadow: 0 0 30px rgba(255,107,0,0.5);
-  }
-  .streak-label { font-size: 0.85rem; color: var(--text2); letter-spacing: 1px; }
-  .week-grid { display: flex; gap: 0.5rem; }
-  .day-box {
-    flex: 1; height: 36px; border-radius: 2px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.65rem; font-family: 'Share Tech Mono', monospace;
-    color: var(--text2);
-  }
-  .day-done { background: rgba(255,107,0,0.3); color: #ff6b00; border: 1px solid rgba(255,107,0,0.4); }
-  .day-today { background: rgba(255,107,0,0.5); color: #ff6b00; border: 1px solid #ff6b00; box-shadow: 0 0 10px rgba(255,107,0,0.4); }
-  .day-miss { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
+/* ===== AUTH MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid rgba(0,255,229,0.2);max-width:440px;width:90%;padding:2.5rem;position:relative;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px))}
+.modal h3{font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--accent);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.2rem;transition:color 0.2s}
+.modal-close:hover{color:var(--accent2)}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:0.75rem;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase}
+.form-group input{width:100%;padding:0.7rem 1rem;background:var(--bg);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s}
+.form-group input:focus{border-color:var(--accent);box-shadow:0 0 15px rgba(0,255,229,0.1)}
+.form-group input::placeholder{color:var(--text2)}
+.form-error{color:var(--accent2);font-size:0.8rem;font-family:'Share Tech Mono',monospace;margin-top:0.3rem;display:none}
+.modal-actions{display:flex;gap:1rem;margin-top:1.5rem}
+.modal-actions .btn{flex:1;padding:0.7rem;font-size:0.88rem;clip-path:none}
+.modal-switch{text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--text2)}
+.modal-switch span{color:var(--accent);cursor:pointer;text-decoration:underline}
 
-  /* LEARNING PATHS */
-  .path-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
-  }
-  .path-card {
-    background: var(--bg2); border: 1px solid var(--border);
-    padding: 1.75rem; transition: all 0.3s; cursor: pointer; position: relative; overflow: hidden;
-  }
-  .path-card:hover { border-color: rgba(0,255,229,0.3); transform: translateY(-3px); }
-  .path-card::after {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px;
-  }
-  .path-card.web::after { background: var(--accent); }
-  .path-card.forensics::after { background: #aa7fff; }
-  .path-card.crypto::after { background: var(--accent3); }
-  .path-card.pwn::after { background: var(--accent2); }
-  .path-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-  .path-icon { font-size: 1.8rem; }
-  .path-level {
-    font-size: 0.7rem; font-family: 'Share Tech Mono', monospace;
-    padding: 3px 8px; letter-spacing: 1px;
-    background: rgba(0,255,229,0.08); color: var(--accent);
-    border: 1px solid rgba(0,255,229,0.15);
-  }
-  .path-card h3 { font-family: 'Orbitron', monospace; font-size: 1rem; color: #fff; margin-bottom: 0.5rem; }
-  .path-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.25rem; }
-  .path-meta { display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--text2); }
-  .path-meta span { display: flex; align-items: center; gap: 4px; }
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:4000;background:var(--bg2);border:1px solid rgba(0,255,229,0.3);padding:1rem 1.5rem;display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;max-width:340px;transform:translateY(200%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+.toast.show{transform:translateY(0)}
 
-  /* FOOTER */
-  footer {
-    background: var(--bg2);
-    border-top: 1px solid var(--border);
-    padding: 3rem 2rem 2rem;
-  }
-  .footer-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
-    margin-bottom: 3rem;
-  }
-  .footer-brand .nav-logo { margin-bottom: 1rem; font-size: 1.1rem; }
-  .footer-brand p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; max-width: 280px; }
-  .footer-col h4 {
-    font-family: 'Orbitron', monospace; font-size: 0.75rem;
-    color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
-    margin-bottom: 1.25rem;
-  }
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-  .footer-col a { color: var(--text2); font-size: 0.88rem; transition: color 0.2s; }
-  .footer-col a:hover { color: var(--accent); }
-  .footer-bottom {
-    max-width: 1200px; margin: 0 auto;
-    border-top: 1px solid var(--border); padding-top: 2rem;
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.8rem; color: var(--text2);
-  }
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:0.8rem;color:var(--text2)}
+footer span{color:var(--accent);font-family:'Share Tech Mono',monospace}
 
-  /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.8); z-index: 2000;
-    align-items: center; justify-content: center;
-    backdrop-filter: blur(6px);
-  }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--bg2); border: 1px solid rgba(0,255,229,0.2);
-    max-width: 480px; width: 90%; padding: 2.5rem;
-    position: relative;
-    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
-  }
-  .modal h3 {
-    font-family: 'Orbitron', monospace; font-size: 1.2rem;
-    color: var(--accent); margin-bottom: 1.5rem;
-    text-transform: uppercase; letter-spacing: 1px;
-  }
-  .modal-close {
-    position: absolute; top: 1rem; right: 1rem;
-    background: none; border: none; color: var(--text2);
-    cursor: pointer; font-size: 1.2rem;
-    transition: color 0.2s;
-  }
-  .modal-close:hover { color: var(--accent2); }
-  .form-group { margin-bottom: 1.25rem; }
-  .form-group label {
-    display: block; font-size: 0.8rem; font-family: 'Share Tech Mono', monospace;
-    color: var(--text2); letter-spacing: 1px; margin-bottom: 0.5rem;
-    text-transform: uppercase;
-  }
-  .form-group input {
-    width: 100%; padding: 0.75rem 1rem;
-    background: var(--bg); border: 1px solid var(--border);
-    color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem;
-    outline: none; transition: border-color 0.2s;
-  }
-  .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,229,0.1); }
-  .form-group input::placeholder { color: var(--text2); }
-  .modal-actions { display: flex; gap: 1rem; margin-top: 1.75rem; }
-  .modal-actions .btn { flex: 1; padding: 0.75rem; font-size: 0.9rem; clip-path: none; }
+/* LOCKED OVERLAY */
+.locked-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.locked-box{background:var(--bg2);border:1px solid rgba(255,60,110,0.3);padding:3rem;text-align:center;max-width:400px;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))}
+.locked-box h3{font-family:'Orbitron',monospace;color:var(--accent2);margin-bottom:1rem;font-size:1.1rem}
+.locked-box p{color:var(--text2);margin-bottom:1.5rem;font-size:0.9rem}
+.locked-box .btn{margin:0.4rem}
 
-  /* TABS */
-  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2.5rem; }
-  .tab {
-    padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600;
-    letter-spacing: 1px; cursor: pointer; color: var(--text2);
-    border-bottom: 2px solid transparent; margin-bottom: -1px;
-    transition: all 0.2s; text-transform: uppercase;
-    font-family: 'Rajdhani', sans-serif;
-  }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab:hover:not(.active) { color: var(--text); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* NOTIFICATION TOAST */
-  .toast {
-    position: fixed; bottom: 2rem; right: 2rem; z-index: 3000;
-    background: var(--bg2); border: 1px solid rgba(0,255,229,0.3);
-    padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem;
-    font-size: 0.9rem; max-width: 320px;
-    transform: translateY(200%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-  }
-  .toast.show { transform: translateY(0); }
-  .toast-icon { font-size: 1.2rem; }
-  .toast-text { color: var(--text); }
-
-  /* UTILITY */
-  .text-accent { color: var(--accent); }
-  .text-accent2 { color: var(--accent2); }
-  .text-gold { color: var(--accent3); }
-  .mt-1 { margin-top: 0.5rem; }
-  .mt-2 { margin-top: 1rem; }
-  .mt-3 { margin-top: 1.5rem; }
-  .flex-between { display: flex; justify-content: space-between; align-items: center; }
-  .divider { height: 1px; background: var(--border); margin: 1rem 0; }
-
-  /* CANVAS */
-  #matrixCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-  @media (max-width: 768px) {
-    .nav-links { display: none; }
-    h1 { font-size: 2.2rem; }
-    .hero-stats { gap: 2rem; }
-    .leaderboard-wrapper { grid-template-columns: 1fr; }
-    .gamification-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-  }
+@media(max-width:768px){
+  .nav-links{display:none}
+  h1{font-size:2.2rem}
+  .hero-stats{gap:1.5rem}
+  .profile-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">LET<span>US</span>HACK</div>
+  <div class="nav-logo" onclick="goHome()">LET<span>US</span>HACK</div>
   <div class="nav-links">
-    <a href="#challenges">Challenges</a>
-    <a href="#paths">Paths</a>
-    <a href="#leaderboard">Leaderboard</a>
-    <a href="#shop">Shop</a>
+    <a onclick="showPage('ctf')">Challenges</a>
+    <a onclick="showPage('leaderboard')">Leaderboard</a>
+    <a onclick="showPage('profile')">Profile</a>
   </div>
   <div class="nav-right">
-    <button class="btn btn-outline" onclick="openModal('login')">Login</button>
-    <button class="btn btn-primary" onclick="openModal('signup')">Start Hacking</button>
+    <div id="navGuest" style="display:flex;gap:0.75rem">
+      <button class="btn btn-outline btn-sm" onclick="openModal('login')">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('signup')">Register</button>
+    </div>
+    <div id="navUser" class="nav-user">
+      <span class="nav-hc" id="navHC">💰 0 HC</span>
+      <span class="nav-username" id="navName">hacker</span>
+      <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    </div>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <canvas id="matrixCanvas" class="matrix-rain"></canvas>
-
-  <div class="hero-badge">
-    <span class="blink">▶</span> CYBERSECURITY TRAINING PLATFORM
-  </div>
-
-  <h1>
-    <span class="line1">MASTER THE</span>
-    <span class="line2">DIGITAL FRONTIER</span>
-  </h1>
-
-  <p class="hero-sub">
-    Earn badges, maintain streaks, level up, and compete on leaderboards while mastering cybersecurity through hands-on challenges and real-world scenarios.
-  </p>
-
-  <div class="hero-ctas">
-    <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;" onclick="openModal('signup')">Begin Your Mission</button>
-    <button class="btn btn-outline" style="padding:0.75rem 2rem;font-size:1rem;" onclick="scrollTo('challenges')">Explore Challenges</button>
-  </div>
-
-  <div class="terminal" style="margin-bottom:3rem;">
-    <div class="terminal-bar">
-      <span class="dot dot-r"></span>
-      <span class="dot dot-y"></span>
-      <span class="dot dot-g"></span>
-      <span class="terminal-title">letushack@terminal:~$</span>
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="hero-badge"><span class="blink">▶</span> CYBERSECURITY TRAINING PLATFORM</div>
+    <h1><span class="l1">MASTER THE</span><span class="l2">DIGITAL FRONTIER</span></h1>
+    <p class="hero-sub">Earn badges, maintain streaks, level up, and compete on leaderboards while mastering cybersecurity through hands-on CTF challenges.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem" onclick="openModal('signup')">Begin Your Mission</button>
+      <button class="btn btn-outline" style="padding:0.75rem 2rem;font-size:1rem" onclick="showPage('ctf')">Explore Challenges</button>
     </div>
-    <div class="terminal-body">
-      <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd"> whoami</span></div>
-      <div class="t-out accent">anonymous_hacker</div>
-      <div class="t-line mt-1"><span class="t-prompt">$</span><span class="t-cmd"> nmap -sV letushack.com</span></div>
-      <div class="t-out success">PORT    STATE  SERVICE   VERSION</div>
-      <div class="t-out success">80/tcp  open   http      LetUsHack v2.4</div>
-      <div class="t-out success">443/tcp open   https     TLS 1.3</div>
-      <div class="t-line mt-1"><span class="t-prompt">$</span><span class="t-cmd"> cat /etc/challenges.txt</span></div>
-      <div class="t-out warn">1,200+ challenges across 8 categories...</div>
-      <div class="t-out accent">Level up your skills. Earn HackCoins. Dominate the leaderboard.</div>
-      <div class="t-line mt-1"><span class="t-prompt">$</span><span class="t-cmd"> join --platform letushack<span class="t-cursor"></span></span></div>
-    </div>
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat-item">
-      <div class="stat-num" data-target="98500">0</div>
-      <div class="stat-label">Hackers Enrolled</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-target="1200">0</div>
-      <div class="stat-label">Challenges</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-target="48">0</div>
-      <div class="stat-label">Learning Paths</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num" data-target="350">0</div>
-      <div class="stat-label">Badges to Earn</div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section id="features">
-  <div class="container">
-    <div class="section-label">// PLATFORM FEATURES</div>
-    <h2>WHY <span>LETUSHACK</span></h2>
-    <p class="section-sub">Everything you need to go from zero to ethical hacking hero — all in one gamified platform.</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3>Hands-On Labs</h3>
-        <p>Practice on real vulnerable applications in sandboxed browser environments. No setup required.</p>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+        <span class="terminal-title">letushack@terminal:~$</span>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">🏆</div>
-        <h3>CTF Competitions</h3>
-        <p>Join live Capture the Flag events, compete globally, and win prizes and exclusive badges.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📈</div>
-        <h3>Skill Tracking</h3>
-        <p>Visualize your growth across categories with detailed progress maps and skill radar charts.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔥</div>
-        <h3>Daily Streaks</h3>
-        <p>Build consistency with daily challenges. Maintain streaks to unlock bonus HackCoins and exclusive rewards.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">💰</div>
-        <h3>HackCoin Economy</h3>
-        <p>Earn HackCoins by solving challenges. Spend them in the shop for hints, avatars, and premium content.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🤝</div>
-        <h3>Team Mode</h3>
-        <p>Form teams, compete in team leaderboards, and collaborate on multi-stage challenges together.</p>
+      <div class="terminal-body">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">whoami</span></div>
+        <div class="t-out a">anonymous_hacker</div>
+        <div style="margin-top:0.4rem"><span class="t-prompt">$ </span><span class="t-cmd">ls /challenges</span></div>
+        <div class="t-out s">web/ crypto/ forensics/ pwn/ osint/</div>
+        <div style="margin-top:0.4rem"><span class="t-prompt">$ </span><span class="t-cmd">cat /motd.txt</span></div>
+        <div class="t-out w">Welcome. 6 live CTF missions await. Solve them. Earn HackCoins.</div>
+        <div style="margin-top:0.4rem"><span class="t-prompt">$ </span><span class="t-cmd">register --platform letushack<span class="t-cursor"></span></span></div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- CHALLENGES -->
-<section id="challenges" style="background: var(--bg2);">
-  <div class="container">
-    <div class="section-label">// CHALLENGES</div>
-    <h2>PICK YOUR <span>BATTLE</span></h2>
-    <p class="section-sub">1200+ challenges across Web, Pwn, Crypto, Reverse Engineering, Forensics, OSINT, and more.</p>
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab(event, 'all')">All</div>
-      <div class="tab" onclick="switchTab(event, 'web')">Web</div>
-      <div class="tab" onclick="switchTab(event, 'pwn')">Pwn</div>
-      <div class="tab" onclick="switchTab(event, 'crypto')">Crypto</div>
-      <div class="tab" onclick="switchTab(event, 're')">Rev Eng</div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num" data-target="98500">0</div><div class="stat-label">Hackers Enrolled</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="6">0</div><div class="stat-label">Live CTF Missions</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="350">0</div><div class="stat-label">Badges to Earn</div></div>
+      <div class="stat-item"><div class="stat-num" data-target="24">0</div><div class="stat-label">Hrs of Content</div></div>
     </div>
+  </section>
 
-    <div class="challenges-grid">
-      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
-        <div class="challenge-header">
-          <span class="challenge-cat cat-web">WEB</span>
-          <span class="diff-badge diff-easy">EASY</span>
-        </div>
-        <div class="challenge-name">SQL Injection Basics</div>
-        <div class="challenge-desc">Bypass a login form using classic SQL injection. Understand how unsanitized queries can be exploited.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:82%"></div></div>
-        <div class="challenge-footer">
-          <span class="challenge-pts">💰 50 HC</span>
-          <span class="solvers">👤 4,821 solvers</span>
-        </div>
-      </div>
-      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
-        <div class="challenge-header">
-          <span class="challenge-cat cat-crypto">CRYPTO</span>
-          <span class="diff-badge diff-medium">MEDIUM</span>
-        </div>
-        <div class="challenge-name">RSA Broken Key</div>
-        <div class="challenge-desc">Factor a weak RSA modulus to recover the private key and decrypt the hidden message.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
-        <div class="challenge-footer">
-          <span class="challenge-pts">💰 150 HC</span>
-          <span class="solvers">👤 1,204 solvers</span>
-        </div>
-      </div>
-      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
-        <div class="challenge-header">
-          <span class="challenge-cat cat-pwn">PWN</span>
-          <span class="diff-badge diff-hard">HARD</span>
-        </div>
-        <div class="challenge-name">Stack Smash Redux</div>
-        <div class="challenge-desc">Exploit a buffer overflow vulnerability with ASLR and NX bit enabled. ROP chains required.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:18%"></div></div>
-        <div class="challenge-footer">
-          <span class="challenge-pts">💰 400 HC</span>
-          <span class="solvers">👤 287 solvers</span>
-        </div>
-      </div>
-      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
-        <div class="challenge-header">
-          <span class="challenge-cat cat-re">REV ENG</span>
-          <span class="diff-badge diff-medium">MEDIUM</span>
-        </div>
-        <div class="challenge-name">CrackMe v4.2</div>
-        <div class="challenge-desc">Reverse engineer a packed binary to find the hidden serial key. Anti-debug tricks included.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
-        <div class="challenge-footer">
-          <span class="challenge-pts">💰 200 HC</span>
-          <span class="solvers">👤 892 solvers</span>
-        </div>
-      </div>
-      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
-        <div class="challenge-header">
-          <span class="challenge-cat cat-web">WEB</span>
-          <span class="diff-badge diff-hard">HARD</span>
-        </div>
-        <div class="challenge-name">XSS Maze</div>
-        <div class="challenge-desc">Chain multiple XSS vectors through a CSP-hardened application to steal admin cookies.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:22%"></div></div>
-        <div class="challenge-footer">
-          <span class="challenge-pts">💰 350 HC</span>
-          <span class="solvers">👤 541 solvers</span>
-        </div>
-      </div>
-      <div class="challenge-card" onclick="showToast('🔓 Challenge loaded in new tab!')">
-        <div class="challenge-header">
-          <span class="challenge-cat cat-osint">OSINT</span>
-          <span class="diff-badge diff-easy">EASY</span>
-        </div>
-        <div class="challenge-name">Ghost Protocol</div>
-        <div class="challenge-desc">Track down a fictional threat actor using only public OSINT tools and social media footprints.</div>
-        <div class="progress-bar"><div class="progress-fill" style="width:71%"></div></div>
-        <div class="challenge-footer">
-          <span class="challenge-pts">💰 75 HC</span>
-          <span class="solvers">👤 3,108 solvers</span>
-        </div>
+  <section style="background:var(--bg2)">
+    <div class="container">
+      <div class="section-label">// PLATFORM FEATURES</div>
+      <h2>WHY <span>LETUSHACK</span></h2>
+      <p class="section-sub">Everything you need to go from zero to ethical hacking hero.</p>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon">🎯</div><h3>Hands-On CTF</h3><p>Real working challenges — decode ciphers, find hidden flags, exploit logic bugs in live environments.</p></div>
+        <div class="feature-card"><div class="feature-icon">🏆</div><h3>Leaderboard</h3><p>Compete globally. Every solved challenge earns HackCoins and pushes you up the rankings.</p></div>
+        <div class="feature-card"><div class="feature-icon">💰</div><h3>HackCoin Economy</h3><p>Earn HC by solving challenges. Use them to unlock hints when you're stuck on hard missions.</p></div>
+        <div class="feature-card"><div class="feature-icon">🏅</div><h3>Badge System</h3><p>Earn achievement badges for completing categories and reaching milestones.</p></div>
+        <div class="feature-card"><div class="feature-icon">📈</div><h3>Progress Tracking</h3><p>Track your solved challenges, earned points, and XP level from your profile page.</p></div>
+        <div class="feature-card"><div class="feature-icon">🔐</div><h3>Real Security Skills</h3><p>Learn base64, Caesar ciphers, steganography, SQL injection concepts and more.</p></div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:2.5rem;">
-      <button class="btn btn-outline" style="padding:0.75rem 2rem;" onclick="showToast('🔍 Loading all challenges...')">View All Challenges →</button>
-    </div>
-  </div>
-</section>
+  </section>
+  <footer><span>// LETUSHACK</span> &nbsp;·&nbsp; Hack Ethically &nbsp;·&nbsp; © 2026</footer>
+</div>
 
-<!-- LEARNING PATHS -->
-<section id="paths">
-  <div class="container">
-    <div class="section-label">// LEARNING PATHS</div>
-    <h2>STRUCTURED <span>PROGRESSION</span></h2>
-    <p class="section-sub">Guided paths that take you from beginner to expert in your chosen specialty.</p>
-    <div class="path-grid">
-      <div class="path-card web" onclick="showToast('📚 Web Hacking path loaded!')">
-        <div class="path-top">
-          <span class="path-icon">🌐</span>
-          <span class="path-level">BEGINNER → ADVANCED</span>
-        </div>
-        <h3>Web Application Hacking</h3>
-        <p>OWASP Top 10, SQL injection, XSS, CSRF, SSRF, and beyond. Master modern web vulnerabilities.</p>
-        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="path-meta">
-          <span>📚 42 modules</span>
-          <span>⏱ ~60 hrs</span>
-          <span>🏆 8 badges</span>
-        </div>
-      </div>
-      <div class="path-card pwn" onclick="showToast('📚 Binary Exploitation path loaded!')">
-        <div class="path-top">
-          <span class="path-icon">💣</span>
-          <span class="path-level">INTERMEDIATE</span>
-        </div>
-        <h3>Binary Exploitation</h3>
-        <p>Stack/heap overflows, format strings, ROP chains, and kernel exploitation fundamentals.</p>
-        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="path-meta">
-          <span>📚 38 modules</span>
-          <span>⏱ ~80 hrs</span>
-          <span>🏆 10 badges</span>
-        </div>
-      </div>
-      <div class="path-card crypto" onclick="showToast('📚 Cryptography path loaded!')">
-        <div class="path-top">
-          <span class="path-icon">🔐</span>
-          <span class="path-level">ALL LEVELS</span>
-        </div>
-        <h3>Applied Cryptography</h3>
-        <p>From Caesar ciphers to breaking RSA, AES padding oracles, and elliptic curve attacks.</p>
-        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="path-meta">
-          <span>📚 31 modules</span>
-          <span>⏱ ~50 hrs</span>
-          <span>🏆 7 badges</span>
-        </div>
-      </div>
-      <div class="path-card forensics" onclick="showToast('📚 Digital Forensics path loaded!')">
-        <div class="path-top">
-          <span class="path-icon">🔍</span>
-          <span class="path-level">BEGINNER → MID</span>
-        </div>
-        <h3>Digital Forensics</h3>
-        <p>Memory analysis, disk forensics, network packet analysis, and malware investigation techniques.</p>
-        <div class="progress-bar" style="margin-bottom:0.75rem;"><div class="progress-fill" style="width:0%"></div></div>
-        <div class="path-meta">
-          <span>📚 27 modules</span>
-          <span>⏱ ~45 hrs</span>
-          <span>🏆 6 badges</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GAMIFICATION -->
-<section class="gamification-section" id="gamification">
-  <div class="container">
-    <div class="section-label">// GAMIFICATION</div>
-    <h2>EARN. LEVEL. <span>DOMINATE.</span></h2>
-    <p class="section-sub">Our gamification system makes learning addictive — in the best possible way.</p>
-    <div class="gamification-grid">
-      <div class="gam-card">
-        <span class="gam-icon">🏅</span>
-        <h3>Earn Badges</h3>
-        <p>Unlock hundreds of achievement badges across skill categories. Show off your expertise on your public profile.</p>
-      </div>
-      <div class="gam-card">
-        <span class="gam-icon">🔥</span>
-        <h3>Maintain Streaks</h3>
-        <p>Log in and solve at least one challenge daily to maintain your streak. Longer streaks unlock exclusive rewards.</p>
-      </div>
-      <div class="gam-card">
-        <span class="gam-icon">⬆️</span>
-        <h3>Level Up</h3>
-        <p>Gain XP from every action. Rise through 20 hacker ranks from Script Kiddie to Elite Zero-Day Researcher.</p>
-      </div>
-    </div>
-
-    <!-- Badges showcase -->
-    <div style="margin-top:4rem;">
-      <h3 style="font-family:'Orbitron',monospace;color:#fff;margin-bottom:2rem;font-size:1rem;letter-spacing:1px;">ACHIEVEMENT BADGES</h3>
-      <div class="badges-grid">
-        <div class="badge-item" onclick="showToast('🏅 SQL Master badge earned!')">
-          <div class="badge-hex badge-earned">🗡️</div>
-          <div class="badge-label">SQL Master</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🏅 Crypto King badge earned!')">
-          <div class="badge-hex badge-earned-gold">🔑</div>
-          <div class="badge-label">Crypto King</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🏅 Web Slayer badge earned!')">
-          <div class="badge-hex badge-earned">🌐</div>
-          <div class="badge-label">Web Slayer</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🏅 Binary Beast badge earned!')">
-          <div class="badge-hex badge-earned-red">💣</div>
-          <div class="badge-label">Binary Beast</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🔒 Complete 10 OSINT challenges to unlock!')">
-          <div class="badge-hex badge-locked">🕵️</div>
-          <div class="badge-label">Ghost Hunter</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🔒 Achieve a 30-day streak to unlock!')">
-          <div class="badge-hex badge-locked">🔥</div>
-          <div class="badge-label">30-Day Streak</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🔒 Top 100 leaderboard required!')">
-          <div class="badge-hex badge-locked">👑</div>
-          <div class="badge-label">Elite Hacker</div>
-        </div>
-        <div class="badge-item" onclick="showToast('🔒 Solve an INSANE challenge to unlock!')">
-          <div class="badge-hex badge-locked">💀</div>
-          <div class="badge-label">Zero Day</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Streak widget -->
-    <div style="margin-top:4rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;">
+<!-- ==================== CTF PAGE ==================== -->
+<div class="page" id="page-ctf">
+  <div class="ctf-page" style="padding-top:2rem">
+    <div class="ctf-header">
       <div>
-        <h3 style="font-family:'Orbitron',monospace;color:#fff;margin-bottom:1.5rem;font-size:1rem;letter-spacing:1px;">CURRENT STREAK</h3>
-        <div class="streak-widget">
-          <div class="streak-top">
-            <div class="streak-fire">🔥</div>
-            <div>
-              <div class="streak-num">7</div>
-              <div class="streak-label">DAY STREAK</div>
-            </div>
-          </div>
-          <div class="week-grid">
-            <div class="day-box day-done">MON</div>
-            <div class="day-box day-done">TUE</div>
-            <div class="day-box day-done">WED</div>
-            <div class="day-box day-done">THU</div>
-            <div class="day-box day-done">FRI</div>
-            <div class="day-box day-done">SAT</div>
-            <div class="day-box day-today">SUN</div>
-          </div>
-        </div>
+        <div class="section-label">// CTF MISSIONS</div>
+        <h2 style="margin-bottom:0">ACTIVE <span>CHALLENGES</span></h2>
+      </div>
+      <div class="ctf-filters">
+        <button class="filter-btn active" onclick="filterMissions('all',this)">All</button>
+        <button class="filter-btn" onclick="filterMissions('web',this)">Web</button>
+        <button class="filter-btn" onclick="filterMissions('crypto',this)">Crypto</button>
+        <button class="filter-btn" onclick="filterMissions('forensics',this)">Forensics</button>
+        <button class="filter-btn" onclick="filterMissions('osint',this)">OSINT</button>
       </div>
     </div>
+    <div class="missions-grid" id="missionsGrid"></div>
   </div>
-</section>
+</div>
 
-<!-- LEADERBOARD -->
-<section id="leaderboard">
-  <div class="container">
-    <div class="section-label">// LEADERBOARD</div>
-    <h2>GLOBAL <span>RANKINGS</span></h2>
-    <p class="section-sub">Compete with hackers worldwide. Climb the ranks. Claim your place at the top.</p>
-    <div class="leaderboard-wrapper">
-      <div class="leaderboard-table">
-        <div class="lb-header">
-          <span>🌍 Global Leaderboard</span>
-          <span style="font-size:0.7rem;color:var(--text2)">LIVE</span>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank gold">1</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#ff6b00)">Z</div>
-          <div class="lb-name">z3r0_d4y</div>
-          <div class="lb-score">98,420 pts</div>
-          <div class="lb-badge">💀</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank silver">2</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#00ffe5,#0080ff)">X</div>
-          <div class="lb-name">xpl0it_queen</div>
-          <div class="lb-score">87,150 pts</div>
-          <div class="lb-badge">👑</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank bronze">3</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#ff3c6e,#ff6b00)">N</div>
-          <div class="lb-name">n1ghtcrawler</div>
-          <div class="lb-score">75,880 pts</div>
-          <div class="lb-badge">🔥</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank">4</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#39ff14,#00ffe5)">P</div>
-          <div class="lb-name">pwn_sensei</div>
-          <div class="lb-score">68,310 pts</div>
-          <div class="lb-badge">🏆</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank">5</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#aa7fff,#ff3c6e)">H</div>
-          <div class="lb-name">h4ck3rm4n</div>
-          <div class="lb-score">61,200 pts</div>
-          <div class="lb-badge">⚡</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank">6</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#39ff14)">C</div>
-          <div class="lb-name">cr1pt0_wolf</div>
-          <div class="lb-score">54,760 pts</div>
-          <div class="lb-badge">🔐</div>
-        </div>
+<!-- ==================== LEADERBOARD PAGE ==================== -->
+<div class="page" id="page-leaderboard">
+  <div class="lb-page" style="padding-top:2rem">
+    <div class="section-label">// GLOBAL RANKINGS</div>
+    <h2>LEADERBOARD</h2>
+    <p class="section-sub" style="margin-bottom:2rem">Top hackers ranked by HackCoins earned.</p>
+    <div class="lb-table">
+      <div class="lb-head">
+        <span>🌍 Global Rankings</span>
+        <span style="font-size:0.7rem;color:var(--text2)">LIVE</span>
       </div>
-
-      <div class="leaderboard-table">
-        <div class="lb-header">
-          <span>📅 This Week</span>
-          <span style="font-size:0.7rem;color:var(--text2)">WEEKLY</span>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank gold">1</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#00ffe5,#aa7fff)">S</div>
-          <div class="lb-name">shadow_byte</div>
-          <div class="lb-score">3,840 pts</div>
-          <div class="lb-badge">⚡</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank silver">2</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#ff3c6e,#ffd700)">D</div>
-          <div class="lb-name">d4rk_f0rce</div>
-          <div class="lb-score">3,210 pts</div>
-          <div class="lb-badge">🔥</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank bronze">3</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#39ff14,#00ffe5)">V</div>
-          <div class="lb-name">vuln_v3ntur3</div>
-          <div class="lb-score">2,980 pts</div>
-          <div class="lb-badge">🏅</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank">4</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#aa7fff,#00ffe5)">B</div>
-          <div class="lb-name">b1n4ry_bl4de</div>
-          <div class="lb-score">2,450 pts</div>
-          <div class="lb-badge">🗡️</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank">5</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#ffd700,#ff3c6e)">K</div>
-          <div class="lb-name">k3rn3l_panic</div>
-          <div class="lb-score">1,820 pts</div>
-          <div class="lb-badge">💣</div>
-        </div>
-        <div class="lb-row">
-          <div class="lb-rank">6</div>
-          <div class="lb-avatar" style="background:linear-gradient(135deg,#ff6b00,#aa7fff)">R</div>
-          <div class="lb-name">r00t_run3r</div>
-          <div class="lb-score">1,640 pts</div>
-          <div class="lb-badge">🛡️</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SHOP -->
-<section id="shop" class="currency-section">
-  <div class="container">
-    <div class="section-label">// HACKCOIN SHOP</div>
-    <h2>SPEND YOUR <span>HACKCOINS</span></h2>
-    <p class="section-sub">Use your earned HackCoins to unlock hints, cosmetics, and premium content.</p>
-    <div class="currency-display">
-      <div class="currency-icon">💰</div>
-      <div class="currency-info">
-        <h3>HackCoin (HC) — Platform Currency</h3>
-        <p>Earned by solving challenges, maintaining streaks, and competing in CTFs. Never purchasable with real money.</p>
-      </div>
-      <button class="btn btn-outline" style="margin-left:auto;" onclick="showToast('💰 You need to log in to view your balance!')">My Balance</button>
-    </div>
-    <div class="shop-grid">
-      <div class="shop-item" onclick="showToast('💡 Hint purchased! -25 HC')">
-        <span class="shop-item-icon">💡</span>
-        <div class="shop-item-name">Challenge Hint</div>
-        <div class="shop-item-price">25 HC</div>
-      </div>
-      <div class="shop-item" onclick="showToast('🎨 Avatar unlocked! -200 HC')">
-        <span class="shop-item-icon">🎨</span>
-        <div class="shop-item-name">Custom Avatar</div>
-        <div class="shop-item-price">200 HC</div>
-      </div>
-      <div class="shop-item" onclick="showToast('✨ Profile frame equipped! -500 HC')">
-        <span class="shop-item-icon">✨</span>
-        <div class="shop-item-name">Elite Frame</div>
-        <div class="shop-item-price">500 HC</div>
-      </div>
-      <div class="shop-item" onclick="showToast('🎟️ CTF entry unlocked! -300 HC')">
-        <span class="shop-item-icon">🎟️</span>
-        <div class="shop-item-name">CTF Entry Pass</div>
-        <div class="shop-item-price">300 HC</div>
-      </div>
-      <div class="shop-item" onclick="showToast('🗺️ Path unlocked! -800 HC')">
-        <span class="shop-item-icon">🗺️</span>
-        <div class="shop-item-name">Premium Path</div>
-        <div class="shop-item-price">800 HC</div>
-      </div>
-      <div class="shop-item" onclick="showToast('⚡ Streak shield activated! -150 HC')">
-        <span class="shop-item-icon">⚡</span>
-        <div class="shop-item-name">Streak Shield</div>
-        <div class="shop-item-price">150 HC</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <div class="nav-logo" style="font-size:1.1rem;">LET<span>US</span>HACK</div>
-      <p>The ultimate gamified cybersecurity training platform. Earn badges, maintain streaks, and dominate leaderboards.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Platform</h4>
-      <ul>
-        <li><a href="#">Challenges</a></li>
-        <li><a href="#">Learning Paths</a></li>
-        <li><a href="#">CTF Events</a></li>
-        <li><a href="#">Leaderboard</a></li>
-        <li><a href="#">Shop</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Resources</h4>
-      <ul>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Write-ups</a></li>
-        <li><a href="#">Community</a></li>
-        <li><a href="#">Discord</a></li>
-        <li><a href="#">Twitter/X</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Use</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 LetUsHack. All rights reserved.</span>
-    <span style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--accent)">// HACK ETHICALLY</span>
-  </div>
-</footer>
-
-<!-- MODALS -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('login')">✕</button>
-    <h3>// Login</h3>
-    <div class="form-group">
-      <label>Username / Email</label>
-      <input type="text" placeholder="h4ck3r@example.com" />
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" placeholder="••••••••••" />
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="handleLogin()">Login</button>
-      <button class="btn btn-outline" onclick="switchModal('login','signup')">Register</button>
+      <div id="lbBody"></div>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="signupModal">
+<!-- ==================== PROFILE PAGE ==================== -->
+<div class="page" id="page-profile">
+  <div class="profile-page" style="padding-top:2rem">
+    <div id="profileContent"></div>
+  </div>
+</div>
+
+<!-- ==================== CHALLENGE ROOM ==================== -->
+<div class="challenge-room" id="challengeRoom">
+  <div class="room-inner">
+    <div class="room-header">
+      <div class="room-title" id="roomTitle">Challenge</div>
+      <button class="room-close" onclick="closeRoom()">✕</button>
+    </div>
+    <div class="room-body">
+      <div class="room-tab-bar">
+        <div class="room-tab active" onclick="switchRoomTab('brief',this)">Brief</div>
+        <div class="room-tab" onclick="switchRoomTab('challenge',this)">Challenge</div>
+        <div class="room-tab" onclick="switchRoomTab('hints',this)">Hints</div>
+      </div>
+      <div class="room-section active" id="rsec-brief">
+        <div class="room-desc" id="roomDesc"></div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem">
+            <span style="color:var(--text2)">CATEGORY: </span><span id="roomCat" style="color:var(--accent)"></span>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem">
+            <span style="color:var(--text2)">DIFFICULTY: </span><span id="roomDiff"></span>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem">
+            <span style="color:var(--text2)">REWARD: </span><span id="roomPts" style="color:var(--accent3)"></span>
+          </div>
+        </div>
+        <div class="room-actions">
+          <button class="btn btn-primary" onclick="switchRoomTab('challenge',document.querySelectorAll('.room-tab')[1])">Start Challenge →</button>
+        </div>
+      </div>
+      <div class="room-section" id="rsec-challenge">
+        <div class="room-challenge-area"><pre id="roomContent"></pre></div>
+        <div class="flag-input-row">
+          <input class="flag-input" id="flagInput" type="text" placeholder="Enter flag: FLAG{...}" onkeydown="if(event.key==='Enter')submitFlag()"/>
+          <button class="btn btn-primary" onclick="submitFlag()">Submit Flag</button>
+        </div>
+        <div class="flag-feedback" id="flagFeedback"></div>
+      </div>
+      <div class="room-section" id="rsec-hints">
+        <div id="hintsList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div class="modal-overlay" id="authModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('signup')">✕</button>
-    <h3>// Create Account</h3>
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" placeholder="your_hacker_alias" />
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="loginForm">
+      <h3>// Login</h3>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="your_hacker_alias" autocomplete="username"/>
+        <div class="form-error" id="loginErr"></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="doLogin()">Login</button>
+      </div>
+      <div class="modal-switch">No account? <span onclick="toggleAuthForm('signup')">Register here</span></div>
     </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" placeholder="h4ck3r@example.com" />
+    <div id="signupForm" style="display:none">
+      <h3>// Create Account</h3>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="signupUser" placeholder="your_hacker_alias"/>
+        <div class="form-error" id="signupErr"></div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signupEmail" placeholder="hacker@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPass" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')doSignup()"/>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="doSignup()">Create Account</button>
+      </div>
+      <div class="modal-switch">Already registered? <span onclick="toggleAuthForm('login')">Login here</span></div>
     </div>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" placeholder="••••••••••" />
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="handleSignup()">Create Account</button>
-      <button class="btn btn-outline" onclick="switchModal('signup','login')">Login</button>
-    </div>
+  </div>
+</div>
+
+<!-- LOCKED OVERLAY -->
+<div class="locked-overlay" id="lockedOverlay" style="display:none">
+  <div class="locked-box">
+    <div style="font-size:3rem;margin-bottom:1rem">🔒</div>
+    <h3>LOGIN REQUIRED</h3>
+    <p>You need to be logged in to access CTF challenges and earn HackCoins.</p>
+    <button class="btn btn-primary" onclick="hideLockedOverlay();openModal('login')">Login</button>
+    <button class="btn btn-outline" onclick="hideLockedOverlay();openModal('signup')">Register Free</button>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <span class="toast-icon" id="toastIcon">✅</span>
-  <span class="toast-text" id="toastText">Action successful!</span>
+  <span id="toastIcon">✅</span>
+  <span id="toastText"></span>
 </div>
 
 <script>
-// Matrix rain
-const canvas = document.getElementById('matrixCanvas');
-const ctx = canvas.getContext('2d');
-function resizeCanvas() {
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+// ==================== DATA ====================
+const MISSIONS = [
+  {
+    id:'m1', name:'Base64 Decoded', cat:'crypto', diff:'easy', pts:50,
+    desc:'Someone has hidden a secret message by encoding it in Base64. Your mission: decode the string below and submit the hidden flag.',
+    content:`The intercepted transmission reads:
 
-const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノABCDEFGHIJKLMNOPQRSTUVWXYZ';
-const fontSize = 12;
-let columns = Math.floor(canvas.width / fontSize);
-let drops = Array(columns).fill(1);
+  ENCODED MESSAGE:
+  RkxBR3toM2xsb193MHJsZF9iNHMzNjR9
 
-function drawMatrix() {
-  ctx.fillStyle = 'rgba(7,11,15,0.05)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#00ffe5';
-  ctx.font = fontSize + 'px Share Tech Mono';
-  for (let i = 0; i < drops.length; i++) {
-    const text = chars[Math.floor(Math.random() * chars.length)];
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-    drops[i]++;
+  Decode this Base64 string to reveal the flag.
+  
+  HINT: The flag format is FLAG{...}`,
+    flag:'FLAG{h3llo_w0rld_b4s364}',
+    hints:[
+      {cost:0, text:'Base64 uses characters A-Z, a-z, 0-9, +, / and ends with = padding.'},
+      {cost:15, text:'Try an online Base64 decoder or use: atob("RkxBR3toM2xsb193MHJsZF9iNHMzNjR9") in browser console.'},
+      {cost:25, text:'The decoded flag starts with FLAG{h3...'}
+    ]
+  },
+  {
+    id:'m2', name:'Caesar\'s Secret', cat:'crypto', diff:'easy', pts:75,
+    desc:'Julius Caesar used a simple substitution cipher to protect his messages. We intercepted an encrypted note — crack the cipher and find the flag.',
+    content:`Encrypted Message (ROT13):
+  
+  SYNT{pnrfne_pvcure_vf_rnfl}
+  
+  Instructions:
+  - This message uses ROT13 (Caesar cipher with shift 13)
+  - Each letter is shifted 13 places in the alphabet
+  - Decode it to get the flag
+  
+  Example: A → N, B → O, H → U, FLAG → SYNT`,
+    flag:'FLAG{caesar_cipher_is_easy}',
+    hints:[
+      {cost:0, text:'ROT13 means rotate each letter by 13. A=N, B=O, C=P... N=A, O=B...'},
+      {cost:15, text:'Type rot13 decoder in your browser search bar. Or use the browser console: "SYNT{pnrfne_pvcure_vf_rnfl}".replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26))'},
+      {cost:20, text:'The answer is FLAG{caesar_cipher_is_easy}'}
+    ]
+  },
+  {
+    id:'m3', name:'Hidden in Plain Sight', cat:'web', diff:'medium', pts:100,
+    desc:'A web developer accidentally left a secret flag inside the HTML source code of their page. Your job is to find it — just like a real pentester would.',
+    content:`TARGET PAGE SOURCE CODE:
+  ─────────────────────────────
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>SecureBank Login</title>
+    <!-- TODO: Remove before deployment -->
+    <!-- admin bypass: FLAG{d3v_n0t3s_4r3_d4ng3r0us} -->
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <h1>Welcome to SecureBank</h1>
+    <form>
+      <input type="text" placeholder="Username">
+      <input type="password" placeholder="Password">
+      <!-- backup_admin_pass: hunter2 (change this!) -->
+      <button>Login</button>
+    </form>
+  </body>
+  </html>
+  ─────────────────────────────
+  Find the hidden flag in the HTML comments above.`,
+    flag:'FLAG{d3v_n0t3s_4r3_d4ng3r0us}',
+    hints:[
+      {cost:0, text:'In real pentesting, always check page source (Ctrl+U) for commented-out credentials or flags.'},
+      {cost:10, text:'Look at the HTML comments carefully. Developers sometimes leave TODOs with sensitive info.'},
+      {cost:20, text:'The flag is in the comment that says "admin bypass"'}
+    ]
+  },
+  {
+    id:'m4', name:'Binary Whisper', cat:'forensics', diff:'medium', pts:125,
+    desc:'An unknown actor transmitted data using binary encoding. Convert the binary to ASCII text to reveal the hidden flag.',
+    content:`Intercepted Binary Transmission:
+  
+  01000110 01001100 01000001 01000111
+  01111011 01100010 00110001 01101110
+  01000001 01110010 01111001 01011111
+  00110001 01110011 01011111 01100110
+  00110000 01110101 01101110 01111101
+  
+  Instructions:
+  - Each 8-bit group = 1 ASCII character
+  - Convert each byte to its decimal value
+  - Then map to ASCII character
+  
+  Binary → Decimal → ASCII
+  01000110 = 70 = 'F'
+  01001100 = 76 = 'L'
+  01000001 = 65 = 'A'
+  ... continue the pattern`,
+    flag:'FLAG{b1nAry_1s_f0un}',
+    hints:[
+      {cost:0, text:'Binary to decimal: 01000110 = 0+64+0+0+0+4+2+0 = 70. ASCII 70 = \'F\''},
+      {cost:20, text:'Use an online binary to text converter. Paste the binary digits without spaces.'},
+      {cost:30, text:'The flag is FLAG{b1nAry_1s_f0un}'}
+    ]
+  },
+  {
+    id:'m5', name:'OSINT: Find the Hacker', cat:'osint', diff:'medium', pts:150,
+    desc:'A hacker left breadcrumbs across the internet. Using the clues below, piece together their identity and find the hidden flag.',
+    content:`OSINT INVESTIGATION BRIEF
+  ─────────────────────────────
+  Target: Unknown hacker known as "Gh0stB1t"
+  
+  Clue 1 - Their favorite quote:
+  "In the beginning there was the command line."
+  
+  Clue 2 - Their GitHub username format:
+  First 3 letters of their quote's author's last name
+  + the year Linux kernel was first released (just the year)
+  + "_ctf"
+  
+  Clue 3 - Linux kernel first release year: 1991
+  
+  Clue 4 - "In the beginning..." quote is by Neal Stephenson
+  
+  Solve: ste + 1991 + _ctf = ?
+  
+  The flag is: FLAG{ste1991_ctf}`,
+    flag:'FLAG{ste1991_ctf}',
+    hints:[
+      {cost:0, text:'OSINT = Open Source Intelligence. Use publicly available information to find answers.'},
+      {cost:20, text:'Neal Stephenson wrote "In the Beginning was the Command Line". First 3 letters of Stephenson = "ste"'},
+      {cost:25, text:'Linux kernel first release: 1991. Combine: ste + 1991 + _ctf'}
+    ]
+  },
+  {
+    id:'m6', name:'SQL Injection 101', cat:'web', diff:'hard', pts:200,
+    desc:'A login form is vulnerable to SQL injection. Analyze the backend query logic below and construct the correct injection payload to bypass authentication.',
+    content:`VULNERABLE LOGIN SYSTEM
+  ─────────────────────────────
+  Backend PHP Query:
+  
+  $query = "SELECT * FROM users 
+            WHERE username='$user' 
+            AND password='$pass'";
+  
+  The developer forgot to sanitize inputs!
+  
+  CHALLENGE: Which input bypasses this login?
+  
+  Option A: username = admin' OR '1'='1
+  Option B: username = admin' DROP TABLE users;--
+  Option C: username = admin' OR 1=1;--
+  Option D: username = ' OR '1'='1' --
+  
+  The correct bypass makes the WHERE clause always TRUE.
+  When ' OR '1'='1' is input, the query becomes:
+  SELECT * FROM users WHERE username='' OR '1'='1' AND password='...'
+  
+  The flag encodes the correct answer:
+  FLAG{0r_1nj3ct10n_byp4ss}`,
+    flag:'FLAG{0r_1nj3ct10n_byp4ss}',
+    hints:[
+      {cost:0, text:'SQL injection works by breaking out of the string with a quote (\') and adding your own logic.'},
+      {cost:25, text:'The goal is to make the WHERE clause return TRUE for all rows. OR 1=1 always evaluates to TRUE.'},
+      {cost:35, text:'The flag is directly visible in the challenge content if you read carefully.'}
+    ]
+  }
+];
+
+// Avatar colors
+const AVATAR_COLORS = [
+  ['#00ffe5','#0080ff'],['#ff3c6e','#ffd700'],['#39ff14','#00ffe5'],
+  ['#aa7fff','#ff3c6e'],['#ffd700','#ff6b00'],['#ff6b00','#aa7fff']
+];
+
+// ==================== STATE ====================
+let currentUser = null;
+let currentMission = null;
+let currentRoomTab = 'brief';
+let unlockedHints = {};
+
+function loadState() {
+  const u = localStorage.getItem('luh_currentUser');
+  if (u) {
+    currentUser = JSON.parse(u);
+    updateNavUser();
   }
 }
-setInterval(drawMatrix, 50);
+function saveUser() {
+  if (!currentUser) return;
+  localStorage.setItem('luh_currentUser', JSON.stringify(currentUser));
+  const users = getUsers();
+  users[currentUser.username] = currentUser;
+  localStorage.setItem('luh_users', JSON.stringify(users));
+  updateNavUser();
+}
+function getUsers() {
+  return JSON.parse(localStorage.getItem('luh_users') || '{}');
+}
+function updateNavUser() {
+  if (currentUser) {
+    document.getElementById('navGuest').style.display = 'none';
+    document.getElementById('navUser').style.display = 'flex';
+    document.getElementById('navName').textContent = currentUser.username;
+    document.getElementById('navHC').textContent = '💰 ' + currentUser.hc + ' HC';
+  } else {
+    document.getElementById('navGuest').style.display = 'flex';
+    document.getElementById('navUser').style.display = 'none';
+  }
+}
 
-// Counter animation
+// ==================== AUTH ====================
+function openModal(type) {
+  document.getElementById('authModal').classList.add('active');
+  toggleAuthForm(type);
+}
+function closeModal() {
+  document.getElementById('authModal').classList.remove('active');
+  clearErrors();
+}
+function toggleAuthForm(type) {
+  document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
+  document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
+  clearErrors();
+}
+function clearErrors() {
+  document.querySelectorAll('.form-error').forEach(e => { e.style.display = 'none'; e.textContent = ''; });
+}
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!user || !pass) { showError('loginErr', 'All fields required.'); return; }
+  const users = getUsers();
+  if (!users[user]) { showError('loginErr', 'Username not found.'); return; }
+  if (users[user].password !== btoa(pass)) { showError('loginErr', 'Wrong password.'); return; }
+  currentUser = users[user];
+  saveUser();
+  closeModal();
+  showToast('🎉 Welcome back, ' + currentUser.username + '!');
+  renderCurrentPage();
+}
+
+function doSignup() {
+  const user = document.getElementById('signupUser').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPass').value;
+  if (!user || !email || !pass) { showError('signupErr', 'All fields required.'); return; }
+  if (user.length < 3) { showError('signupErr', 'Username must be at least 3 characters.'); return; }
+  if (pass.length < 6) { showError('signupErr', 'Password must be at least 6 characters.'); return; }
+  const users = getUsers();
+  if (users[user]) { showError('signupErr', 'Username already taken.'); return; }
+  const colorIdx = Math.floor(Math.random() * AVATAR_COLORS.length);
+  currentUser = {
+    username: user, email: email, password: btoa(pass),
+    hc: 100, xp: 0, level: 1, solved: [], badges: [],
+    avatarColor: colorIdx, joinDate: new Date().toLocaleDateString()
+  };
+  saveUser();
+  closeModal();
+  showToast('🚀 Account created! +100 HC welcome bonus!');
+  renderCurrentPage();
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('luh_currentUser');
+  updateNavUser();
+  showPage('home');
+  showToast('👋 Logged out. See you soon!');
+}
+
+// ==================== PAGES ====================
+function showPage(name) {
+  if ((name === 'ctf' || name === 'profile') && !currentUser) {
+    document.getElementById('lockedOverlay').style.display = 'flex';
+    return;
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+  if (name === 'ctf') renderMissions();
+  if (name === 'leaderboard') renderLeaderboard();
+  if (name === 'profile') renderProfile();
+}
+function goHome() { showPage('home'); }
+function hideLockedOverlay() { document.getElementById('lockedOverlay').style.display = 'none'; }
+function renderCurrentPage() {
+  const active = document.querySelector('.page.active');
+  if (!active) return;
+  const id = active.id.replace('page-', '');
+  if (id === 'ctf') renderMissions();
+  if (id === 'leaderboard') renderLeaderboard();
+  if (id === 'profile') renderProfile();
+}
+
+// ==================== CTF / MISSIONS ====================
+let activeFilter = 'all';
+function filterMissions(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMissions();
+}
+function renderMissions() {
+  const grid = document.getElementById('missionsGrid');
+  const list = activeFilter === 'all' ? MISSIONS : MISSIONS.filter(m => m.cat === activeFilter);
+  grid.innerHTML = list.map(m => {
+    const solved = currentUser && currentUser.solved.includes(m.id);
+    return `<div class="mission-card${solved ? ' solved' : ''}" onclick="openMission('${m.id}')">
+      <div class="mission-top">
+        <span class="cat-badge cat-${m.cat}">${m.cat.toUpperCase()}</span>
+        <span class="diff-${m.diff}">${m.diff.toUpperCase()}</span>
+      </div>
+      <div class="mission-name">${m.name}</div>
+      <div class="mission-desc">${m.desc.substring(0, 90)}...</div>
+      <div class="mission-footer">
+        <span class="mission-pts">💰 ${m.pts} HC</span>
+        <span style="font-size:0.78rem;color:var(--text2)">${solved ? '✓ Solved' : '→ Attempt'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openMission(id) {
+  if (!currentUser) { document.getElementById('lockedOverlay').style.display = 'flex'; return; }
+  currentMission = MISSIONS.find(m => m.id === id);
+  if (!currentMission) return;
+  document.getElementById('roomTitle').textContent = '// ' + currentMission.name;
+  document.getElementById('roomDesc').textContent = currentMission.desc;
+  document.getElementById('roomCat').textContent = currentMission.cat.toUpperCase();
+  document.getElementById('roomDiff').textContent = currentMission.diff.toUpperCase();
+  document.getElementById('roomDiff').style.color = currentMission.diff === 'easy' ? 'var(--green)' : currentMission.diff === 'medium' ? 'var(--accent3)' : 'var(--accent2)';
+  document.getElementById('roomPts').textContent = currentMission.pts + ' HC';
+  document.getElementById('roomContent').textContent = currentMission.content;
+  document.getElementById('flagInput').value = '';
+  const fb = document.getElementById('flagFeedback');
+  fb.style.display = 'none'; fb.className = 'flag-feedback';
+  renderHints(id);
+  switchRoomTab('brief', document.querySelector('.room-tab'));
+  document.getElementById('challengeRoom').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeRoom() {
+  document.getElementById('challengeRoom').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function switchRoomTab(name, btn) {
+  currentRoomTab = name;
+  document.querySelectorAll('.room-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.room-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('rsec-' + name).classList.add('active');
+}
+function renderHints(missionId) {
+  const mission = MISSIONS.find(m => m.id === missionId);
+  if (!mission) return;
+  if (!unlockedHints[missionId]) unlockedHints[missionId] = [];
+  const html = mission.hints.map((h, i) => {
+    const unlocked = unlockedHints[missionId].includes(i) || h.cost === 0;
+    return `<div style="background:var(--bg);border:1px solid var(--border);padding:1.25rem;margin-bottom:0.75rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${unlocked?'0.75rem':'0'}">
+        <span style="font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--text2)">HINT ${i+1}</span>
+        ${!unlocked ? `<button class="btn btn-sm" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);color:var(--accent3);padding:0.3rem 0.75rem;font-size:0.75rem" onclick="unlockHint('${missionId}',${i},${h.cost})">🔓 Unlock (-${h.cost} HC)</button>` : '<span style="font-size:0.75rem;color:var(--green);font-family:Share Tech Mono,monospace">UNLOCKED</span>'}
+      </div>
+      ${unlocked ? `<div style="font-size:0.88rem;color:var(--text2);line-height:1.6;font-family:Share Tech Mono,monospace">${h.text}</div>` : `<div style="font-size:0.82rem;color:rgba(255,255,255,0.2);font-family:Share Tech Mono,monospace">████████████████████</div>`}
+    </div>`;
+  }).join('');
+  document.getElementById('hintsList').innerHTML = html;
+}
+function unlockHint(missionId, hintIdx, cost) {
+  if (!currentUser) return;
+  if (currentUser.hc < cost) { showToast('❌ Not enough HackCoins! Solve more challenges.'); return; }
+  if (!unlockedHints[missionId]) unlockedHints[missionId] = [];
+  if (unlockedHints[missionId].includes(hintIdx)) return;
+  currentUser.hc -= cost;
+  unlockedHints[missionId].push(hintIdx);
+  saveUser();
+  renderHints(missionId);
+  showToast('💡 Hint unlocked! -' + cost + ' HC');
+}
+function submitFlag() {
+  const input = document.getElementById('flagInput').value.trim();
+  const fb = document.getElementById('flagFeedback');
+  if (!input) return;
+  if (!currentMission) return;
+  const solved = currentUser && currentUser.solved.includes(currentMission.id);
+  if (input === currentMission.flag) {
+    fb.textContent = '✅ CORRECT! Flag accepted! +' + (solved ? '0 (already solved)' : currentMission.pts) + ' HC earned!';
+    fb.className = 'flag-feedback correct';
+    fb.style.display = 'block';
+    if (!solved) {
+      currentUser.solved.push(currentMission.id);
+      currentUser.hc += currentMission.pts;
+      currentUser.xp += currentMission.pts * 2;
+      currentUser.level = Math.floor(currentUser.xp / 500) + 1;
+      checkBadges();
+      saveUser();
+      showToast('🎉 Challenge solved! +' + currentMission.pts + ' HC');
+      renderMissions();
+    }
+  } else {
+    fb.textContent = '❌ Wrong flag. Keep trying! Check hints if stuck.';
+    fb.className = 'flag-feedback wrong';
+    fb.style.display = 'block';
+  }
+}
+function checkBadges() {
+  if (!currentUser) return;
+  const s = currentUser.solved;
+  const badges = currentUser.badges;
+  if (s.length >= 1 && !badges.includes('first_blood')) { badges.push('first_blood'); showToast('🏅 Badge Unlocked: First Blood!'); }
+  if (s.length >= 3 && !badges.includes('triple')) { badges.push('triple'); showToast('🏅 Badge Unlocked: Triple Threat!'); }
+  if (s.length >= 6 && !badges.includes('elite')) { badges.push('elite'); showToast('🏅 Badge Unlocked: Elite Hacker!'); }
+  const webSolved = MISSIONS.filter(m => m.cat === 'web' && s.includes(m.id)).length;
+  if (webSolved >= 2 && !badges.includes('web_master')) { badges.push('web_master'); showToast('🏅 Badge Unlocked: Web Master!'); }
+  const cryptoSolved = MISSIONS.filter(m => m.cat === 'crypto' && s.includes(m.id)).length;
+  if (cryptoSolved >= 2 && !badges.includes('crypto_king')) { badges.push('crypto_king'); showToast('🏅 Badge Unlocked: Crypto King!'); }
+}
+
+// ==================== LEADERBOARD ====================
+function renderLeaderboard() {
+  const users = getUsers();
+  // Add some fake players
+  const fakes = [
+    {username:'z3r0_d4y',hc:98420,solved:Array(24).fill(0).map((_,i)=>'m'+i),avatarColor:0},
+    {username:'xpl0it_queen',hc:87150,solved:Array(20).fill(0).map((_,i)=>'m'+i),avatarColor:1},
+    {username:'n1ghtcrawler',hc:75880,solved:Array(18).fill(0).map((_,i)=>'m'+i),avatarColor:2},
+    {username:'pwn_sensei',hc:68310,solved:Array(15).fill(0).map((_,i)=>'m'+i),avatarColor:3},
+    {username:'h4ck3rm4n',hc:61200,solved:Array(14).fill(0).map((_,i)=>'m'+i),avatarColor:4},
+  ];
+  let all = [...fakes, ...Object.values(users)];
+  // deduplicate by username (real user overrides fake)
+  const seen = {}; all = all.filter(u => { if(seen[u.username]) return false; seen[u.username]=true; return true; });
+  all.sort((a,b) => (b.hc||0) - (a.hc||0));
+  const medals = ['gold','silver','bronze'];
+  const body = document.getElementById('lbBody');
+  body.innerHTML = all.slice(0,20).map((u,i) => {
+    const isMe = currentUser && u.username === currentUser.username;
+    const c = AVATAR_COLORS[u.avatarColor % AVATAR_COLORS.length];
+    return `<div class="lb-row${isMe?' me':''}">
+      <div class="lb-rank${i<3?' '+medals[i]:''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+      <div class="lb-avatar" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${u.username[0].toUpperCase()}</div>
+      <div class="lb-name">${u.username}${isMe?' <span style="font-size:0.7rem;color:var(--accent);font-family:Share Tech Mono,monospace">(you)</span>':''}</div>
+      <div class="lb-solved">${(u.solved||[]).length} solved</div>
+      <div class="lb-score">${(u.hc||0).toLocaleString()} HC</div>
+    </div>`;
+  }).join('');
+}
+
+// ==================== PROFILE ====================
+const ALL_BADGES = [
+  {id:'first_blood', icon:'🩸', name:'First Blood', desc:'Solve your first challenge'},
+  {id:'triple', icon:'⚡', name:'Triple Threat', desc:'Solve 3 challenges'},
+  {id:'web_master', icon:'🌐', name:'Web Master', desc:'Solve all web challenges'},
+  {id:'crypto_king', icon:'🔐', name:'Crypto King', desc:'Solve all crypto challenges'},
+  {id:'elite', icon:'👑', name:'Elite Hacker', desc:'Solve all 6 challenges'},
+];
+function renderProfile() {
+  if (!currentUser) { showPage('home'); return; }
+  const xpForNextLevel = currentUser.level * 500;
+  const xpInCurrentLevel = currentUser.xp - ((currentUser.level - 1) * 500);
+  const xpPct = Math.min(100, Math.round((xpInCurrentLevel / 500) * 100));
+  const c = AVATAR_COLORS[currentUser.avatarColor % AVATAR_COLORS.length];
+  const solvedMissions = MISSIONS.filter(m => currentUser.solved.includes(m.id));
+  const html = `
+    <div class="profile-header">
+      <div class="profile-avatar-big" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${currentUser.username[0].toUpperCase()}</div>
+      <div class="profile-info">
+        <h3>${currentUser.username}</h3>
+        <p>${currentUser.email}</p>
+        <p style="margin-top:0.25rem;color:var(--text2)">Member since ${currentUser.joinDate}</p>
+        <div class="xp-bar-wrap" style="max-width:280px">
+          <div class="xp-label"><span>Level ${currentUser.level}</span><span>${xpInCurrentLevel} / 500 XP</span></div>
+          <div class="xp-bar"><div class="xp-fill" style="width:${xpPct}%"></div></div>
+        </div>
+      </div>
+      <div class="profile-stats-row">
+        <div class="pstat"><div class="pstat-num">${currentUser.hc}</div><div class="pstat-label">HackCoins</div></div>
+        <div class="pstat"><div class="pstat-num">${currentUser.solved.length}</div><div class="pstat-label">Solved</div></div>
+        <div class="pstat"><div class="pstat-num">${currentUser.level}</div><div class="pstat-label">Level</div></div>
+        <div class="pstat"><div class="pstat-num">${currentUser.badges.length}</div><div class="pstat-label">Badges</div></div>
+      </div>
+    </div>
+    <div class="profile-grid">
+      <div class="profile-card">
+        <h4>Solved Challenges</h4>
+        ${solvedMissions.length === 0 ? '<p style="color:var(--text2);font-size:0.88rem">No challenges solved yet. <span style="color:var(--accent);cursor:pointer" onclick="showPage(\'ctf\')">Start now →</span></p>' :
+        '<div class="solved-list">' + solvedMissions.map(m => `
+          <div class="solved-item">
+            <span class="solved-item-name">${m.name}</span>
+            <span class="solved-item-pts">+${m.pts} HC</span>
+          </div>`).join('') + '</div>'}
+      </div>
+      <div class="profile-card">
+        <h4>Achievement Badges</h4>
+        <div class="badge-grid-small">
+          ${ALL_BADGES.map(b => {
+            const earned = currentUser.badges.includes(b.id);
+            return `<div class="badge-sm" title="${b.desc}">
+              <div class="badge-hex-sm ${earned?'earned':'locked'}">${b.icon}</div>
+              <div class="badge-lbl">${b.name}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        ${currentUser.badges.length === 0 ? '<p style="color:var(--text2);font-size:0.8rem;margin-top:1rem">Solve challenges to unlock badges!</p>' : ''}
+      </div>
+    </div>`;
+  document.getElementById('profileContent').innerHTML = html;
+}
+
+// ==================== MATRIX ====================
+function initMatrix() {
+  const canvas = document.getElementById('matrixCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const chars = '01アイウエオABCDEFGHIJKLMNOP';
+  const fs = 12;
+  let drops = [];
+  function reset() { drops = Array(Math.floor(canvas.width/fs)).fill(1); }
+  reset();
+  setInterval(() => {
+    ctx.fillStyle = 'rgba(7,11,15,0.05)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#00ffe5';
+    ctx.font = fs + 'px Share Tech Mono';
+    drops.forEach((d,i) => {
+      ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, d*fs);
+      if (d*fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  }, 55);
+}
+
+// ==================== COUNTERS ====================
 function animateCounters() {
   document.querySelectorAll('[data-target]').forEach(el => {
     const target = parseInt(el.dataset.target);
-    const duration = 2000;
-    const step = target / (duration / 16);
-    let current = 0;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) { current = target; clearInterval(timer); }
-      el.textContent = Math.floor(current).toLocaleString() + (target >= 1000 ? '' : '');
-    }, 16);
+    let cur = 0; const step = target / 80;
+    const t = setInterval(() => {
+      cur += step; if (cur >= target) { cur = target; clearInterval(t); }
+      el.textContent = Math.floor(cur).toLocaleString();
+    }, 20);
   });
 }
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); observer.disconnect(); } });
-});
-observer.observe(document.querySelector('.hero-stats'));
-
-// Modal
-function openModal(type) {
-  document.getElementById(type + 'Modal').classList.add('active');
-}
-function closeModal(type) {
-  document.getElementById(type + 'Modal').classList.remove('active');
-}
-function switchModal(from, to) {
-  closeModal(from); openModal(to);
-}
-document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); obs.disconnect(); } });
 });
 
-// Handle auth
-function handleLogin() {
-  closeModal('login');
-  showToast('🎉 Welcome back, hacker!');
-}
-function handleSignup() {
-  closeModal('signup');
-  showToast('🚀 Account created! +100 HC welcome bonus!');
-}
-
-// Toast
+// ==================== TOAST ====================
 let toastTimer;
 function showToast(msg) {
-  const toast = document.getElementById('toast');
+  const el = document.getElementById('toast');
   document.getElementById('toastText').textContent = msg;
-  toast.classList.add('show');
+  el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
 }
 
-// Tabs
-function switchTab(e, name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  e.target.classList.add('active');
-  showToast('🔍 Showing ' + name.toUpperCase() + ' challenges');
-}
-
-// Scroll
-function scrollTo(id) {
-  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-}
+// ==================== INIT ====================
+window.addEventListener('load', () => {
+  loadState();
+  initMatrix();
+  const hs = document.querySelector('.hero-stats');
+  if (hs) obs.observe(hs);
+  document.getElementById('authModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('authModal')) closeModal();
+  });
+  document.getElementById('challengeRoom').addEventListener('click', e => {
+    if (e.target === document.getElementById('challengeRoom')) closeRoom();
+  });
+});
 </script>
 </body>
 </html>
