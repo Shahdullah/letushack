@@ -5,50 +5,69 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LetUsHack – Master Cybersecurity</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{
-  --bg:#070b0f;--bg2:#0d1520;--bg3:#111d2e;
-  --accent:#00ffe5;--accent2:#ff3c6e;--accent3:#ffd700;
-  --green:#39ff14;--text:#c8d8e8;--text2:#7a9ab8;
-  --border:rgba(0,255,229,0.15);
-  --glow:0 0 20px rgba(0,255,229,0.3);
-  --glow2:0 0 20px rgba(255,60,110,0.3);
-}
+:root{--bg:#070b0f;--bg2:#0d1520;--bg3:#111d2e;--accent:#00ffe5;--accent2:#ff3c6e;--accent3:#ffd700;--green:#39ff14;--text:#c8d8e8;--text2:#7a9ab8;--border:rgba(0,255,229,0.15);--glow:0 0 20px rgba(0,255,229,0.3);--glow2:0 0 20px rgba(255,60,110,0.3)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:16px;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);pointer-events:none;z-index:9999}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;background:rgba(7,11,15,0.96);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;background:rgba(7,11,15,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
 .nav-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.2rem;color:var(--accent);text-shadow:0 0 20px rgba(0,255,229,0.6);letter-spacing:2px;cursor:pointer}
 .nav-logo span{color:var(--accent2)}
-.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links{display:flex;gap:2rem}
 .nav-links a{font-size:0.85rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);transition:color 0.2s;cursor:pointer}
 .nav-links a:hover{color:var(--accent)}
 .nav-right{display:flex;gap:1rem;align-items:center}
 .nav-user{display:none;align-items:center;gap:1rem}
 .nav-username{font-family:'Share Tech Mono',monospace;font-size:0.85rem;color:var(--accent)}
 .nav-hc{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--accent3)}
-
-/* BUTTONS */
 .btn{padding:0.5rem 1.25rem;font-family:'Rajdhani',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.2s}
 .btn-outline{background:transparent;border:1px solid var(--accent);color:var(--accent)}
 .btn-outline:hover{background:rgba(0,255,229,0.1);box-shadow:var(--glow)}
 .btn-primary{background:var(--accent);color:var(--bg);clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
 .btn-primary:hover{box-shadow:var(--glow);transform:translateY(-1px)}
 .btn-danger{background:var(--accent2);color:#fff}
-.btn-danger:hover{box-shadow:var(--glow2)}
 .btn-sm{padding:0.35rem 0.9rem;font-size:0.78rem}
-.btn-gold{background:var(--accent3);color:#000;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)}
-
-/* PAGES */
 .page{display:none;min-height:100vh;padding-top:64px}
 .page.active{display:block}
 
-/* ===== HOME PAGE ===== */
+/* SPLASH */
+#splashPage{position:fixed;inset:0;z-index:5000;background:var(--bg);display:flex;align-items:center;justify-content:center}
+#splashCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:0.07}
+.sp-box{position:relative;z-index:1;width:100%;max-width:460px;padding:2rem;text-align:center}
+.sp-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:2.2rem;color:var(--accent);text-shadow:0 0 30px rgba(0,255,229,0.5);letter-spacing:3px;margin-bottom:0.3rem}
+.sp-logo span{color:var(--accent2)}
+.sp-sub{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2);letter-spacing:3px;margin-bottom:2.5rem}
+.sp-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.75rem}
+.sp-tab{flex:1;padding:0.7rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:2px;cursor:pointer;text-align:center;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;color:var(--text2)}
+.sp-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.sp-inp{width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s;margin-bottom:1rem}
+.sp-inp:focus{border-color:var(--accent);box-shadow:0 0 12px rgba(0,255,229,0.1)}
+.sp-inp::placeholder{color:var(--text2)}
+.sp-lbl{display:block;font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase;text-align:left}
+.sp-err{display:none;color:var(--accent2);font-family:'Share Tech Mono',monospace;font-size:0.78rem;margin-bottom:0.75rem;text-align:left;padding:0.5rem 0.75rem;background:rgba(255,60,110,0.08);border:1px solid rgba(255,60,110,0.2)}
+.sp-btn{width:100%;padding:0.85rem;background:var(--accent);color:var(--bg);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;margin-bottom:0.75rem}
+.sp-btn:hover{box-shadow:0 0 20px rgba(0,255,229,0.4)}
+.sp-btn:disabled{opacity:0.5;cursor:not-allowed;box-shadow:none}
+.sp-switch{margin-top:1rem;font-size:0.82rem;color:var(--text2)}
+.sp-switch span{color:var(--accent);cursor:pointer;text-decoration:underline}
+.sp-divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0;color:var(--text2);font-size:0.75rem;font-family:'Share Tech Mono',monospace}
+.sp-divider::before,.sp-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.sp-credit{margin-top:2.5rem;font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:rgba(255,255,255,0.15);letter-spacing:1px}
+.sp-credit .c2{color:var(--accent2)}
+.oauth-btn{width:100%;padding:0.72rem 1rem;display:flex;align-items:center;justify-content:center;gap:0.75rem;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;margin-bottom:0.65rem}
+.oauth-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,255,229,0.04)}
+.pwd-wrap{position:relative;margin-bottom:1rem}
+.pwd-wrap .sp-inp{margin-bottom:0;padding-right:2.5rem}
+.pwd-eye{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text2);font-size:1rem;user-select:none}
+.setup-note{background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);padding:1rem;margin-bottom:1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.75rem;line-height:1.8;color:var(--text2);text-align:left;display:none}
+.setup-note h4{color:var(--accent3);margin-bottom:0.5rem}
+.setup-note code{background:rgba(0,255,229,0.1);color:var(--accent);padding:1px 5px}
+
+/* HERO */
 .hero{min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(0,255,229,0.06) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(255,60,110,0.05) 0%,transparent 60%)}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(0,255,229,0.06) 0%,transparent 70%)}
 #matrixCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:0.07}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:0.4rem 1rem;border:1px solid rgba(0,255,229,0.3);font-size:0.75rem;font-family:'Share Tech Mono',monospace;color:var(--accent);letter-spacing:2px;margin-bottom:2rem;position:relative;z-index:1;background:rgba(0,255,229,0.05)}
 .blink{animation:blink 1s infinite}
@@ -59,180 +78,138 @@ h1 .l2{color:var(--accent);text-shadow:0 0 40px rgba(0,255,229,0.5);display:bloc
 .hero-sub{max-width:560px;font-size:1.05rem;color:var(--text2);line-height:1.7;margin-bottom:2.5rem;position:relative;z-index:1}
 .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;margin-bottom:3rem}
 .hero-stats{display:flex;gap:3rem;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;border-top:1px solid var(--border);padding-top:3rem}
-.stat-item{text-align:center}
-.stat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;color:var(--accent);text-shadow:0 0 20px rgba(0,255,229,0.4)}
+.stat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:700;color:var(--accent)}
 .stat-label{font-size:0.8rem;color:var(--text2);letter-spacing:1px;margin-top:4px}
-
-/* TERMINAL */
-.terminal{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--border);width:100%;max-width:660px;margin:0 auto 3rem;box-shadow:0 0 60px rgba(0,255,229,0.08);overflow:hidden}
-.terminal-bar{background:var(--bg3);padding:0.6rem 1rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--border)}
+.terminal{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--border);width:100%;max-width:660px;margin:0 auto 3rem;overflow:hidden}
+.t-bar{background:var(--bg3);padding:0.6rem 1rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--border)}
 .dot{width:10px;height:10px;border-radius:50%}
 .dot-r{background:#ff5f57}.dot-y{background:#ffbd2e}.dot-g{background:#28ca40}
-.terminal-title{font-size:0.75rem;color:var(--text2);font-family:'Share Tech Mono',monospace;margin-left:0.5rem}
-.terminal-body{padding:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.85rem;line-height:1.8}
-.t-prompt{color:var(--green)}.t-cmd{color:#fff}.t-out{color:var(--text2);padding-left:1.2rem}
-.t-out.s{color:var(--green)}.t-out.w{color:var(--accent3)}.t-out.a{color:var(--accent)}
-.t-cursor{display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink 1s infinite;vertical-align:middle}
-
-/* SECTION */
-section{padding:5rem 2rem;position:relative}
-.section-label{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem}
+.t-body{padding:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.85rem;line-height:1.8}
+.tp{color:var(--green)}.tc{color:#fff}.to{color:var(--text2);padding-left:1.2rem}
+.to.s{color:var(--green)}.to.w{color:var(--accent3)}.to.a{color:var(--accent)}
+.t-cur{display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink 1s infinite;vertical-align:middle}
+section{padding:5rem 2rem}
+.sl{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem}
 h2{font-family:'Orbitron',monospace;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:1rem;color:#fff;text-transform:uppercase;letter-spacing:1px}
 h2 span{color:var(--accent)}
-.section-sub{color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:3rem}
+.ssub{color:var(--text2);max-width:500px;line-height:1.7;margin-bottom:3rem}
 .container{max-width:1200px;margin:0 auto}
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.fc{background:var(--bg2);border:1px solid var(--border);padding:2rem;transition:all 0.3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.fc:hover{border-color:rgba(0,255,229,0.4);box-shadow:0 0 30px rgba(0,255,229,0.1);transform:translateY(-4px)}
+.fi{width:48px;height:48px;background:rgba(0,255,229,0.1);border:1px solid rgba(0,255,229,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.25rem}
+.fc h3{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.75rem;letter-spacing:1px}
+.fc p{color:var(--text2);font-size:0.9rem;line-height:1.65}
 
-/* FEATURE CARDS */
-.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
-.feature-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;position:relative;overflow:hidden;transition:all 0.3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
-.feature-card:hover{border-color:rgba(0,255,229,0.4);box-shadow:0 0 30px rgba(0,255,229,0.1);transform:translateY(-4px)}
-.feature-icon{width:48px;height:48px;background:rgba(0,255,229,0.1);border:1px solid rgba(0,255,229,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.25rem}
-.feature-card h3{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.75rem;letter-spacing:1px}
-.feature-card p{color:var(--text2);font-size:0.9rem;line-height:1.65}
-
-/* ===== CTF PAGE ===== */
-.ctf-page{padding:2rem;max-width:1200px;margin:0 auto}
-.ctf-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
-.ctf-header h2{margin-bottom:0}
+/* CTF */
+.ctf-pg{padding:2rem;max-width:1200px;margin:0 auto}
+.ctf-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
 .ctf-filters{display:flex;gap:0.5rem;flex-wrap:wrap}
-.filter-btn{padding:0.4rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:1px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all 0.2s;text-transform:uppercase}
-.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,255,229,0.05)}
-.missions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
-.mission-card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
-.mission-card:hover{border-color:rgba(0,255,229,0.35);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
-.mission-card.solved{border-color:rgba(57,255,20,0.3)}
-.mission-card.solved::after{content:'✓ SOLVED';position:absolute;top:1rem;right:1rem;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--green);background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);padding:2px 8px;letter-spacing:1px}
-.mission-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
-.cat-badge{font-size:0.68rem;font-family:'Share Tech Mono',monospace;letter-spacing:2px;padding:3px 8px;border-radius:2px}
+.fb{padding:0.4rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:1px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all 0.2s;text-transform:uppercase}
+.fb.active,.fb:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,255,229,0.05)}
+.mg{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem}
+.mc{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.mc:hover{border-color:rgba(0,255,229,0.35);transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.mc.solved{border-color:rgba(57,255,20,0.3)}
+.mc.solved::after{content:'✓ SOLVED';position:absolute;top:1rem;right:1rem;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--green);background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);padding:2px 8px}
+.mt2{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem}
+.cb{font-size:0.68rem;font-family:'Share Tech Mono',monospace;letter-spacing:2px;padding:3px 8px;border-radius:2px}
 .cat-web{background:rgba(0,255,229,0.12);color:var(--accent)}
 .cat-crypto{background:rgba(255,215,0,0.12);color:var(--accent3)}
 .cat-forensics{background:rgba(170,127,255,0.12);color:#aa7fff}
-.cat-pwn{background:rgba(255,60,110,0.12);color:var(--accent2)}
 .cat-osint{background:rgba(57,255,20,0.12);color:var(--green)}
 .diff-easy{font-size:0.68rem;font-family:'Share Tech Mono',monospace;padding:3px 8px;background:rgba(57,255,20,0.1);color:var(--green)}
 .diff-medium{font-size:0.68rem;font-family:'Share Tech Mono',monospace;padding:3px 8px;background:rgba(255,215,0,0.1);color:var(--accent3)}
 .diff-hard{font-size:0.68rem;font-family:'Share Tech Mono',monospace;padding:3px 8px;background:rgba(255,60,110,0.1);color:var(--accent2)}
-.mission-name{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.5rem}
-.mission-desc{color:var(--text2);font-size:0.88rem;line-height:1.5;margin-bottom:1rem}
-.mission-footer{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text2)}
-.mission-pts{font-family:'Share Tech Mono',monospace;color:var(--accent3)}
+.mn{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.5rem}
+.md{color:var(--text2);font-size:0.88rem;line-height:1.5;margin-bottom:1rem}
+.mf{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text2)}
+.mpts{font-family:'Share Tech Mono',monospace;color:var(--accent3)}
 
-/* ===== MISSION MODAL (CHALLENGE ROOM) ===== */
+/* ROOM */
 .challenge-room{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;overflow-y:auto;backdrop-filter:blur(8px)}
 .challenge-room.open{display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
-.room-inner{background:var(--bg2);border:1px solid rgba(0,255,229,0.2);width:100%;max-width:860px;position:relative;margin:auto}
-.room-header{background:var(--bg3);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.room-title{font-family:'Orbitron',monospace;font-size:1rem;color:var(--accent);letter-spacing:1px}
-.room-close{background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.3rem;transition:color 0.2s}
-.room-close:hover{color:var(--accent2)}
-.room-body{padding:2rem}
-.room-desc{color:var(--text2);line-height:1.7;margin-bottom:1.5rem;font-size:0.95rem}
-.room-hint-box{background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);padding:1rem 1.25rem;margin-bottom:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.82rem;color:var(--accent3);display:none}
-.room-challenge-area{background:var(--bg);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.88rem}
-.room-challenge-area pre{white-space:pre-wrap;word-break:break-all;color:#c8d8e8;line-height:1.7}
-.flag-input-row{display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap}
-.flag-input{flex:1;padding:0.75rem 1rem;background:var(--bg);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;min-width:200px;transition:border-color 0.2s}
-.flag-input:focus{border-color:var(--accent);box-shadow:0 0 15px rgba(0,255,229,0.1)}
-.flag-input::placeholder{color:var(--text2)}
-.flag-feedback{margin-top:1rem;padding:0.75rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.85rem;display:none}
-.flag-feedback.correct{background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);color:var(--green)}
-.flag-feedback.wrong{background:rgba(255,60,110,0.1);border:1px solid rgba(255,60,110,0.3);color:var(--accent2)}
-.room-actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem}
-.room-tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.ri{background:var(--bg2);border:1px solid rgba(0,255,229,0.2);width:100%;max-width:860px;margin:auto}
+.rh{background:var(--bg3);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.rt{font-family:'Orbitron',monospace;font-size:1rem;color:var(--accent);letter-spacing:1px}
+.rc-btn{background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.3rem;transition:color 0.2s}
+.rc-btn:hover{color:var(--accent2)}
+.rb2{padding:2rem}
+.rtb{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
 .room-tab{padding:0.6rem 1.25rem;font-size:0.8rem;font-weight:600;letter-spacing:1px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;text-transform:uppercase;font-family:'Share Tech Mono',monospace}
 .room-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.room-section{display:none}
-.room-section.active{display:block}
+.rs{display:none}
+.rs.active{display:block}
+.rca{background:var(--bg);border:1px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}
+.rca pre{white-space:pre-wrap;word-break:break-all;color:#c8d8e8;line-height:1.7;font-family:'Share Tech Mono',monospace;font-size:0.88rem}
+.fir{display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap}
+.fi2{flex:1;padding:0.75rem 1rem;background:var(--bg);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;min-width:200px;transition:border-color 0.2s}
+.fi2:focus{border-color:var(--accent)}
+.fi2::placeholder{color:var(--text2)}
+.ff{margin-top:1rem;padding:0.75rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.85rem;display:none}
+.ff.correct{background:rgba(57,255,20,0.1);border:1px solid rgba(57,255,20,0.3);color:var(--green)}
+.ff.wrong{background:rgba(255,60,110,0.1);border:1px solid rgba(255,60,110,0.3);color:var(--accent2)}
 
-/* ===== LEADERBOARD PAGE ===== */
-.lb-page{padding:2rem;max-width:900px;margin:0 auto}
-.lb-table{background:var(--bg2);border:1px solid var(--border);overflow:hidden;margin-bottom:2rem}
-.lb-head{padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent);letter-spacing:1px}
+/* LEADERBOARD */
+.lb-pg{padding:2rem;max-width:900px;margin:0 auto}
+.lb-table{background:var(--bg2);border:1px solid var(--border);overflow:hidden}
+.lb-head{padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent)}
 .lb-row{display:flex;align-items:center;gap:1rem;padding:0.85rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.2s}
 .lb-row:hover{background:rgba(0,255,229,0.04)}
 .lb-row:last-child{border-bottom:none}
 .lb-row.me{background:rgba(0,255,229,0.06);border-left:2px solid var(--accent)}
-.lb-rank{font-family:'Share Tech Mono',monospace;font-size:0.8rem;width:28px;text-align:center;color:var(--text2);flex-shrink:0}
-.lb-rank.gold{color:#ffd700;font-weight:700}
-.lb-rank.silver{color:#c0c0c0;font-weight:700}
-.lb-rank.bronze{color:#cd7f32;font-weight:700}
-.lb-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#000;flex-shrink:0}
-.lb-name{flex:1;font-weight:600;font-size:0.9rem;color:#fff}
-.lb-solved{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--text2);width:60px;text-align:center}
-.lb-score{font-family:'Share Tech Mono',monospace;font-size:0.88rem;color:var(--accent3);min-width:80px;text-align:right}
+.lbr{font-family:'Share Tech Mono',monospace;font-size:0.8rem;width:28px;text-align:center;color:var(--text2);flex-shrink:0}
+.lbr.gold{color:#ffd700;font-weight:700}.lbr.silver{color:#c0c0c0;font-weight:700}.lbr.bronze{color:#cd7f32;font-weight:700}
+.lba{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#000;flex-shrink:0}
+.lbn{flex:1;font-weight:600;font-size:0.9rem;color:#fff}
+.lbs2{font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--text2);width:60px;text-align:center}
+.lbs{font-family:'Share Tech Mono',monospace;font-size:0.88rem;color:var(--accent3);min-width:80px;text-align:right}
 
-/* ===== PROFILE PAGE ===== */
-.profile-page{padding:2rem;max-width:900px;margin:0 auto}
-.profile-header{display:flex;align-items:center;gap:2rem;background:var(--bg2);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;flex-wrap:wrap}
-.profile-avatar-big{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#000;flex-shrink:0;border:2px solid var(--accent);box-shadow:0 0 20px rgba(0,255,229,0.3)}
-.profile-info h3{font-family:'Orbitron',monospace;font-size:1.3rem;color:#fff;margin-bottom:0.4rem}
-.profile-info p{color:var(--text2);font-size:0.88rem;font-family:'Share Tech Mono',monospace}
-.profile-stats-row{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1rem}
-.pstat{text-align:center}
-.pstat-num{font-family:'Orbitron',monospace;font-size:1.4rem;color:var(--accent);font-weight:700}
-.pstat-label{font-size:0.75rem;color:var(--text2);letter-spacing:1px}
-.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.profile-card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem}
-.profile-card h4{font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent);letter-spacing:1px;margin-bottom:1.25rem;text-transform:uppercase}
-.solved-list{display:flex;flex-direction:column;gap:0.6rem;max-height:300px;overflow-y:auto}
-.solved-item{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;background:rgba(57,255,20,0.05);border:1px solid rgba(57,255,20,0.15);font-size:0.85rem}
-.solved-item-name{color:#fff;font-weight:600}
-.solved-item-pts{font-family:'Share Tech Mono',monospace;color:var(--accent3);font-size:0.8rem}
-.badge-grid-small{display:flex;flex-wrap:wrap;gap:0.75rem}
-.badge-sm{display:flex;flex-direction:column;align-items:center;gap:0.3rem;cursor:default}
-.badge-hex-sm{width:48px;height:54px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
-.badge-hex-sm.earned{background:linear-gradient(135deg,rgba(0,255,229,0.3),rgba(0,255,229,0.1));box-shadow:0 0 15px rgba(0,255,229,0.2)}
-.badge-hex-sm.locked{background:rgba(255,255,255,0.04);filter:grayscale(1) brightness(0.4)}
-.badge-lbl{font-size:0.6rem;font-family:'Share Tech Mono',monospace;color:var(--text2);text-align:center;max-width:52px}
-.xp-bar-wrap{margin-top:0.75rem}
-.xp-label{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem}
-.xp-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
-.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 0.8s ease}
+/* PROFILE */
+.prof-pg{padding:2rem;max-width:900px;margin:0 auto}
+.ph{display:flex;align-items:center;gap:2rem;background:var(--bg2);border:1px solid var(--border);padding:2rem;margin-bottom:2rem;flex-wrap:wrap}
+.pav{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#000;flex-shrink:0;border:2px solid var(--accent);box-shadow:0 0 20px rgba(0,255,229,0.3)}
+.pi h3{font-family:'Orbitron',monospace;font-size:1.3rem;color:#fff;margin-bottom:0.4rem}
+.pi p{color:var(--text2);font-size:0.88rem;font-family:'Share Tech Mono',monospace}
+.psr{display:flex;gap:2rem;flex-wrap:wrap;margin-top:1rem}
+.ps{text-align:center}
+.psn{font-family:'Orbitron',monospace;font-size:1.4rem;color:var(--accent);font-weight:700}
+.psl{font-size:0.75rem;color:var(--text2);letter-spacing:1px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.pcard{background:var(--bg2);border:1px solid var(--border);padding:1.5rem}
+.pcard h4{font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent);letter-spacing:1px;margin-bottom:1.25rem;text-transform:uppercase}
+.sl2{display:flex;flex-direction:column;gap:0.6rem;max-height:280px;overflow-y:auto}
+.si2{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;background:rgba(57,255,20,0.05);border:1px solid rgba(57,255,20,0.15);font-size:0.85rem}
+.bg-g{display:flex;flex-wrap:wrap;gap:0.75rem}
+.bsm{display:flex;flex-direction:column;align-items:center;gap:0.3rem}
+.bhx{width:48px;height:54px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.bhx.earned{background:linear-gradient(135deg,rgba(0,255,229,0.3),rgba(0,255,229,0.1));box-shadow:0 0 15px rgba(0,255,229,0.2)}
+.bhx.locked{background:rgba(255,255,255,0.04);filter:grayscale(1) brightness(0.4)}
+.blbl{font-size:0.6rem;font-family:'Share Tech Mono',monospace;color:var(--text2);text-align:center;max-width:52px}
+.xpw{margin-top:0.75rem}
+.xpl2{display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--text2);margin-bottom:0.4rem}
+.xpb{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.xpf{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 0.8s ease}
 
-/* ===== AUTH MODAL ===== */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.modal-overlay.active{display:flex}
-.modal{background:var(--bg2);border:1px solid rgba(0,255,229,0.2);max-width:440px;width:90%;padding:2.5rem;position:relative;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px))}
-.modal h3{font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--accent);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
-.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.2rem;transition:color 0.2s}
-.modal-close:hover{color:var(--accent2)}
-.form-group{margin-bottom:1.1rem}
-.form-group label{display:block;font-size:0.75rem;font-family:'Share Tech Mono',monospace;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase}
-.form-group input{width:100%;padding:0.7rem 1rem;background:var(--bg);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s}
-.form-group input:focus{border-color:var(--accent);box-shadow:0 0 15px rgba(0,255,229,0.1)}
-.form-group input::placeholder{color:var(--text2)}
-.form-error{color:var(--accent2);font-size:0.8rem;font-family:'Share Tech Mono',monospace;margin-top:0.3rem;display:none}
-.modal-actions{display:flex;gap:1rem;margin-top:1.5rem}
-.modal-actions .btn{flex:1;padding:0.7rem;font-size:0.88rem;clip-path:none}
-.modal-switch{text-align:center;margin-top:1rem;font-size:0.82rem;color:var(--text2)}
-.modal-switch span{color:var(--accent);cursor:pointer;text-decoration:underline}
+/* LOCKED */
+.lo{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.lo-box{background:var(--bg2);border:1px solid rgba(255,60,110,0.3);padding:3rem;text-align:center;max-width:400px;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))}
+.lo-box h3{font-family:'Orbitron',monospace;color:var(--accent2);margin-bottom:1rem}
+.lo-box p{color:var(--text2);margin-bottom:1.5rem;font-size:0.9rem}
 
-/* TOAST */
+/* SPINNER */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,255,229,0.2);border-top-color:var(--accent);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
 .toast{position:fixed;bottom:2rem;right:2rem;z-index:4000;background:var(--bg2);border:1px solid rgba(0,255,229,0.3);padding:1rem 1.5rem;display:flex;align-items:center;gap:0.75rem;font-size:0.9rem;max-width:340px;transform:translateY(200%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
 .toast.show{transform:translateY(0)}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:0.82rem;color:var(--text2)}
 
-/* FOOTER */
-footer{background:var(--bg2);border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:0.8rem;color:var(--text2)}
-footer span{color:var(--accent);font-family:'Share Tech Mono',monospace}
-
-/* LOCKED OVERLAY */
-.locked-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1500;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.locked-box{background:var(--bg2);border:1px solid rgba(255,60,110,0.3);padding:3rem;text-align:center;max-width:400px;clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))}
-.locked-box h3{font-family:'Orbitron',monospace;color:var(--accent2);margin-bottom:1rem;font-size:1.1rem}
-.locked-box p{color:var(--text2);margin-bottom:1.5rem;font-size:0.9rem}
-.locked-box .btn{margin:0.4rem}
-
-@media(max-width:768px){
-  .nav-links{display:none}
-  h1{font-size:2.2rem}
-  .hero-stats{gap:1.5rem}
-  .profile-grid{grid-template-columns:1fr}
-}
+@media(max-width:768px){.nav-links{display:none}h1{font-size:2.2rem}.pg{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo" onclick="goHome()">LET<span>US</span>HACK</div>
   <div class="nav-links">
@@ -242,918 +219,749 @@ footer span{color:var(--accent);font-family:'Share Tech Mono',monospace}
   </div>
   <div class="nav-right">
     <div id="navGuest" style="display:flex;gap:0.75rem">
-      <button class="btn btn-outline btn-sm" onclick="openModal('login')">Login</button>
-      <button class="btn btn-primary btn-sm" onclick="openModal('signup')">Register</button>
+      <button class="btn btn-outline btn-sm" onclick="showSplash('login')">Login</button>
+      <button class="btn btn-primary btn-sm" onclick="showSplash('register')">Register</button>
     </div>
     <div id="navUser" class="nav-user">
       <span class="nav-hc" id="navHC">💰 0 HC</span>
       <span class="nav-username" id="navName">hacker</span>
-      <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+      <button class="btn btn-danger btn-sm" onclick="doLogout()">Logout</button>
     </div>
   </div>
 </nav>
 
-<!-- ==================== HOME PAGE ==================== -->
+<!-- ══ SPLASH ══ -->
+<div id="splashPage">
+  <canvas id="splashCanvas"></canvas>
+  <div class="sp-box">
+    <div class="sp-logo">LET<span>US</span>HACK</div>
+    <div class="sp-sub">// CYBERSECURITY TRAINING PLATFORM</div>
+
+    <div class="setup-note" id="setupNote">
+      <h4>⚙️ Supabase Not Configured — Using Local Mode</h4>
+      For cloud sync + Google/GitHub login, replace <code>YOUR_SUPABASE_URL</code> and <code>YOUR_SUPABASE_ANON_KEY</code> in the script.<br>
+      Get free credentials at <code>supabase.com</code> → New Project → Settings → API
+    </div>
+
+    <div class="sp-tabs">
+      <div class="sp-tab active" id="stL" onclick="splashTab('login')">LOGIN</div>
+      <div class="sp-tab" id="stR" onclick="splashTab('register')">REGISTER</div>
+    </div>
+
+    <div id="sL">
+      <button class="oauth-btn" onclick="oauthLogin('google')">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        Continue with Google
+      </button>
+      <button class="oauth-btn" onclick="oauthLogin('github')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Continue with GitHub
+      </button>
+      <div class="sp-divider">or use email</div>
+      <label class="sp-lbl">Username</label>
+      <input class="sp-inp" id="slUser" type="text" placeholder="your_hacker_alias" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <label class="sp-lbl">Password</label>
+      <div class="pwd-wrap">
+        <input class="sp-inp" id="slPass" type="password" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <span class="pwd-eye" onclick="togglePwd('slPass',this)">👁</span>
+      </div>
+      <div class="sp-err" id="slErr"></div>
+      <button class="sp-btn" id="slBtn" onclick="doLogin()">Enter Platform</button>
+      <div class="sp-switch">No account? <span onclick="splashTab('register')">Register here</span></div>
+    </div>
+
+    <div id="sR" style="display:none">
+      <button class="oauth-btn" onclick="oauthLogin('google')">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        Sign up with Google
+      </button>
+      <button class="oauth-btn" onclick="oauthLogin('github')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        Sign up with GitHub
+      </button>
+      <div class="sp-divider">or use email</div>
+      <label class="sp-lbl">Username</label>
+      <input class="sp-inp" id="srUser" type="text" placeholder="your_hacker_alias"/>
+      <label class="sp-lbl">Email</label>
+      <input class="sp-inp" id="srEmail" type="email" placeholder="hacker@example.com"/>
+      <label class="sp-lbl">Password</label>
+      <div class="pwd-wrap">
+        <input class="sp-inp" id="srPass" type="password" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')doRegister()"/>
+        <span class="pwd-eye" onclick="togglePwd('srPass',this)">👁</span>
+      </div>
+      <div class="sp-err" id="srErr"></div>
+      <button class="sp-btn" id="srBtn" onclick="doRegister()">Create Account</button>
+      <div class="sp-switch">Already registered? <span onclick="splashTab('login')">Login here</span></div>
+    </div>
+
+    <div class="sp-credit">Made with ❤️ by <span class="c2">Shahdullah</span> &nbsp;·&nbsp; © 2026 LetUsHack</div>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
 <div class="page active" id="page-home">
   <section class="hero">
     <div class="hero-bg"></div>
     <canvas id="matrixCanvas"></canvas>
     <div class="hero-badge"><span class="blink">▶</span> CYBERSECURITY TRAINING PLATFORM</div>
     <h1><span class="l1">MASTER THE</span><span class="l2">DIGITAL FRONTIER</span></h1>
-    <p class="hero-sub">Earn badges, maintain streaks, level up, and compete on leaderboards while mastering cybersecurity through hands-on CTF challenges.</p>
+    <p class="hero-sub">Earn badges, level up, and compete on leaderboards while mastering cybersecurity through real hands-on CTF challenges.</p>
     <div class="hero-ctas">
-      <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem" onclick="openModal('signup')">Begin Your Mission</button>
-      <button class="btn btn-outline" style="padding:0.75rem 2rem;font-size:1rem" onclick="showPage('ctf')">Explore Challenges</button>
+      <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem" onclick="showPage('ctf')">Begin Your Mission</button>
+      <button class="btn btn-outline" style="padding:0.75rem 2rem;font-size:1rem" onclick="showPage('leaderboard')">Leaderboard</button>
     </div>
     <div class="terminal">
-      <div class="terminal-bar">
-        <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-        <span class="terminal-title">letushack@terminal:~$</span>
-      </div>
-      <div class="terminal-body">
-        <div><span class="t-prompt">$ </span><span class="t-cmd">whoami</span></div>
-        <div class="t-out a">anonymous_hacker</div>
-        <div style="margin-top:0.4rem"><span class="t-prompt">$ </span><span class="t-cmd">ls /challenges</span></div>
-        <div class="t-out s">web/ crypto/ forensics/ pwn/ osint/</div>
-        <div style="margin-top:0.4rem"><span class="t-prompt">$ </span><span class="t-cmd">cat /motd.txt</span></div>
-        <div class="t-out w">Welcome. 6 live CTF missions await. Solve them. Earn HackCoins.</div>
-        <div style="margin-top:0.4rem"><span class="t-prompt">$ </span><span class="t-cmd">register --platform letushack<span class="t-cursor"></span></span></div>
+      <div class="t-bar"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span><span style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--text2);margin-left:0.5rem">letushack@terminal:~$</span></div>
+      <div class="t-body">
+        <div><span class="tp">$ </span><span class="tc">whoami</span></div>
+        <div class="to a" id="termUser">anonymous_hacker</div>
+        <div style="margin-top:0.4rem"><span class="tp">$ </span><span class="tc">ls /challenges</span></div>
+        <div class="to s">web/ crypto/ forensics/ osint/</div>
+        <div style="margin-top:0.4rem"><span class="tp">$ </span><span class="tc">cat /motd</span></div>
+        <div class="to w">6 live CTF missions. Solve. Earn HC. Dominate the leaderboard.</div>
+        <div style="margin-top:0.4rem"><span class="tp">$ </span><span class="tc">_<span class="t-cur"></span></span></div>
       </div>
     </div>
     <div class="hero-stats">
-      <div class="stat-item"><div class="stat-num" data-target="98500">0</div><div class="stat-label">Hackers Enrolled</div></div>
-      <div class="stat-item"><div class="stat-num" data-target="6">0</div><div class="stat-label">Live CTF Missions</div></div>
-      <div class="stat-item"><div class="stat-num" data-target="350">0</div><div class="stat-label">Badges to Earn</div></div>
-      <div class="stat-item"><div class="stat-num" data-target="24">0</div><div class="stat-label">Hrs of Content</div></div>
+      <div style="text-align:center"><div class="stat-num" data-target="6">0</div><div class="stat-label">CTF Missions</div></div>
+      <div style="text-align:center"><div class="stat-num" data-target="5">0</div><div class="stat-label">Badge Types</div></div>
+      <div style="text-align:center"><div class="stat-num" data-target="700">0</div><div class="stat-label">Total HC Pool</div></div>
+      <div style="text-align:center"><div class="stat-num" data-target="4">0</div><div class="stat-label">Categories</div></div>
     </div>
   </section>
-
   <section style="background:var(--bg2)">
     <div class="container">
-      <div class="section-label">// PLATFORM FEATURES</div>
+      <div class="sl">// FEATURES</div>
       <h2>WHY <span>LETUSHACK</span></h2>
-      <p class="section-sub">Everything you need to go from zero to ethical hacking hero.</p>
-      <div class="features-grid">
-        <div class="feature-card"><div class="feature-icon">🎯</div><h3>Hands-On CTF</h3><p>Real working challenges — decode ciphers, find hidden flags, exploit logic bugs in live environments.</p></div>
-        <div class="feature-card"><div class="feature-icon">🏆</div><h3>Leaderboard</h3><p>Compete globally. Every solved challenge earns HackCoins and pushes you up the rankings.</p></div>
-        <div class="feature-card"><div class="feature-icon">💰</div><h3>HackCoin Economy</h3><p>Earn HC by solving challenges. Use them to unlock hints when you're stuck on hard missions.</p></div>
-        <div class="feature-card"><div class="feature-icon">🏅</div><h3>Badge System</h3><p>Earn achievement badges for completing categories and reaching milestones.</p></div>
-        <div class="feature-card"><div class="feature-icon">📈</div><h3>Progress Tracking</h3><p>Track your solved challenges, earned points, and XP level from your profile page.</p></div>
-        <div class="feature-card"><div class="feature-icon">🔐</div><h3>Real Security Skills</h3><p>Learn base64, Caesar ciphers, steganography, SQL injection concepts and more.</p></div>
+      <p class="ssub">Everything you need to go from zero to ethical hacking hero.</p>
+      <div class="fg">
+        <div class="fc"><div class="fi">🎯</div><h3>Real CTF Challenges</h3><p>Actual working puzzles — decode ciphers, find hidden flags, exploit logic bugs.</p></div>
+        <div class="fc"><div class="fi">🏆</div><h3>Live Leaderboard</h3><p>Real-time global rankings. Only real registered users. Cloud-synced forever.</p></div>
+        <div class="fc"><div class="fi">🔐</div><h3>Google &amp; GitHub Login</h3><p>One-click OAuth sign in. No passwords needed when Supabase is configured.</p></div>
+        <div class="fc"><div class="fi">💰</div><h3>HackCoin Economy</h3><p>Earn HC solving challenges. Spend them on hints when you're stuck.</p></div>
+        <div class="fc"><div class="fi">🏅</div><h3>Badge System</h3><p>5 unique achievement badges unlocked by completing categories and milestones.</p></div>
+        <div class="fc"><div class="fi">☁️</div><h3>Cloud Saved Progress</h3><p>Your progress, coins and badges sync across all your devices automatically.</p></div>
       </div>
     </div>
   </section>
-  <footer><span>// LETUSHACK</span> &nbsp;·&nbsp; Hack Ethically &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp; Made with ❤️ by <span style="color:var(--accent2);font-family:'Share Tech Mono',monospace">Shahdullah</span></footer>
+  <footer>
+    <span style="color:var(--accent);font-family:'Share Tech Mono',monospace">// LETUSHACK</span>
+    &nbsp;·&nbsp; Hack Ethically &nbsp;·&nbsp; © 2026 &nbsp;·&nbsp;
+    Made with ❤️ by <span style="color:var(--accent2);font-family:'Share Tech Mono',monospace">Shahdullah</span>
+  </footer>
 </div>
 
-<!-- ==================== CTF PAGE ==================== -->
+<!-- ══ CTF PAGE ══ -->
 <div class="page" id="page-ctf">
-  <div class="ctf-page" style="padding-top:2rem">
-    <div class="ctf-header">
-      <div>
-        <div class="section-label">// CTF MISSIONS</div>
-        <h2 style="margin-bottom:0">ACTIVE <span>CHALLENGES</span></h2>
-      </div>
+  <div class="ctf-pg" style="padding-top:2rem">
+    <div class="ctf-hdr">
+      <div><div class="sl">// CTF MISSIONS</div><h2 style="margin-bottom:0">ACTIVE <span>CHALLENGES</span></h2></div>
       <div class="ctf-filters">
-        <button class="filter-btn active" onclick="filterMissions('all',this)">All</button>
-        <button class="filter-btn" onclick="filterMissions('web',this)">Web</button>
-        <button class="filter-btn" onclick="filterMissions('crypto',this)">Crypto</button>
-        <button class="filter-btn" onclick="filterMissions('forensics',this)">Forensics</button>
-        <button class="filter-btn" onclick="filterMissions('osint',this)">OSINT</button>
+        <button class="fb active" onclick="filterM('all',this)">All</button>
+        <button class="fb" onclick="filterM('web',this)">Web</button>
+        <button class="fb" onclick="filterM('crypto',this)">Crypto</button>
+        <button class="fb" onclick="filterM('forensics',this)">Forensics</button>
+        <button class="fb" onclick="filterM('osint',this)">OSINT</button>
       </div>
     </div>
-    <div class="missions-grid" id="missionsGrid"></div>
+    <div class="mg" id="missionsGrid"></div>
   </div>
 </div>
 
-<!-- ==================== LEADERBOARD PAGE ==================== -->
+<!-- ══ LEADERBOARD ══ -->
 <div class="page" id="page-leaderboard">
-  <div class="lb-page" style="padding-top:2rem">
-    <div class="section-label">// GLOBAL RANKINGS</div>
+  <div class="lb-pg" style="padding-top:2rem">
+    <div class="sl">// GLOBAL RANKINGS</div>
     <h2>LEADERBOARD</h2>
-    <p class="section-sub" style="margin-bottom:2rem">Top hackers ranked by HackCoins earned.</p>
+    <p class="ssub" style="margin-bottom:2rem">Only real registered users. Updated live.</p>
     <div class="lb-table">
-      <div class="lb-head">
-        <span>🌍 Global Rankings</span>
-        <span style="font-size:0.7rem;color:var(--text2)">LIVE</span>
-      </div>
-      <div id="lbBody"></div>
+      <div class="lb-head"><span>🌍 Global Rankings</span><span style="font-size:0.7rem;color:var(--text2)">LIVE</span></div>
+      <div id="lbBody"><div style="padding:2.5rem;text-align:center;font-family:'Share Tech Mono',monospace;color:var(--text2)"><span class="spin"></span> Loading...</div></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== PROFILE PAGE ==================== -->
+<!-- ══ PROFILE ══ -->
 <div class="page" id="page-profile">
-  <div class="profile-page" style="padding-top:2rem">
+  <div class="prof-pg" style="padding-top:2rem">
     <div id="profileContent"></div>
   </div>
 </div>
 
-<!-- ==================== CHALLENGE ROOM ==================== -->
+<!-- ══ CHALLENGE ROOM ══ -->
 <div class="challenge-room" id="challengeRoom">
-  <div class="room-inner">
-    <div class="room-header">
-      <div class="room-title" id="roomTitle">Challenge</div>
-      <button class="room-close" onclick="closeRoom()">✕</button>
-    </div>
-    <div class="room-body">
-      <div class="room-tab-bar">
-        <div class="room-tab active" onclick="switchRoomTab('brief',this)">Brief</div>
-        <div class="room-tab" onclick="switchRoomTab('challenge',this)">Challenge</div>
-        <div class="room-tab" onclick="switchRoomTab('hints',this)">Hints</div>
+  <div class="ri">
+    <div class="rh"><div class="rt" id="roomTitle">Challenge</div><button class="rc-btn" onclick="closeRoom()">✕</button></div>
+    <div class="rb2">
+      <div class="rtb">
+        <div class="room-tab active" onclick="switchRTab('brief',this)">Brief</div>
+        <div class="room-tab" onclick="switchRTab('challenge',this)">Challenge</div>
+        <div class="room-tab" onclick="switchRTab('hints',this)">Hints</div>
       </div>
-      <div class="room-section active" id="rsec-brief">
-        <div class="room-desc" id="roomDesc"></div>
+      <div class="rs active" id="rsec-brief">
+        <div style="color:var(--text2);line-height:1.7;margin-bottom:1.5rem;font-size:0.95rem" id="roomDesc"></div>
         <div style="display:flex;gap:1rem;flex-wrap:wrap">
-          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem">
-            <span style="color:var(--text2)">CATEGORY: </span><span id="roomCat" style="color:var(--accent)"></span>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem">
-            <span style="color:var(--text2)">DIFFICULTY: </span><span id="roomDiff"></span>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem">
-            <span style="color:var(--text2)">REWARD: </span><span id="roomPts" style="color:var(--accent3)"></span>
-          </div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem"><span style="color:var(--text2)">CATEGORY: </span><span id="roomCat" style="color:var(--accent)"></span></div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem"><span style="color:var(--text2)">DIFFICULTY: </span><span id="roomDiff"></span></div>
+          <div style="background:var(--bg);border:1px solid var(--border);padding:0.75rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem"><span style="color:var(--text2)">REWARD: </span><span id="roomPts" style="color:var(--accent3)"></span></div>
         </div>
-        <div class="room-actions">
-          <button class="btn btn-primary" onclick="switchRoomTab('challenge',document.querySelectorAll('.room-tab')[1])">Start Challenge →</button>
-        </div>
+        <div style="margin-top:1.5rem"><button class="btn btn-primary" onclick="switchRTab('challenge',document.querySelectorAll('.room-tab')[1])">Start Challenge →</button></div>
       </div>
-      <div class="room-section" id="rsec-challenge">
-        <div class="room-challenge-area"><pre id="roomContent"></pre></div>
-        <div class="flag-input-row">
-          <input class="flag-input" id="flagInput" type="text" placeholder="Enter flag: FLAG{...}" onkeydown="if(event.key==='Enter')submitFlag()"/>
+      <div class="rs" id="rsec-challenge">
+        <div class="rca"><pre id="roomContent"></pre></div>
+        <div class="fir">
+          <input class="fi2" id="flagInput" type="text" placeholder="Enter flag: FLAG{...}" onkeydown="if(event.key==='Enter')submitFlag()"/>
           <button class="btn btn-primary" onclick="submitFlag()">Submit Flag</button>
         </div>
-        <div class="flag-feedback" id="flagFeedback"></div>
+        <div class="ff" id="flagFeedback"></div>
       </div>
-      <div class="room-section" id="rsec-hints">
-        <div id="hintsList"></div>
-      </div>
+      <div class="rs" id="rsec-hints"><div id="hintsList"></div></div>
     </div>
   </div>
 </div>
 
-<!-- ==================== SPLASH LOGIN PAGE ==================== -->
-<div id="splashPage" style="display:flex;position:fixed;inset:0;z-index:5000;background:var(--bg);align-items:center;justify-content:center;flex-direction:column">
-  <canvas id="splashCanvas" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.07"></canvas>
-  <div style="position:relative;z-index:1;text-align:center;width:100%;max-width:460px;padding:2rem">
-    <div style="font-family:'Orbitron',monospace;font-weight:900;font-size:2rem;color:var(--accent);text-shadow:0 0 30px rgba(0,255,229,0.6);letter-spacing:3px;margin-bottom:0.4rem">LET<span style="color:var(--accent2)">US</span>HACK</div>
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:3px;margin-bottom:2.5rem">// CYBERSECURITY TRAINING PLATFORM</div>
-
-    <!-- Tabs -->
-    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:2rem">
-      <div id="splashTabLogin" onclick="splashTab('login')" style="flex:1;padding:0.7rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:2px;cursor:pointer;color:var(--accent);border-bottom:2px solid var(--accent);margin-bottom:-1px;text-align:center">LOGIN</div>
-      <div id="splashTabRegister" onclick="splashTab('register')" style="flex:1;padding:0.7rem;font-family:'Share Tech Mono',monospace;font-size:0.8rem;letter-spacing:2px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;text-align:center;transition:color 0.2s">REGISTER</div>
-    </div>
-
-    <!-- Login Form -->
-    <div id="splashLogin">
-      <div style="margin-bottom:1rem;text-align:left">
-        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Username</label>
-        <input id="slUser" type="text" placeholder="your_hacker_alias" autocomplete="username" onkeydown="if(event.key==='Enter')splashLogin()" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-      </div>
-      <div style="margin-bottom:0.5rem;text-align:left">
-        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Password</label>
-        <input id="slPass" type="password" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')splashLogin()" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none;transition:border-color 0.2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-      </div>
-      <div id="slErr" style="display:none;color:var(--accent2);font-family:'Share Tech Mono',monospace;font-size:0.78rem;margin-bottom:0.75rem;text-align:left"></div>
-      <button onclick="splashLogin()" style="width:100%;padding:0.85rem;background:var(--accent);color:var(--bg);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.boxShadow='0 0 20px rgba(0,255,229,0.4)'" onmouseout="this.style.boxShadow='none'">Enter Platform</button>
-      <div style="margin-top:1rem;font-size:0.82rem;color:var(--text2)">No account? <span onclick="splashTab('register')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Register here</span></div>
-    </div>
-
-    <!-- Register Form -->
-    <div id="splashRegister" style="display:none">
-      <div style="margin-bottom:1rem;text-align:left">
-        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Username</label>
-        <input id="srUser" type="text" placeholder="your_hacker_alias" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-      </div>
-      <div style="margin-bottom:1rem;text-align:left">
-        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Email</label>
-        <input id="srEmail" type="email" placeholder="hacker@example.com" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-      </div>
-      <div style="margin-bottom:0.5rem;text-align:left">
-        <label style="display:block;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text2);letter-spacing:1px;margin-bottom:0.4rem;text-transform:uppercase">Password</label>
-        <input id="srPass" type="password" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')splashRegister()" style="width:100%;padding:0.75rem 1rem;background:var(--bg2);border:1px solid var(--border);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.9rem;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-      </div>
-      <div id="srErr" style="display:none;color:var(--accent2);font-family:'Share Tech Mono',monospace;font-size:0.78rem;margin-bottom:0.75rem;text-align:left"></div>
-      <button onclick="splashRegister()" style="width:100%;padding:0.85rem;background:var(--accent);color:var(--bg);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.boxShadow='0 0 20px rgba(0,255,229,0.4)'" onmouseout="this.style.boxShadow='none'">Create Account</button>
-      <div style="margin-top:1rem;font-size:0.82rem;color:var(--text2)">Already registered? <span onclick="splashTab('login')" style="color:var(--accent);cursor:pointer;text-decoration:underline">Login here</span></div>
-    </div>
-
-    <div style="margin-top:2.5rem;font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:rgba(255,255,255,0.15);letter-spacing:1px">Made with ❤️ by <span style="color:var(--accent2)">Shahdullah</span> &nbsp;·&nbsp; © 2026 LetUsHack</div>
-  </div>
-</div>
-<div class="modal-overlay" id="authModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div id="loginForm">
-      <h3>// Login</h3>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="loginUser" placeholder="your_hacker_alias" autocomplete="username"/>
-        <div class="form-error" id="loginErr"></div>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="loginPass" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-primary" onclick="doLogin()">Login</button>
-      </div>
-      <div class="modal-switch">No account? <span onclick="toggleAuthForm('signup')">Register here</span></div>
-    </div>
-    <div id="signupForm" style="display:none">
-      <h3>// Create Account</h3>
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="signupUser" placeholder="your_hacker_alias"/>
-        <div class="form-error" id="signupErr"></div>
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="signupEmail" placeholder="hacker@example.com"/>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="signupPass" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')doSignup()"/>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-primary" onclick="doSignup()">Create Account</button>
-      </div>
-      <div class="modal-switch">Already registered? <span onclick="toggleAuthForm('login')">Login here</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- LOCKED OVERLAY -->
-<div class="locked-overlay" id="lockedOverlay" style="display:none">
-  <div class="locked-box">
+<!-- LOCKED -->
+<div class="lo" id="lockedOverlay" style="display:none">
+  <div class="lo-box">
     <div style="font-size:3rem;margin-bottom:1rem">🔒</div>
     <h3>LOGIN REQUIRED</h3>
-    <p>You need to be logged in to access CTF challenges and earn HackCoins.</p>
-    <button class="btn btn-primary" onclick="hideLockedOverlay();openModal('login')">Login</button>
-    <button class="btn btn-outline" onclick="hideLockedOverlay();openModal('signup')">Register Free</button>
+    <p>Log in to access CTF challenges and earn HackCoins.</p>
+    <button class="btn btn-primary" style="margin:0.4rem" onclick="hideLocked();showSplash('login')">Login</button>
+    <button class="btn btn-outline" style="margin:0.4rem" onclick="hideLocked();showSplash('register')">Register Free</button>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span id="toastIcon">✅</span>
-  <span id="toastText"></span>
-</div>
+<div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastText"></span></div>
 
 <script>
-// ==================== DATA ====================
-const MISSIONS = [
-  {
-    id:'m1', name:'Base64 Decoded', cat:'crypto', diff:'easy', pts:50,
-    desc:'Someone has hidden a secret message by encoding it in Base64. Your mission: decode the string below and submit the hidden flag.',
-    content:`The intercepted transmission reads:
+// ═══════════════════════════════
+// SUPABASE CONFIG
+// Replace these with yours from supabase.com → Settings → API
+// ═══════════════════════════════
+const SUPABASE_URL = 'https://wzjokgdtzdntatfchgtb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_MrRziH8oebH1a67e-z2BKw_ZM5kQU7h';
 
-  ENCODED MESSAGE:
+let sb = null, sbReady = false;
+
+function initSB() {
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    document.getElementById('setupNote').style.display = 'block';
+    sbReady = false; return;
+  }
+  try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    sbReady = true;
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        await loadOrCreateProfile(session.user);
+        hideSplash(); updateNavUser(); renderCurrentPage();
+        showToast('🎉 Welcome, ' + (currentUser.username || 'hacker') + '!');
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null; updateNavUser(); showSplash('login');
+      }
+    });
+  } catch(e) { sbReady = false; }
+}
+
+// ═══ MISSIONS ═══
+const MISSIONS = [
+  {id:'m1',name:'Base64 Decoded',cat:'crypto',diff:'easy',pts:50,
+   desc:'Someone hid a secret message using Base64 encoding. Decode it to reveal the flag.',
+   content:`INTERCEPTED TRANSMISSION:
+
   RkxBR3toM2xsb193MHJsZF9iNHMzNjR9
 
-  Decode this Base64 string to reveal the flag.
-  
-  HINT: The flag format is FLAG{...}`,
-    flag:'FLAG{h3llo_w0rld_b4s364}',
-    hints:[
-      {cost:0, text:'Base64 uses characters A-Z, a-z, 0-9, +, / and ends with = padding.'},
-      {cost:15, text:'Try an online Base64 decoder or use: atob("RkxBR3toM2xsb193MHJsZF9iNHMzNjR9") in browser console.'},
-      {cost:25, text:'The decoded flag starts with FLAG{h3...'}
-    ]
-  },
-  {
-    id:'m2', name:'Caesar\'s Secret', cat:'crypto', diff:'easy', pts:75,
-    desc:'Julius Caesar used a simple substitution cipher to protect his messages. We intercepted an encrypted note — crack the cipher and find the flag.',
-    content:`Encrypted Message (ROT13):
-  
+Decode this Base64 string to get the flag.
+
+HOW: Open browser DevTools (press F12) → Console tab → type:
+  atob("RkxBR3toM2xsb193MHJsZF9iNHMzNjR9")
+
+Press Enter and read the output. That's your flag!`,
+   flag:'FLAG{h3llo_w0rld_b4s364}',
+   hints:[{cost:0,text:'Base64 is a common encoding. Every browser can decode it.'},{cost:15,text:'Open F12 → Console → paste: atob("RkxBR3toM2xsb193MHJsZF9iNHMzNjR9")'},{cost:20,text:'The flag is FLAG{h3llo_w0rld_b4s364}'}]},
+  {id:'m2',name:"Caesar's Secret",cat:'crypto',diff:'easy',pts:75,
+   desc:'Decode a ROT13 cipher used by a hidden operative. Each letter shifts 13 positions.',
+   content:`ENCRYPTED (ROT13):
+
   SYNT{pnrfne_pvcure_vf_rnfl}
-  
-  Instructions:
-  - This message uses ROT13 (Caesar cipher with shift 13)
-  - Each letter is shifted 13 places in the alphabet
-  - Decode it to get the flag
-  
-  Example: A → N, B → O, H → U, FLAG → SYNT`,
-    flag:'FLAG{caesar_cipher_is_easy}',
-    hints:[
-      {cost:0, text:'ROT13 means rotate each letter by 13. A=N, B=O, C=P... N=A, O=B...'},
-      {cost:15, text:'Type rot13 decoder in your browser search bar. Or use the browser console: "SYNT{pnrfne_pvcure_vf_rnfl}".replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26))'},
-      {cost:20, text:'The answer is FLAG{caesar_cipher_is_easy}'}
-    ]
-  },
-  {
-    id:'m3', name:'Hidden in Plain Sight', cat:'web', diff:'medium', pts:100,
-    desc:'A web developer accidentally left a secret flag inside the HTML source code of their page. Your job is to find it — just like a real pentester would.',
-    content:`TARGET PAGE SOURCE CODE:
-  ─────────────────────────────
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <title>SecureBank Login</title>
-    <!-- TODO: Remove before deployment -->
-    <!-- admin bypass: FLAG{d3v_n0t3s_4r3_d4ng3r0us} -->
-    <meta charset="UTF-8">
-  </head>
-  <body>
-    <h1>Welcome to SecureBank</h1>
-    <form>
-      <input type="text" placeholder="Username">
-      <input type="password" placeholder="Password">
-      <!-- backup_admin_pass: hunter2 (change this!) -->
-      <button>Login</button>
-    </form>
-  </body>
-  </html>
-  ─────────────────────────────
-  Find the hidden flag in the HTML comments above.`,
-    flag:'FLAG{d3v_n0t3s_4r3_d4ng3r0us}',
-    hints:[
-      {cost:0, text:'In real pentesting, always check page source (Ctrl+U) for commented-out credentials or flags.'},
-      {cost:10, text:'Look at the HTML comments carefully. Developers sometimes leave TODOs with sensitive info.'},
-      {cost:20, text:'The flag is in the comment that says "admin bypass"'}
-    ]
-  },
-  {
-    id:'m4', name:'Binary Whisper', cat:'forensics', diff:'medium', pts:125,
-    desc:'An unknown actor transmitted data using binary encoding. Convert the binary to ASCII text to reveal the hidden flag.',
-    content:`Intercepted Binary Transmission:
-  
-  01000110 01001100 01000001 01000111
-  01111011 01100010 00110001 01101110
-  01000001 01110010 01111001 01011111
-  00110001 01110011 01011111 01100110
-  00110000 01110101 01101110 01111101
-  
-  Instructions:
-  - Each 8-bit group = 1 ASCII character
-  - Convert each byte to its decimal value
-  - Then map to ASCII character
-  
-  Binary → Decimal → ASCII
-  01000110 = 70 = 'F'
-  01001100 = 76 = 'L'
-  01000001 = 65 = 'A'
-  ... continue the pattern`,
-    flag:'FLAG{b1nAry_1s_f0un}',
-    hints:[
-      {cost:0, text:'Binary to decimal: 01000110 = 0+64+0+0+0+4+2+0 = 70. ASCII 70 = \'F\''},
-      {cost:20, text:'Use an online binary to text converter. Paste the binary digits without spaces.'},
-      {cost:30, text:'The flag is FLAG{b1nAry_1s_f0un}'}
-    ]
-  },
-  {
-    id:'m5', name:'OSINT: Find the Hacker', cat:'osint', diff:'medium', pts:150,
-    desc:'A hacker left breadcrumbs across the internet. Using the clues below, piece together their identity and find the hidden flag.',
-    content:`OSINT INVESTIGATION BRIEF
-  ─────────────────────────────
-  Target: Unknown hacker known as "Gh0stB1t"
-  
-  Clue 1 - Their favorite quote:
+
+ROT13 key:
+  A↔N  B↔O  C↔P  D↔Q  E↔R  F↔S  G↔T
+  H↔U  I↔V  J↔W  K↔X  L↔Y  M↔Z
+
+Decode letter by letter:
+  S→F   Y→L   N→A   T→G   {unchanged}
+  p→c   n→a   r→e   f→s   n→a   r→e   _
+  ...continue the pattern to get the flag`,
+   flag:'FLAG{caesar_cipher_is_easy}',
+   hints:[{cost:0,text:'ROT13 is symmetric — apply it twice to get back the original.'},{cost:15,text:'Browser console: "SYNT{pnrfne_pvcure_vf_rnfl}".replace(/[a-zA-Z]/g,c=>String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26))'},{cost:20,text:'FLAG{caesar_cipher_is_easy}'}]},
+  {id:'m3',name:'Hidden in Plain Sight',cat:'web',diff:'medium',pts:100,
+   desc:'A developer left a secret flag in the HTML source code. Read the source and find it.',
+   content:`TARGET PAGE SOURCE CODE:
+──────────────────────────────
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SecureBank Login</title>
+  <!-- TODO: Remove before deployment -->
+  <!-- admin bypass: FLAG{d3v_n0t3s_4r3_d4ng3r0us} -->
+  <meta charset="UTF-8">
+</head>
+<body>
+  <!-- backup_admin_pass: hunter2 (CHANGE THIS!) -->
+  <h1>Welcome to SecureBank</h1>
+  <form>
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <button>Login</button>
+  </form>
+</body>
+</html>
+──────────────────────────────
+The flag is hidden in the HTML comments above.
+In real pentesting: press Ctrl+U on any website to view source.`,
+   flag:'FLAG{d3v_n0t3s_4r3_d4ng3r0us}',
+   hints:[{cost:0,text:'HTML comments are <!-- --> blocks. Developers forget to remove them before launch.'},{cost:10,text:'Find the comment that says "admin bypass" — the flag is right there.'},{cost:15,text:'FLAG{d3v_n0t3s_4r3_d4ng3r0us}'}]},
+  {id:'m4',name:'Binary Whisper',cat:'forensics',diff:'medium',pts:125,
+   desc:'Convert binary to ASCII text. Each group of 8 bits equals one ASCII character.',
+   content:`BINARY TRANSMISSION:
+
+01000110 01001100 01000001 01000111
+01111011 01100010 00110001 01101110
+01000001 01110010 01111001 01011111
+00110001 01110011 01011111 01100110
+00110000 01110101 01101110 01111101
+
+Conversion guide:
+  01000110 = 64+4+2 = 70 → ASCII 70 = 'F'
+  01001100 = 64+8+4 = 76 → ASCII 76 = 'L'
+  01000001 = 64+1   = 65 → ASCII 65 = 'A'
+  01000111 = 64+4+2+1=71 → ASCII 71 = 'G'
+
+Continue for all groups. The result is FLAG{...}`,
+   flag:'FLAG{b1nAry_1s_f0un}',
+   hints:[{cost:0,text:'Binary to decimal: add the values (128,64,32,16,8,4,2,1) where bit=1'},{cost:20,text:'Paste all binary without spaces into rapidtables.com/convert/number/binary-to-ascii.html'},{cost:30,text:'FLAG{b1nAry_1s_f0un}'}]},
+  {id:'m5',name:'OSINT: Find the Hacker',cat:'osint',diff:'medium',pts:150,
+   desc:'Use open source intelligence to identify a hacker and construct the flag from the clues.',
+   content:`OSINT INVESTIGATION
+──────────────────────────────
+Target: alias "Gh0stB1t"
+
+Clue 1 — Their favourite quote:
   "In the beginning there was the command line."
-  
-  Clue 2 - Their GitHub username format:
-  First 3 letters of their quote's author's last name
-  + the year Linux kernel was first released (just the year)
-  + "_ctf"
-  
-  Clue 3 - Linux kernel first release year: 1991
-  
-  Clue 4 - "In the beginning..." quote is by Neal Stephenson
-  
-  Solve: ste + 1991 + _ctf = ?
-  
-  The flag is: FLAG{ste1991_ctf}`,
-    flag:'FLAG{ste1991_ctf}',
-    hints:[
-      {cost:0, text:'OSINT = Open Source Intelligence. Use publicly available information to find answers.'},
-      {cost:20, text:'Neal Stephenson wrote "In the Beginning was the Command Line". First 3 letters of Stephenson = "ste"'},
-      {cost:25, text:'Linux kernel first release: 1991. Combine: ste + 1991 + _ctf'}
-    ]
-  },
-  {
-    id:'m6', name:'SQL Injection 101', cat:'web', diff:'hard', pts:200,
-    desc:'A login form is vulnerable to SQL injection. Analyze the backend query logic below and construct the correct injection payload to bypass authentication.',
-    content:`VULNERABLE LOGIN SYSTEM
-  ─────────────────────────────
-  Backend PHP Query:
-  
-  $query = "SELECT * FROM users 
-            WHERE username='$user' 
-            AND password='$pass'";
-  
-  The developer forgot to sanitize inputs!
-  
-  CHALLENGE: Which input bypasses this login?
-  
-  Option A: username = admin' OR '1'='1
-  Option B: username = admin' DROP TABLE users;--
-  Option C: username = admin' OR 1=1;--
-  Option D: username = ' OR '1'='1' --
-  
-  The correct bypass makes the WHERE clause always TRUE.
-  When ' OR '1'='1' is input, the query becomes:
-  SELECT * FROM users WHERE username='' OR '1'='1' AND password='...'
-  
-  The flag encodes the correct answer:
+
+Clue 2 — Flag format:
+  FLAG{ first_3_letters_of_author_surname + linux_release_year + _ctf }
+
+Clue 3 — Linux kernel first released: 1991
+
+Clue 4 — Quote author: Neal Stephenson
+
+──────────────────────────────
+Work it out:
+  Author surname = Stephenson
+  First 3 letters = "ste"
+  Linux year = 1991
+  Suffix = "_ctf"
+
+  Combine: ste + 1991 + _ctf = ?`,
+   flag:'FLAG{ste1991_ctf}',
+   hints:[{cost:0,text:'OSINT = Open Source Intelligence. The answer is entirely in the clues above.'},{cost:20,text:'"ste" from Stephenson + "1991" (Linux year) + "_ctf"'},{cost:25,text:'FLAG{ste1991_ctf}'}]},
+  {id:'m6',name:'SQL Injection 101',cat:'web',diff:'hard',pts:200,
+   desc:'Understand how SQL injection bypasses login systems. The flag is encoded in the technique name.',
+   content:`VULNERABLE PHP LOGIN:
+──────────────────────────────
+$query = "SELECT * FROM users
+          WHERE username='$user'
+          AND password='$pass'";
+
+ATTACK — enter this as username:
+  ' OR '1'='1' --
+
+RESULT:
+  WHERE username='' OR '1'='1' --' AND password=...
+
+Breaking it down:
+  ' → closes the username string
+  OR '1'='1' → always TRUE
+  -- → comments out the rest (password check)
+
+Effect: Login bypassed! Any user returned.
+This is why developers must use parameterized queries.
+
+The flag names this OR-based attack technique:
   FLAG{0r_1nj3ct10n_byp4ss}`,
-    flag:'FLAG{0r_1nj3ct10n_byp4ss}',
-    hints:[
-      {cost:0, text:'SQL injection works by breaking out of the string with a quote (\') and adding your own logic.'},
-      {cost:25, text:'The goal is to make the WHERE clause return TRUE for all rows. OR 1=1 always evaluates to TRUE.'},
-      {cost:35, text:'The flag is directly visible in the challenge content if you read carefully.'}
-    ]
-  }
+   flag:'FLAG{0r_1nj3ct10n_byp4ss}',
+   hints:[{cost:0,text:"SQL injection: break out of the string with ' and inject your own SQL logic."},{cost:25,text:"OR 1=1 is always TRUE → WHERE clause always passes → login bypassed."},{cost:35,text:'The flag is visible in the challenge text: FLAG{0r_1nj3ct10n_byp4ss}'}]}
 ];
 
-// Avatar colors
-const AVATAR_COLORS = [
-  ['#00ffe5','#0080ff'],['#ff3c6e','#ffd700'],['#39ff14','#00ffe5'],
-  ['#aa7fff','#ff3c6e'],['#ffd700','#ff6b00'],['#ff6b00','#aa7fff']
-];
+const ACOLORS=[['#00ffe5','#0080ff'],['#ff3c6e','#ffd700'],['#39ff14','#00ffe5'],['#aa7fff','#ff3c6e'],['#ffd700','#ff6b00'],['#ff6b00','#aa7fff']];
+let currentUser=null, currentMission=null, unlockedHints={}, activeFilter='all';
 
-// ==================== STATE ====================
-let currentUser = null;
-let currentMission = null;
-let currentRoomTab = 'brief';
-let unlockedHints = {};
+// ═══ LOCAL STORAGE (fallback) ═══
+const LS={
+  getUsers:()=>JSON.parse(localStorage.getItem('luh_users')||'{}'),
+  saveUser:(u)=>{const us=LS.getUsers();us[u.username]=u;localStorage.setItem('luh_users',JSON.stringify(us));localStorage.setItem('luh_cu',JSON.stringify(u));},
+  getCurrent:()=>{try{return JSON.parse(localStorage.getItem('luh_cu'))}catch{return null}},
+  clear:()=>localStorage.removeItem('luh_cu')
+};
 
-function loadState() {
-  const u = localStorage.getItem('luh_currentUser');
-  if (u) {
-    currentUser = JSON.parse(u);
-    updateNavUser();
-  }
+// ═══ SUPABASE HELPERS ═══
+async function loadOrCreateProfile(authUser) {
+  if (!sbReady) return;
+  try {
+    let {data} = await sb.from('profiles').select('*').eq('id', authUser.id).single();
+    if (!data) {
+      const uname = authUser.user_metadata?.preferred_username || authUser.user_metadata?.name || authUser.email.split('@')[0];
+      data = {id:authUser.id,username:uname,email:authUser.email,hc:100,xp:0,level:1,solved:[],badges:[],avatar_color:Math.floor(Math.random()*6),join_date:new Date().toLocaleDateString()};
+      await sb.from('profiles').insert(data);
+    }
+    currentUser = data;
+  } catch(e) { console.error(e); }
 }
-function saveUser() {
+async function saveUser() {
   if (!currentUser) return;
-  localStorage.setItem('luh_currentUser', JSON.stringify(currentUser));
-  const users = getUsers();
-  users[currentUser.username] = currentUser;
-  localStorage.setItem('luh_users', JSON.stringify(users));
+  if (sbReady) {
+    await sb.from('profiles').upsert({id:currentUser.id,hc:currentUser.hc,xp:currentUser.xp,level:currentUser.level,solved:currentUser.solved,badges:currentUser.badges}).eq('id',currentUser.id);
+  } else { LS.saveUser(currentUser); }
   updateNavUser();
 }
-function getUsers() {
-  return JSON.parse(localStorage.getItem('luh_users') || '{}');
+async function fetchLB() {
+  if (sbReady) {
+    const {data} = await sb.from('profiles').select('username,hc,solved,avatar_color').order('hc',{ascending:false}).limit(50);
+    return data||[];
+  }
+  return Object.values(LS.getUsers()).sort((a,b)=>(b.hc||0)-(a.hc||0));
 }
+
+// ═══ NAV ═══
 function updateNavUser() {
   if (currentUser) {
-    document.getElementById('navGuest').style.display = 'none';
-    document.getElementById('navUser').style.display = 'flex';
-    document.getElementById('navName').textContent = currentUser.username;
-    document.getElementById('navHC').textContent = '💰 ' + currentUser.hc + ' HC';
+    document.getElementById('navGuest').style.display='none';
+    document.getElementById('navUser').style.display='flex';
+    const n=currentUser.username||currentUser.email||'hacker';
+    document.getElementById('navName').textContent=n;
+    document.getElementById('navHC').textContent='💰 '+(currentUser.hc||0)+' HC';
+    const t=document.getElementById('termUser');
+    if(t) t.textContent=n;
   } else {
-    document.getElementById('navGuest').style.display = 'flex';
-    document.getElementById('navUser').style.display = 'none';
+    document.getElementById('navGuest').style.display='flex';
+    document.getElementById('navUser').style.display='none';
   }
 }
 
-// ==================== AUTH ====================
-function openModal(type) {
-  document.getElementById('authModal').classList.add('active');
-  toggleAuthForm(type);
-}
-function closeModal() {
-  document.getElementById('authModal').classList.remove('active');
-  clearErrors();
-}
-function toggleAuthForm(type) {
-  document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
-  document.getElementById('signupForm').style.display = type === 'signup' ? 'block' : 'none';
-  clearErrors();
-}
-function clearErrors() {
-  document.querySelectorAll('.form-error').forEach(e => { e.style.display = 'none'; e.textContent = ''; });
-}
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg; el.style.display = 'block';
+// ═══ AUTH ═══
+async function oauthLogin(provider) {
+  if (!sbReady) { showToast('⚠️ Add Supabase credentials to enable OAuth!'); return; }
+  const {error} = await sb.auth.signInWithOAuth({provider, options:{redirectTo:window.location.href}});
+  if (error) showToast('❌ '+error.message);
 }
 
-function doLogin() {
-  const user = document.getElementById('loginUser').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  if (!user || !pass) { showError('loginErr', 'All fields required.'); return; }
-  const users = getUsers();
-  if (!users[user]) { showError('loginErr', 'Username not found.'); return; }
-  if (users[user].password !== btoa(pass)) { showError('loginErr', 'Wrong password.'); return; }
-  currentUser = users[user];
-  saveUser();
-  closeModal();
-  showToast('🎉 Welcome back, ' + currentUser.username + '!');
-  renderCurrentPage();
+async function doLogin() {
+  const user=document.getElementById('slUser').value.trim();
+  const pass=document.getElementById('slPass').value;
+  const err=document.getElementById('slErr');
+  const btn=document.getElementById('slBtn');
+  err.style.display='none';
+  if (!user||!pass){showE('slErr','All fields required.');return;}
+  setLoading(btn,true,'Authenticating...');
+  if (sbReady) {
+    try {
+      const {data:prof} = await sb.from('profiles').select('email').eq('username',user).single();
+      if (!prof) {showE('slErr','Username not found. Check spelling or register.');setLoading(btn,false,'Enter Platform');return;}
+      const {error} = await sb.auth.signInWithPassword({email:prof.email,password:pass});
+      if (error) {showE('slErr','Wrong password. Try again.');setLoading(btn,false,'Enter Platform');return;}
+      // onAuthStateChange handles the rest
+    } catch(e) {showE('slErr','Error: '+e.message);setLoading(btn,false,'Enter Platform');}
+  } else {
+    await delay(500);
+    const users=LS.getUsers();
+    if (!users[user]){showE('slErr','Username not found. Check spelling or register.');setLoading(btn,false,'Enter Platform');return;}
+    if (users[user].password!==btoa(pass)){showE('slErr','Wrong password. Try again.');setLoading(btn,false,'Enter Platform');return;}
+    currentUser=users[user];
+    LS.saveUser(currentUser);
+    hideSplash(); updateNavUser(); setLoading(btn,false,'Enter Platform');
+    showToast('🎉 Welcome back, '+currentUser.username+'!');
+  }
 }
 
-function doSignup() {
-  const user = document.getElementById('signupUser').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const pass = document.getElementById('signupPass').value;
-  if (!user || !email || !pass) { showError('signupErr', 'All fields required.'); return; }
-  if (user.length < 3) { showError('signupErr', 'Username must be at least 3 characters.'); return; }
-  if (pass.length < 6) { showError('signupErr', 'Password must be at least 6 characters.'); return; }
-  const users = getUsers();
-  if (users[user]) { showError('signupErr', 'Username already taken.'); return; }
-  const colorIdx = Math.floor(Math.random() * AVATAR_COLORS.length);
-  currentUser = {
-    username: user, email: email, password: btoa(pass),
-    hc: 100, xp: 0, level: 1, solved: [], badges: [],
-    avatarColor: colorIdx, joinDate: new Date().toLocaleDateString()
-  };
-  saveUser();
-  closeModal();
-  showToast('🚀 Account created! +100 HC welcome bonus!');
-  renderCurrentPage();
+async function doRegister() {
+  const user=document.getElementById('srUser').value.trim();
+  const email=document.getElementById('srEmail').value.trim();
+  const pass=document.getElementById('srPass').value;
+  const btn=document.getElementById('srBtn');
+  document.getElementById('srErr').style.display='none';
+  if (!user||!email||!pass){showE('srErr','All fields required.');return;}
+  if (user.length<3){showE('srErr','Username: minimum 3 characters.');return;}
+  if (pass.length<6){showE('srErr','Password: minimum 6 characters.');return;}
+  if (!email.includes('@')){showE('srErr','Enter a valid email address.');return;}
+  setLoading(btn,true,'Creating account...');
+  if (sbReady) {
+    try {
+      const {data:ex} = await sb.from('profiles').select('username').eq('username',user).single();
+      if (ex){showE('srErr','Username already taken. Choose another.');setLoading(btn,false,'Create Account');return;}
+      const {error} = await sb.auth.signUp({email,password:pass,options:{data:{preferred_username:user}}});
+      if (error){showE('srErr',error.message);setLoading(btn,false,'Create Account');return;}
+      showToast('📧 Check your email to confirm your account!');
+      setLoading(btn,false,'Create Account');
+    } catch(e){showE('srErr',e.message);setLoading(btn,false,'Create Account');}
+  } else {
+    await delay(500);
+    const users=LS.getUsers();
+    if (users[user]){showE('srErr','Username already taken. Choose another.');setLoading(btn,false,'Create Account');return;}
+    currentUser={username:user,email,password:btoa(pass),hc:100,xp:0,level:1,solved:[],badges:[],avatarColor:Math.floor(Math.random()*6),joinDate:new Date().toLocaleDateString()};
+    LS.saveUser(currentUser);
+    hideSplash(); updateNavUser(); setLoading(btn,false,'Create Account');
+    showToast('🚀 Account created! +100 HC welcome bonus!');
+  }
 }
 
-function logout() {
-  currentUser = null;
-  localStorage.removeItem('luh_currentUser');
-  updateNavUser();
-  showPage('home');
-  // Show splash login page again
-  const sp = document.getElementById('splashPage');
-  sp.style.display = 'flex';
-  sp.style.opacity = '1';
-  initSplashMatrix();
-  showToast('👋 Logged out. See you soon!');
+async function doLogout() {
+  if (sbReady) await sb.auth.signOut();
+  else { currentUser=null; LS.clear(); updateNavUser(); showSplash('login'); }
+  showToast('👋 See you soon!');
 }
 
-// ==================== PAGES ====================
+// ═══ SPLASH UI ═══
+function splashTab(tab) {
+  document.getElementById('sL').style.display=tab==='login'?'block':'none';
+  document.getElementById('sR').style.display=tab==='register'?'block':'none';
+  document.getElementById('stL').className='sp-tab'+(tab==='login'?' active':'');
+  document.getElementById('stR').className='sp-tab'+(tab==='register'?' active':'');
+}
+let splashInterval=null;
+function showSplash(tab='login') {
+  const sp=document.getElementById('splashPage');
+  sp.style.display='flex'; sp.style.opacity='1'; sp.style.transition='';
+  splashTab(tab); startSplashMatrix();
+}
+function hideSplash() {
+  const sp=document.getElementById('splashPage');
+  sp.style.transition='opacity 0.5s'; sp.style.opacity='0';
+  setTimeout(()=>{sp.style.display='none';},500);
+}
+function togglePwd(id,icon){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';icon.textContent=i.type==='password'?'👁':'🙈';}
+function showE(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+function setLoading(btn,loading,text){btn.disabled=loading;btn.innerHTML=loading?`<span class="spin"></span>${text}`:text;}
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+// ═══ PAGES ═══
 function showPage(name) {
-  if ((name === 'ctf' || name === 'profile') && !currentUser) {
-    document.getElementById('lockedOverlay').style.display = 'flex';
-    return;
-  }
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  window.scrollTo(0, 0);
-  if (name === 'ctf') renderMissions();
-  if (name === 'leaderboard') renderLeaderboard();
-  if (name === 'profile') renderProfile();
+  if ((name==='ctf'||name==='profile')&&!currentUser) {document.getElementById('lockedOverlay').style.display='flex';return;}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='ctf') renderMissions();
+  if(name==='leaderboard') renderLB();
+  if(name==='profile') renderProfile();
 }
-function goHome() { showPage('home'); }
-function hideLockedOverlay() { document.getElementById('lockedOverlay').style.display = 'none'; }
-function renderCurrentPage() {
-  const active = document.querySelector('.page.active');
-  if (!active) return;
-  const id = active.id.replace('page-', '');
-  if (id === 'ctf') renderMissions();
-  if (id === 'leaderboard') renderLeaderboard();
-  if (id === 'profile') renderProfile();
-}
+function goHome(){showPage('home');}
+function hideLocked(){document.getElementById('lockedOverlay').style.display='none';}
+function renderCurrentPage(){const a=document.querySelector('.page.active');if(!a)return;const id=a.id.replace('page-','');if(id==='ctf')renderMissions();if(id==='leaderboard')renderLB();if(id==='profile')renderProfile();}
 
-// ==================== CTF / MISSIONS ====================
-let activeFilter = 'all';
-function filterMissions(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderMissions();
-}
+// ═══ MISSIONS ═══
+function filterM(cat,btn){activeFilter=cat;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderMissions();}
 function renderMissions() {
-  const grid = document.getElementById('missionsGrid');
-  const list = activeFilter === 'all' ? MISSIONS : MISSIONS.filter(m => m.cat === activeFilter);
-  grid.innerHTML = list.map(m => {
-    const solved = currentUser && currentUser.solved.includes(m.id);
-    return `<div class="mission-card${solved ? ' solved' : ''}" onclick="openMission('${m.id}')">
-      <div class="mission-top">
-        <span class="cat-badge cat-${m.cat}">${m.cat.toUpperCase()}</span>
-        <span class="diff-${m.diff}">${m.diff.toUpperCase()}</span>
-      </div>
-      <div class="mission-name">${m.name}</div>
-      <div class="mission-desc">${m.desc.substring(0, 90)}...</div>
-      <div class="mission-footer">
-        <span class="mission-pts">💰 ${m.pts} HC</span>
-        <span style="font-size:0.78rem;color:var(--text2)">${solved ? '✓ Solved' : '→ Attempt'}</span>
-      </div>
+  const grid=document.getElementById('missionsGrid');
+  const list=activeFilter==='all'?MISSIONS:MISSIONS.filter(m=>m.cat===activeFilter);
+  if(!list.length){grid.innerHTML='<p style="color:var(--text2);font-family:Share Tech Mono,monospace;padding:2rem">No challenges in this category yet.</p>';return;}
+  grid.innerHTML=list.map(m=>{
+    const solved=currentUser&&(currentUser.solved||[]).includes(m.id);
+    return `<div class="mc${solved?' solved':''}" onclick="openMission('${m.id}')">
+      <div class="mt2"><span class="cb cat-${m.cat}">${m.cat.toUpperCase()}</span><span class="diff-${m.diff}">${m.diff.toUpperCase()}</span></div>
+      <div class="mn">${m.name}</div>
+      <div class="md">${m.desc.substring(0,90)}...</div>
+      <div class="mf"><span class="mpts">💰 ${m.pts} HC</span><span style="font-size:0.78rem">${solved?'✓ Solved':'→ Attempt'}</span></div>
     </div>`;
   }).join('');
 }
-
 function openMission(id) {
-  if (!currentUser) { document.getElementById('lockedOverlay').style.display = 'flex'; return; }
-  currentMission = MISSIONS.find(m => m.id === id);
+  if (!currentUser){document.getElementById('lockedOverlay').style.display='flex';return;}
+  currentMission=MISSIONS.find(m=>m.id===id);
   if (!currentMission) return;
-  document.getElementById('roomTitle').textContent = '// ' + currentMission.name;
-  document.getElementById('roomDesc').textContent = currentMission.desc;
-  document.getElementById('roomCat').textContent = currentMission.cat.toUpperCase();
-  document.getElementById('roomDiff').textContent = currentMission.diff.toUpperCase();
-  document.getElementById('roomDiff').style.color = currentMission.diff === 'easy' ? 'var(--green)' : currentMission.diff === 'medium' ? 'var(--accent3)' : 'var(--accent2)';
-  document.getElementById('roomPts').textContent = currentMission.pts + ' HC';
-  document.getElementById('roomContent').textContent = currentMission.content;
-  document.getElementById('flagInput').value = '';
-  const fb = document.getElementById('flagFeedback');
-  fb.style.display = 'none'; fb.className = 'flag-feedback';
+  document.getElementById('roomTitle').textContent='// '+currentMission.name;
+  document.getElementById('roomDesc').textContent=currentMission.desc;
+  document.getElementById('roomCat').textContent=currentMission.cat.toUpperCase();
+  document.getElementById('roomDiff').textContent=currentMission.diff.toUpperCase();
+  document.getElementById('roomDiff').style.color=currentMission.diff==='easy'?'var(--green)':currentMission.diff==='medium'?'var(--accent3)':'var(--accent2)';
+  document.getElementById('roomPts').textContent=currentMission.pts+' HC';
+  document.getElementById('roomContent').textContent=currentMission.content;
+  document.getElementById('flagInput').value='';
+  const fb=document.getElementById('flagFeedback');fb.style.display='none';fb.className='ff';
   renderHints(id);
-  switchRoomTab('brief', document.querySelector('.room-tab'));
+  switchRTab('brief',document.querySelector('.room-tab'));
   document.getElementById('challengeRoom').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-function closeRoom() {
-  document.getElementById('challengeRoom').classList.remove('open');
-  document.body.style.overflow = '';
+function closeRoom(){document.getElementById('challengeRoom').classList.remove('open');document.body.style.overflow='';}
+function switchRTab(name,btn){
+  document.querySelectorAll('.room-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('.rs').forEach(s=>s.classList.remove('active'));document.getElementById('rsec-'+name).classList.add('active');
 }
-function switchRoomTab(name, btn) {
-  currentRoomTab = name;
-  document.querySelectorAll('.room-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.room-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('rsec-' + name).classList.add('active');
-}
-function renderHints(missionId) {
-  const mission = MISSIONS.find(m => m.id === missionId);
-  if (!mission) return;
-  if (!unlockedHints[missionId]) unlockedHints[missionId] = [];
-  const html = mission.hints.map((h, i) => {
-    const unlocked = unlockedHints[missionId].includes(i) || h.cost === 0;
+function renderHints(mId) {
+  const m=MISSIONS.find(x=>x.id===mId);if(!m)return;
+  if (!unlockedHints[mId]) unlockedHints[mId]=[];
+  document.getElementById('hintsList').innerHTML=m.hints.map((h,i)=>{
+    const unlocked=unlockedHints[mId].includes(i)||h.cost===0;
     return `<div style="background:var(--bg);border:1px solid var(--border);padding:1.25rem;margin-bottom:0.75rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${unlocked?'0.75rem':'0'}">
+      <div style="display:flex;justify-content:space-between;align-items:center;${unlocked?'margin-bottom:0.75rem':''}">
         <span style="font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--text2)">HINT ${i+1}</span>
-        ${!unlocked ? `<button class="btn btn-sm" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);color:var(--accent3);padding:0.3rem 0.75rem;font-size:0.75rem" onclick="unlockHint('${missionId}',${i},${h.cost})">🔓 Unlock (-${h.cost} HC)</button>` : '<span style="font-size:0.75rem;color:var(--green);font-family:Share Tech Mono,monospace">UNLOCKED</span>'}
+        ${!unlocked?`<button onclick="unlockHint('${mId}',${i},${h.cost})" style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);color:var(--accent3);padding:0.3rem 0.75rem;font-size:0.75rem;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:700">🔓 Unlock (-${h.cost} HC)</button>`:'<span style="font-size:0.75rem;color:var(--green);font-family:Share Tech Mono,monospace">✓ UNLOCKED</span>'}
       </div>
-      ${unlocked ? `<div style="font-size:0.88rem;color:var(--text2);line-height:1.6;font-family:Share Tech Mono,monospace">${h.text}</div>` : `<div style="font-size:0.82rem;color:rgba(255,255,255,0.2);font-family:Share Tech Mono,monospace">████████████████████</div>`}
+      ${unlocked?`<div style="font-size:0.88rem;color:var(--text2);line-height:1.6;font-family:Share Tech Mono,monospace">${h.text}</div>`:'<div style="color:rgba(255,255,255,0.15);font-family:Share Tech Mono,monospace;font-size:0.88rem">████████████████████████████</div>'}
     </div>`;
   }).join('');
-  document.getElementById('hintsList').innerHTML = html;
 }
-function unlockHint(missionId, hintIdx, cost) {
-  if (!currentUser) return;
-  if (currentUser.hc < cost) { showToast('❌ Not enough HackCoins! Solve more challenges.'); return; }
-  if (!unlockedHints[missionId]) unlockedHints[missionId] = [];
-  if (unlockedHints[missionId].includes(hintIdx)) return;
-  currentUser.hc -= cost;
-  unlockedHints[missionId].push(hintIdx);
-  saveUser();
-  renderHints(missionId);
-  showToast('💡 Hint unlocked! -' + cost + ' HC');
+async function unlockHint(mId,idx,cost) {
+  if(!currentUser)return;
+  if(currentUser.hc<cost){showToast('❌ Not enough HackCoins!');return;}
+  if(!unlockedHints[mId])unlockedHints[mId]=[];
+  if(unlockedHints[mId].includes(idx))return;
+  currentUser.hc-=cost; unlockedHints[mId].push(idx);
+  await saveUser(); renderHints(mId); showToast('💡 Hint unlocked! -'+cost+' HC');
 }
-function submitFlag() {
-  const input = document.getElementById('flagInput').value.trim();
-  const fb = document.getElementById('flagFeedback');
-  if (!input) return;
-  if (!currentMission) return;
-  const solved = currentUser && currentUser.solved.includes(currentMission.id);
-  if (input === currentMission.flag) {
-    fb.textContent = '✅ CORRECT! Flag accepted! +' + (solved ? '0 (already solved)' : currentMission.pts) + ' HC earned!';
-    fb.className = 'flag-feedback correct';
-    fb.style.display = 'block';
-    if (!solved) {
+async function submitFlag() {
+  const input=document.getElementById('flagInput').value.trim();
+  const fb=document.getElementById('flagFeedback');
+  if(!input||!currentMission)return;
+  const already=(currentUser.solved||[]).includes(currentMission.id);
+  if (input===currentMission.flag) {
+    fb.textContent='✅ CORRECT!'+(already?' Already solved — no extra HC.':' +'+currentMission.pts+' HC earned!');
+    fb.className='ff correct'; fb.style.display='block';
+    if (!already) {
+      if(!currentUser.solved)currentUser.solved=[];
       currentUser.solved.push(currentMission.id);
-      currentUser.hc += currentMission.pts;
-      currentUser.xp += currentMission.pts * 2;
-      currentUser.level = Math.floor(currentUser.xp / 500) + 1;
-      checkBadges();
-      saveUser();
-      showToast('🎉 Challenge solved! +' + currentMission.pts + ' HC');
+      currentUser.hc=(currentUser.hc||0)+currentMission.pts;
+      currentUser.xp=(currentUser.xp||0)+currentMission.pts*2;
+      currentUser.level=Math.floor(currentUser.xp/500)+1;
+      checkBadges(); await saveUser();
+      showToast('🎉 Solved! +'+currentMission.pts+' HC');
       renderMissions();
     }
   } else {
-    fb.textContent = '❌ Wrong flag. Keep trying! Check hints if stuck.';
-    fb.className = 'flag-feedback wrong';
-    fb.style.display = 'block';
+    fb.textContent='❌ Wrong flag. Keep trying! Use hints if stuck.';
+    fb.className='ff wrong'; fb.style.display='block';
   }
 }
 function checkBadges() {
-  if (!currentUser) return;
-  const s = currentUser.solved;
-  const badges = currentUser.badges;
-  if (s.length >= 1 && !badges.includes('first_blood')) { badges.push('first_blood'); showToast('🏅 Badge Unlocked: First Blood!'); }
-  if (s.length >= 3 && !badges.includes('triple')) { badges.push('triple'); showToast('🏅 Badge Unlocked: Triple Threat!'); }
-  if (s.length >= 6 && !badges.includes('elite')) { badges.push('elite'); showToast('🏅 Badge Unlocked: Elite Hacker!'); }
-  const webSolved = MISSIONS.filter(m => m.cat === 'web' && s.includes(m.id)).length;
-  if (webSolved >= 2 && !badges.includes('web_master')) { badges.push('web_master'); showToast('🏅 Badge Unlocked: Web Master!'); }
-  const cryptoSolved = MISSIONS.filter(m => m.cat === 'crypto' && s.includes(m.id)).length;
-  if (cryptoSolved >= 2 && !badges.includes('crypto_king')) { badges.push('crypto_king'); showToast('🏅 Badge Unlocked: Crypto King!'); }
+  const s=currentUser.solved||[],b=currentUser.badges||[];
+  const add=(id,msg)=>{if(!b.includes(id)){b.push(id);showToast('🏅 Badge: '+msg+'!');}};
+  if(s.length>=1)add('first_blood','First Blood');
+  if(s.length>=3)add('triple','Triple Threat');
+  if(s.length>=6)add('elite','Elite Hacker');
+  if(MISSIONS.filter(m=>m.cat==='web'&&s.includes(m.id)).length>=2)add('web_master','Web Master');
+  if(MISSIONS.filter(m=>m.cat==='crypto'&&s.includes(m.id)).length>=2)add('crypto_king','Crypto King');
+  currentUser.badges=b;
 }
 
-// ==================== LEADERBOARD ====================
-function renderLeaderboard() {
-  const users = getUsers();
-  let all = Object.values(users);
-  all.sort((a,b) => (b.hc||0) - (a.hc||0));
-  const medals = ['gold','silver','bronze'];
-  const body = document.getElementById('lbBody');
-  if (all.length === 0) {
-    body.innerHTML = '<div style="padding:3rem;text-align:center;font-family:Share Tech Mono,monospace;color:var(--text2)">No hackers ranked yet. Be the first to register and solve challenges!</div>';
-    return;
-  }
-  body.innerHTML = all.slice(0,50).map((u,i) => {
-    const isMe = currentUser && u.username === currentUser.username;
-    const c = AVATAR_COLORS[u.avatarColor % AVATAR_COLORS.length];
+// ═══ LEADERBOARD ═══
+async function renderLB() {
+  const body=document.getElementById('lbBody');
+  body.innerHTML='<div style="padding:2rem;text-align:center;font-family:Share Tech Mono,monospace;color:var(--text2)"><span class="spin"></span> Loading rankings...</div>';
+  const all=await fetchLB();
+  if(!all.length){body.innerHTML='<div style="padding:3rem;text-align:center;font-family:Share Tech Mono,monospace;color:var(--text2)">No hackers ranked yet. Be the first! 🏆<br><br><span style="color:var(--accent);cursor:pointer" onclick="showPage(\'ctf\')">→ Start solving challenges</span></div>';return;}
+  const medals=['gold','silver','bronze'];
+  body.innerHTML=all.map((u,i)=>{
+    const isMe=currentUser&&(u.username===currentUser.username||u.id===currentUser.id);
+    const ci=(u.avatar_color??u.avatarColor??0)%ACOLORS.length;
+    const c=ACOLORS[ci],name=u.username||'hacker';
     return `<div class="lb-row${isMe?' me':''}">
-      <div class="lb-rank${i<3?' '+medals[i]:''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
-      <div class="lb-avatar" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${u.username[0].toUpperCase()}</div>
-      <div class="lb-name">${u.username}${isMe?' <span style="font-size:0.7rem;color:var(--accent);font-family:Share Tech Mono,monospace">(you)</span>':''}</div>
-      <div class="lb-solved">${(u.solved||[]).length} solved</div>
-      <div class="lb-score">${(u.hc||0).toLocaleString()} HC</div>
+      <div class="lbr${i<3?' '+medals[i]:''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+      <div class="lba" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${name[0].toUpperCase()}</div>
+      <div class="lbn">${name}${isMe?' <span style="font-size:0.7rem;color:var(--accent);font-family:Share Tech Mono,monospace">(you)</span>':''}</div>
+      <div class="lbs2">${(u.solved||[]).length} solved</div>
+      <div class="lbs">${(u.hc||0).toLocaleString()} HC</div>
     </div>`;
   }).join('');
 }
 
-// ==================== PROFILE ====================
-const ALL_BADGES = [
-  {id:'first_blood', icon:'🩸', name:'First Blood', desc:'Solve your first challenge'},
-  {id:'triple', icon:'⚡', name:'Triple Threat', desc:'Solve 3 challenges'},
-  {id:'web_master', icon:'🌐', name:'Web Master', desc:'Solve all web challenges'},
-  {id:'crypto_king', icon:'🔐', name:'Crypto King', desc:'Solve all crypto challenges'},
-  {id:'elite', icon:'👑', name:'Elite Hacker', desc:'Solve all 6 challenges'},
-];
+// ═══ PROFILE ═══
+const BADGES=[{id:'first_blood',icon:'🩸',name:'First Blood',desc:'Solve 1st challenge'},{id:'triple',icon:'⚡',name:'Triple Threat',desc:'Solve 3 challenges'},{id:'web_master',icon:'🌐',name:'Web Master',desc:'All web challenges'},{id:'crypto_king',icon:'🔐',name:'Crypto King',desc:'All crypto challenges'},{id:'elite',icon:'👑',name:'Elite Hacker',desc:'All 6 challenges'}];
 function renderProfile() {
-  if (!currentUser) { showPage('home'); return; }
-  const xpForNextLevel = currentUser.level * 500;
-  const xpInCurrentLevel = currentUser.xp - ((currentUser.level - 1) * 500);
-  const xpPct = Math.min(100, Math.round((xpInCurrentLevel / 500) * 100));
-  const c = AVATAR_COLORS[currentUser.avatarColor % AVATAR_COLORS.length];
-  const solvedMissions = MISSIONS.filter(m => currentUser.solved.includes(m.id));
-  const html = `
-    <div class="profile-header">
-      <div class="profile-avatar-big" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${currentUser.username[0].toUpperCase()}</div>
-      <div class="profile-info">
-        <h3>${currentUser.username}</h3>
-        <p>${currentUser.email}</p>
-        <p style="margin-top:0.25rem;color:var(--text2)">Member since ${currentUser.joinDate}</p>
-        <div class="xp-bar-wrap" style="max-width:280px">
-          <div class="xp-label"><span>Level ${currentUser.level}</span><span>${xpInCurrentLevel} / 500 XP</span></div>
-          <div class="xp-bar"><div class="xp-fill" style="width:${xpPct}%"></div></div>
-        </div>
-      </div>
-      <div class="profile-stats-row">
-        <div class="pstat"><div class="pstat-num">${currentUser.hc}</div><div class="pstat-label">HackCoins</div></div>
-        <div class="pstat"><div class="pstat-num">${currentUser.solved.length}</div><div class="pstat-label">Solved</div></div>
-        <div class="pstat"><div class="pstat-num">${currentUser.level}</div><div class="pstat-label">Level</div></div>
-        <div class="pstat"><div class="pstat-num">${currentUser.badges.length}</div><div class="pstat-label">Badges</div></div>
+  if (!currentUser){showPage('home');return;}
+  const xpIn=(currentUser.xp||0)-((currentUser.level-1||0)*500);
+  const xpPct=Math.min(100,Math.round((xpIn/500)*100));
+  const ci=((currentUser.avatar_color??currentUser.avatarColor)??0)%ACOLORS.length;
+  const c=ACOLORS[ci],solved=currentUser.solved||[],badges=currentUser.badges||[];
+  const name=currentUser.username||currentUser.email||'hacker';
+  const solvedMs=MISSIONS.filter(m=>solved.includes(m.id));
+  document.getElementById('profileContent').innerHTML=`
+  <div class="ph">
+    <div class="pav" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${name[0].toUpperCase()}</div>
+    <div class="pi">
+      <h3>${name}</h3>
+      <p>${currentUser.email||''}</p>
+      <p style="margin-top:0.25rem">Member since ${currentUser.joinDate||currentUser.join_date||'Today'}</p>
+      <div class="xpw" style="max-width:280px">
+        <div class="xpl2"><span>Level ${currentUser.level||1}</span><span>${xpIn} / 500 XP</span></div>
+        <div class="xpb"><div class="xpf" style="width:${xpPct}%"></div></div>
       </div>
     </div>
-    <div class="profile-grid">
-      <div class="profile-card">
-        <h4>Solved Challenges</h4>
-        ${solvedMissions.length === 0 ? '<p style="color:var(--text2);font-size:0.88rem">No challenges solved yet. <span style="color:var(--accent);cursor:pointer" onclick="showPage(\'ctf\')">Start now →</span></p>' :
-        '<div class="solved-list">' + solvedMissions.map(m => `
-          <div class="solved-item">
-            <span class="solved-item-name">${m.name}</span>
-            <span class="solved-item-pts">+${m.pts} HC</span>
-          </div>`).join('') + '</div>'}
-      </div>
-      <div class="profile-card">
-        <h4>Achievement Badges</h4>
-        <div class="badge-grid-small">
-          ${ALL_BADGES.map(b => {
-            const earned = currentUser.badges.includes(b.id);
-            return `<div class="badge-sm" title="${b.desc}">
-              <div class="badge-hex-sm ${earned?'earned':'locked'}">${b.icon}</div>
-              <div class="badge-lbl">${b.name}</div>
-            </div>`;
-          }).join('')}
-        </div>
-        ${currentUser.badges.length === 0 ? '<p style="color:var(--text2);font-size:0.8rem;margin-top:1rem">Solve challenges to unlock badges!</p>' : ''}
-      </div>
-    </div>`;
-  document.getElementById('profileContent').innerHTML = html;
+    <div class="psr">
+      <div class="ps"><div class="psn">${currentUser.hc||0}</div><div class="psl">HackCoins</div></div>
+      <div class="ps"><div class="psn">${solved.length}</div><div class="psl">Solved</div></div>
+      <div class="ps"><div class="psn">${currentUser.level||1}</div><div class="psl">Level</div></div>
+      <div class="ps"><div class="psn">${badges.length}</div><div class="psl">Badges</div></div>
+    </div>
+  </div>
+  <div class="pg">
+    <div class="pcard">
+      <h4>Solved Challenges</h4>
+      ${solvedMs.length===0?'<p style="color:var(--text2);font-size:0.88rem">None yet. <span style="color:var(--accent);cursor:pointer" onclick="showPage(\'ctf\')">Start solving →</span></p>':
+      '<div class="sl2">'+solvedMs.map(m=>`<div class="si2"><span style="color:#fff;font-weight:600">${m.name}</span><span style="font-family:Share Tech Mono,monospace;color:var(--accent3);font-size:0.8rem">+${m.pts} HC</span></div>`).join('')+'</div>'}
+    </div>
+    <div class="pcard">
+      <h4>Achievement Badges</h4>
+      <div class="bg-g">${BADGES.map(b=>`<div class="bsm" title="${b.desc}"><div class="bhx ${badges.includes(b.id)?'earned':'locked'}">${b.icon}</div><div class="blbl">${b.name}</div></div>`).join('')}</div>
+      ${badges.length===0?'<p style="color:var(--text2);font-size:0.8rem;margin-top:1rem">Solve challenges to earn badges!</p>':''}
+    </div>
+  </div>`;
 }
 
-// ==================== SPLASH PAGE ====================
-function splashTab(tab) {
-  document.getElementById('splashLogin').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('splashRegister').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('splashTabLogin').style.color = tab === 'login' ? 'var(--accent)' : 'var(--text2)';
-  document.getElementById('splashTabLogin').style.borderBottom = tab === 'login' ? '2px solid var(--accent)' : '2px solid transparent';
-  document.getElementById('splashTabRegister').style.color = tab === 'register' ? 'var(--accent)' : 'var(--text2)';
-  document.getElementById('splashTabRegister').style.borderBottom = tab === 'register' ? '2px solid var(--accent)' : '2px solid transparent';
-}
-function hideSplash() {
-  const sp = document.getElementById('splashPage');
-  sp.style.transition = 'opacity 0.5s';
-  sp.style.opacity = '0';
-  setTimeout(() => sp.style.display = 'none', 500);
-}
-function splashLogin() {
-  const user = document.getElementById('slUser').value.trim();
-  const pass = document.getElementById('slPass').value;
-  const err = document.getElementById('slErr');
-  err.style.display = 'none';
-  if (!user || !pass) { err.textContent = 'All fields required.'; err.style.display = 'block'; return; }
-  const users = getUsers();
-  if (!users[user]) { err.textContent = 'Username not found.'; err.style.display = 'block'; return; }
-  if (users[user].password !== btoa(pass)) { err.textContent = 'Wrong password.'; err.style.display = 'block'; return; }
-  currentUser = users[user];
-  saveUser();
-  hideSplash();
-  showToast('🎉 Welcome back, ' + currentUser.username + '!');
-}
-function splashRegister() {
-  const user = document.getElementById('srUser').value.trim();
-  const email = document.getElementById('srEmail').value.trim();
-  const pass = document.getElementById('srPass').value;
-  const err = document.getElementById('srErr');
-  err.style.display = 'none';
-  if (!user || !email || !pass) { err.textContent = 'All fields required.'; err.style.display = 'block'; return; }
-  if (user.length < 3) { err.textContent = 'Username must be at least 3 characters.'; err.style.display = 'block'; return; }
-  if (pass.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.style.display = 'block'; return; }
-  const users = getUsers();
-  if (users[user]) { err.textContent = 'Username already taken.'; err.style.display = 'block'; return; }
-  const colorIdx = Math.floor(Math.random() * AVATAR_COLORS.length);
-  currentUser = {
-    username: user, email: email, password: btoa(pass),
-    hc: 100, xp: 0, level: 1, solved: [], badges: [],
-    avatarColor: colorIdx, joinDate: new Date().toLocaleDateString()
-  };
-  saveUser();
-  hideSplash();
-  showToast('🚀 Account created! +100 HC welcome bonus!');
-}
-function initSplashMatrix() {
-  const canvas = document.getElementById('splashCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-  resize(); window.addEventListener('resize', resize);
-  const chars = '01アイウエオABCDEFGHIJKLMNOP';
-  const fs = 12; let drops = [];
-  function reset() { drops = Array(Math.floor(canvas.width/fs)).fill(1); }
-  reset();
-  setInterval(() => {
-    ctx.fillStyle = 'rgba(7,11,15,0.05)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#00ffe5';
-    ctx.font = fs + 'px Share Tech Mono';
-    drops.forEach((d,i) => {
-      ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, d*fs);
-      if (d*fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
+// ═══ MATRIX ═══
+function startMatrix(id) {
+  const cv=document.getElementById(id);if(!cv)return null;
+  const ctx=cv.getContext('2d');
+  function rsz(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;}rsz();
+  window.addEventListener('resize',rsz);
+  const chars='01アイウエオABCDEFGHIJKLMNOP';
+  const fs=12;let drops=[];
+  function reset(){drops=Array(Math.floor(cv.width/fs)).fill(1);}reset();
+  return setInterval(()=>{
+    ctx.fillStyle='rgba(7,11,15,0.05)';ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.fillStyle='#00ffe5';ctx.font=fs+'px Share Tech Mono';
+    drops.forEach((d,i)=>{
+      ctx.fillText(chars[Math.floor(Math.random()*chars.length)],i*fs,d*fs);
+      if(d*fs>cv.height&&Math.random()>0.975)drops[i]=0;drops[i]++;
     });
-  }, 55);
+  },55);
 }
+function startSplashMatrix(){if(splashInterval)clearInterval(splashInterval);splashInterval=startMatrix('splashCanvas');}
 
+// ═══ COUNTERS ═══
+function animateCounters(){document.querySelectorAll('[data-target]').forEach(el=>{const t=parseInt(el.dataset.target);let c=0;const iv=setInterval(()=>{c+=t/80;if(c>=t){c=t;clearInterval(iv);}el.textContent=Math.floor(c).toLocaleString();},20);});}
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){animateCounters();obs.disconnect();}});});
 
-function initMatrix() {
-  const canvas = document.getElementById('matrixCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-  resize(); window.addEventListener('resize', resize);
-  const chars = '01アイウエオABCDEFGHIJKLMNOP';
-  const fs = 12;
-  let drops = [];
-  function reset() { drops = Array(Math.floor(canvas.width/fs)).fill(1); }
-  reset();
-  setInterval(() => {
-    ctx.fillStyle = 'rgba(7,11,15,0.05)';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#00ffe5';
-    ctx.font = fs + 'px Share Tech Mono';
-    drops.forEach((d,i) => {
-      ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, d*fs);
-      if (d*fs > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    });
-  }, 55);
-}
+// ═══ TOAST ═══
+let toastT;
+function showToast(msg){const el=document.getElementById('toast');document.getElementById('toastText').textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3500);}
 
-// ==================== COUNTERS ====================
-function animateCounters() {
-  document.querySelectorAll('[data-target]').forEach(el => {
-    const target = parseInt(el.dataset.target);
-    let cur = 0; const step = target / 80;
-    const t = setInterval(() => {
-      cur += step; if (cur >= target) { cur = target; clearInterval(t); }
-      el.textContent = Math.floor(cur).toLocaleString();
-    }, 20);
-  });
-}
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { animateCounters(); obs.disconnect(); } });
-});
-
-// ==================== TOAST ====================
-let toastTimer;
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  document.getElementById('toastText').textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
-}
-
-// ==================== INIT ====================
-window.addEventListener('load', () => {
-  loadState();
-  // Show splash if not logged in, skip if already logged in
-  if (currentUser) {
-    document.getElementById('splashPage').style.display = 'none';
+// ═══ INIT ═══
+window.addEventListener('load', async ()=>{
+  initSB();
+  if (sbReady) {
+    const {data:{session}} = await sb.auth.getSession();
+    if (session) { await loadOrCreateProfile(session.user); hideSplash(); updateNavUser(); }
+    else { showSplash('login'); startSplashMatrix(); }
   } else {
-    initSplashMatrix();
+    const saved=LS.getCurrent();
+    if (saved) { currentUser=saved; hideSplash(); updateNavUser(); }
+    else { showSplash('login'); startSplashMatrix(); }
   }
-  initMatrix();
-  const hs = document.querySelector('.hero-stats');
-  if (hs) obs.observe(hs);
-  document.getElementById('authModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('authModal')) closeModal();
-  });
-  document.getElementById('challengeRoom').addEventListener('click', e => {
-    if (e.target === document.getElementById('challengeRoom')) closeRoom();
-  });
+  startMatrix('matrixCanvas');
+  const hs=document.querySelector('.hero-stats');
+  if(hs)obs.observe(hs);
+  document.getElementById('challengeRoom').addEventListener('click',e=>{if(e.target===document.getElementById('challengeRoom'))closeRoom();});
 });
 </script>
 </body>
