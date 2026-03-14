@@ -4,528 +4,555 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LetUsHack – Cybersecurity Training</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
   --bg:#0d0f14;--bg2:#12151c;--bg3:#181c25;--bg4:#1e2330;--bg5:#252b38;
-  --purple:#7c3aed;--purple2:#6d28d9;--purple-light:#a78bfa;
-  --red:#ef4444;--red2:#dc2626;--green:#22c55e;--yellow:#eab308;--blue:#3b82f6;
-  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --purple:#7c3aed;--purple2:#6d28d9;--purple3:#a78bfa;
+  --red:#ef4444;--green:#22c55e;--yellow:#eab308;--blue:#3b82f6;--cyan:#06b6d4;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#475569;
   --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --card:var(--bg2);
 }
-*{box-sizing:border-box;margin:0;padding:0}
+.light-mode{
+  --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--bg4:#f1f5f9;--bg5:#e2e8f0;
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.12);
+  --card:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color 0.3s,color 0.3s,border-color 0.3s}
 html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(124,58,237,0.3);border-radius:2px}
 
-/* ── SPLASH ── */
+/* ──────── SPLASH ──────── */
 #splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center}
-#splashBg{position:absolute;inset:0;opacity:0.04}
-.sp-card{position:relative;z-index:1;width:380px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:2rem;box-shadow:0 24px 48px rgba(0,0,0,0.5)}
-.sp-brand{display:flex;align-items:center;gap:10px;margin-bottom:1.75rem;justify-content:center}
-.sp-brand-icon{width:32px;height:32px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.sp-brand-icon svg{width:18px;height:18px;fill:#fff}
-.sp-brand-name{font-family:'Orbitron',monospace;font-weight:700;font-size:1rem;color:#fff;letter-spacing:2px}
-.sp-tabs{display:flex;background:var(--bg3);border-radius:8px;padding:3px;margin-bottom:1.5rem;gap:3px}
-.sp-tab{flex:1;padding:0.5rem;text-align:center;border-radius:6px;cursor:pointer;font-size:0.82rem;font-weight:500;color:var(--text2);transition:all 0.2s}
-.sp-tab.active{background:var(--purple);color:#fff}
-.sp-form-group{margin-bottom:1rem}
-.sp-label{display:block;font-size:0.75rem;font-weight:500;color:var(--text2);margin-bottom:0.4rem;letter-spacing:0.5px}
-.sp-input{width:100%;padding:0.65rem 0.875rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:#fff;font-size:0.88rem;outline:none;transition:border-color 0.2s;font-family:'Inter',sans-serif}
-.sp-input:focus{border-color:var(--purple-light)}
-.sp-input::placeholder{color:var(--text3)}
-.sp-btn{width:100%;padding:0.7rem;background:var(--purple);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;margin-top:0.25rem;font-family:'Inter',sans-serif}
+#sBg{position:absolute;inset:0;width:100%;height:100%;opacity:0.06}
+.sp-wrap{position:relative;z-index:1;width:400px}
+.sp-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:2rem;box-shadow:0 32px 64px rgba(0,0,0,0.5)}
+.sp-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:1.75rem}
+.sp-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--red),#dc2626);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.sp-logo-icon svg{width:22px;height:22px;fill:#fff}
+.sp-logo-text{font-family:'Orbitron',monospace;font-weight:900;font-size:1.1rem;color:var(--text);letter-spacing:2px}
+.sp-tabs{display:flex;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:1.5rem}
+.sp-tab{flex:1;padding:0.5rem;text-align:center;border-radius:8px;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--text2);transition:all 0.2s}
+.sp-tab.on{background:var(--purple);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,0.4)}
+label{display:block;font-size:0.72rem;font-weight:600;color:var(--text2);margin-bottom:0.4rem;letter-spacing:0.3px}
+input[type=text],input[type=email],input[type=password]{width:100%;padding:0.65rem 0.875rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:0.88rem;outline:none;font-family:'Inter',sans-serif;transition:border-color 0.2s}
+input:focus{border-color:var(--purple3)}
+input::placeholder{color:var(--text3)}
+.fg{margin-bottom:0.875rem}
+.sp-btn{width:100%;padding:0.72rem;background:var(--purple);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;margin-top:0.25rem}
 .sp-btn:hover{background:var(--purple2);box-shadow:0 0 20px rgba(124,58,237,0.4)}
 .sp-btn:disabled{opacity:0.5;cursor:not-allowed}
 .sp-err{display:none;color:var(--red);font-size:0.78rem;margin-bottom:0.75rem;padding:0.5rem 0.75rem;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:6px}
-.sp-divider{display:flex;align-items:center;gap:0.75rem;margin:1rem 0;color:var(--text3);font-size:0.75rem}
-.sp-divider::before,.sp-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.oauth-btn{width:100%;padding:0.6rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.2s;margin-bottom:0.5rem;font-family:'Inter',sans-serif}
-.oauth-btn:hover{border-color:rgba(255,255,255,0.2);background:var(--bg4)}
-.sp-switch{text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--text2)}
-.sp-switch a{color:var(--purple-light);cursor:pointer;font-weight:500}
-.pwd-row{position:relative}
-.pwd-row .sp-input{padding-right:2.5rem}
-.pwd-eye{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);font-size:0.9rem;user-select:none}
+.sp-div{display:flex;align-items:center;gap:0.75rem;margin:0.875rem 0;color:var(--text3);font-size:0.75rem}
+.sp-div::before,.sp-div::after{content:'';flex:1;height:1px;background:var(--border)}
+.ob{width:100%;padding:0.6rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:0.84rem;font-weight:500;cursor:pointer;transition:all 0.2s;margin-bottom:0.5rem;font-family:'Inter',sans-serif}
+.ob:hover{border-color:var(--border2);background:var(--bg4)}
+.sp-sw{text-align:center;margin-top:1rem;font-size:0.8rem;color:var(--text2)}
+.sp-sw a{color:var(--purple3);cursor:pointer;font-weight:600}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:2.5rem}
+.pw-eye{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);user-select:none;font-size:0.9rem}
 .sp-credit{text-align:center;margin-top:1.25rem;font-size:0.7rem;color:var(--text3)}
-.sp-credit span{color:var(--purple-light)}
+.sp-credit b{color:var(--purple3)}
 
-/* ── APP LAYOUT ── */
+/* ──────── APP ──────── */
 .app{display:flex;height:100vh;overflow:hidden}
 
 /* SIDEBAR */
-.sidebar{width:56px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:0.75rem 0;transition:width 0.25s ease;position:relative;z-index:50;overflow:hidden;flex-shrink:0}
-.sidebar.expanded{width:200px}
-.sb-logo{width:36px;height:36px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;cursor:pointer;flex-shrink:0}
+.sidebar{width:56px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:0.75rem 0;position:relative;z-index:50;flex-shrink:0;transition:width 0.25s}
+.sidebar.exp{width:210px}
+.sb-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--red),#b91c1c);border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;cursor:pointer;flex-shrink:0}
 .sb-logo svg{width:20px;height:20px;fill:#fff}
 .sb-nav{display:flex;flex-direction:column;gap:2px;width:100%;padding:0 0.5rem;flex:1}
-.sb-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 0.75rem;border-radius:8px;cursor:pointer;color:var(--text2);transition:all 0.2s;white-space:nowrap;position:relative}
-.sb-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
-.sb-item.active{background:rgba(124,58,237,0.15);color:var(--purple-light)}
-.sb-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--purple);border-radius:0 2px 2px 0}
-.sb-icon{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem}
-.sb-label{font-size:0.82rem;font-weight:500;opacity:0;transition:opacity 0.2s}
-.sidebar.expanded .sb-label{opacity:1}
-.sb-bottom{padding:0.5rem;margin-top:auto;width:100%}
-.sb-user{display:flex;align-items:center;gap:0.65rem;padding:0.65rem 0.75rem;border-radius:8px;cursor:pointer;transition:all 0.2s}
-.sb-user:hover{background:rgba(255,255,255,0.05)}
-.sb-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#fff;flex-shrink:0;font-family:'Inter',sans-serif}
-.sb-uname{font-size:0.78rem;font-weight:500;color:var(--text);white-space:nowrap;opacity:0;transition:opacity 0.2s;overflow:hidden;text-overflow:ellipsis;max-width:110px}
-.sidebar.expanded .sb-uname{opacity:1}
-.sb-darkmode{display:flex;align-items:center;gap:0.65rem;padding:0.5rem 0.75rem;cursor:pointer;color:var(--text2);border-radius:8px}
-.sb-darkmode:hover{background:rgba(255,255,255,0.05)}
-.dm-icon{font-size:0.9rem}
-.dm-label{font-size:0.78rem;opacity:0;transition:opacity 0.2s;white-space:nowrap}
-.sidebar.expanded .dm-label{opacity:1}
+.sbi{display:flex;align-items:center;gap:0.75rem;padding:0.62rem 0.75rem;border-radius:8px;cursor:pointer;color:var(--text2);transition:all 0.2s;white-space:nowrap;position:relative;overflow:hidden}
+.sbi:hover{background:rgba(255,255,255,0.05);color:var(--text)}
+.sbi.on{background:rgba(124,58,237,0.15);color:var(--purple3)}
+.sbi.on::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2.5px;background:var(--purple);border-radius:0 2px 2px 0}
+.sb-ic{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.sb-lbl{font-size:0.82rem;font-weight:500;opacity:0;transition:opacity 0.2s;pointer-events:none}
+.sidebar.exp .sb-lbl{opacity:1}
+.sb-bot{padding:0.5rem;margin-top:auto;width:100%;display:flex;flex-direction:column;gap:2px}
+.sb-dm{display:flex;align-items:center;gap:0.75rem;padding:0.55rem 0.75rem;border-radius:8px;cursor:pointer;color:var(--text2);transition:all 0.2s;white-space:nowrap}
+.sb-dm:hover{background:rgba(255,255,255,0.05);color:var(--text)}
+.sb-dm-ic{font-size:0.95rem;width:20px;text-align:center;flex-shrink:0}
+.sb-dm-lbl{font-size:0.82rem;font-weight:500;opacity:0;transition:opacity 0.2s}
+.sidebar.exp .sb-dm-lbl{opacity:1}
+.sb-usr{display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.75rem;border-radius:8px;cursor:pointer;transition:all 0.2s}
+.sb-usr:hover{background:rgba(255,255,255,0.05)}
+.sb-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#fff;flex-shrink:0}
+.sb-un{font-size:0.78rem;font-weight:500;color:var(--text);white-space:nowrap;opacity:0;transition:opacity 0.2s;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.sidebar.exp .sb-un{opacity:1}
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-
-/* TOPBAR */
 .topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;flex-shrink:0}
-.tb-left{display:flex;align-items:center;gap:0.75rem}
-.tb-breadcrumb{font-size:0.82rem;color:var(--text2)}
-.tb-breadcrumb span{color:var(--text)}
-.tb-right{display:flex;align-items:center;gap:0.75rem}
-.tb-xp{background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);padding:0.2rem 0.65rem;border-radius:20px;font-size:0.75rem;color:var(--yellow);font-weight:600}
-.tb-vpn{display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--text3)}
-.tb-vpn-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.tb-l{display:flex;align-items:center;gap:0.75rem}
+.tb-bc{font-size:0.82rem;color:var(--text2)}
+.tb-bc b{color:var(--text)}
+.tb-r{display:flex;align-items:center;gap:0.875rem}
+.xp-pill{background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.25);padding:0.22rem 0.65rem;border-radius:20px;font-size:0.75rem;color:var(--yellow);font-weight:700}
+.vpn-badge{display:flex;align-items:center;gap:0.35rem;font-size:0.72rem;color:var(--green)}
+.vpn-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:glow 2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 4px var(--green)}50%{box-shadow:0 0 8px var(--green)}}
+.content{flex:1;overflow-y:auto;overflow-x:hidden}
 
-/* CONTENT */
-.content-area{flex:1;overflow-y:auto;overflow-x:hidden}
-
-/* ── PAGES ── */
+/* PAGES */
 .page{display:none;min-height:100%}
-.page.active{display:block}
+.page.on{display:block}
 
-/* ── DASHBOARD ── */
-.dash-wrap{padding:1.5rem;max-width:1200px}
-.dash-hero{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;display:flex;gap:1.25rem;flex-wrap:wrap}
-.dash-continue{flex:1;min-width:300px}
-.dash-continue-label{font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.75rem;font-weight:600}
-.dash-mission-card{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:1rem;cursor:pointer;transition:all 0.2s}
-.dash-mission-card:hover{border-color:rgba(124,58,237,0.4)}
-.dmc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
-.dmc-name{font-weight:600;font-size:0.92rem;color:#fff}
-.dmc-diff{font-size:0.68rem;padding:2px 8px;border-radius:3px;font-weight:600;font-family:'Inter',sans-serif}
-.diff-easy{background:rgba(34,197,94,0.15);color:var(--green)}
-.diff-medium{background:rgba(234,179,8,0.15);color:var(--yellow)}
-.diff-hard{background:rgba(239,68,68,0.15);color:var(--red)}
-.diff-expert{background:rgba(124,58,237,0.2);color:var(--purple-light)}
-.diff-intermediate{background:rgba(59,130,246,0.15);color:var(--blue)}
-.dmc-meta{font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem}
-.dmc-progress{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
-.dmc-progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:2px;transition:width 0.5s}
-.dash-side{flex:1;min-width:260px}
-.dash-side-label{font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.75rem;font-weight:600}
-.last-activity{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem 1rem;display:flex;align-items:center;justify-content:space-between}
-.la-status{font-size:0.72rem;color:var(--text3);font-weight:600}
-.la-val{font-size:0.82rem;color:var(--text2)}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
-.dash-badge-progress{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
-.dbp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-.dbp-title{font-size:0.82rem;font-weight:600;color:var(--text)}
-.dbp-cycle{font-size:0.7rem;color:var(--text3);background:var(--bg3);padding:2px 8px;border-radius:4px}
-.badge-bars{display:flex;gap:3px}
-.badge-bar{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px}
-.badge-bar.filled{background:var(--purple)}
-.dash-heatmap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
-.hm-title{font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:1rem}
-.hm-grid{display:flex;gap:3px;align-items:flex-end}
-.hm-cell{flex:1;height:18px;background:rgba(255,255,255,0.04);border-radius:2px}
-.hm-cell.low{background:rgba(124,58,237,0.2)}
-.hm-cell.mid{background:rgba(124,58,237,0.5)}
-.hm-cell.high{background:var(--purple)}
-.hm-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:0.65rem;color:var(--text3)}
-.dash-events{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
-.de-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem}
-.de-dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
-.de-title{font-size:0.82rem;font-weight:600;color:var(--text)}
-.event-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem;margin-bottom:0.5rem;cursor:pointer;transition:border-color 0.2s}
-.event-item:hover{border-color:var(--border2)}
-.ei-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem}
-.ei-name{font-size:0.85rem;font-weight:600;color:#fff}
-.ei-badge{font-size:0.65rem;padding:2px 6px;border-radius:3px;font-weight:600}
-.ei-multi{background:rgba(124,58,237,0.2);color:var(--purple-light)}
-.ei-live{background:rgba(239,68,68,0.2);color:var(--red)}
-.ei-opt{background:rgba(34,197,94,0.15);color:var(--green)}
-.ei-meta{font-size:0.72rem;color:var(--text3);display:flex;gap:1rem}
+/* ──────── DASHBOARD ──────── */
+.dash{padding:1.5rem;max-width:1280px}
+.dash-welcome{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.75rem;margin-bottom:1.25rem;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center}
+.dw-greeting{font-size:0.72rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;margin-bottom:0.4rem}
+.dw-title{font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:0.4rem}
+.dw-title span{color:var(--purple3)}
+.dw-sub{font-size:0.82rem;color:var(--text3)}
+.dw-meta{display:flex;align-items:center;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
+.dw-meta-item{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--text2)}
+.dw-meta-item b{color:var(--purple3)}
+.dw-xp-bar{width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.dw-xp-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:2px}
+.dw-directive{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;min-width:240px}
+.dd-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:0.25rem;font-weight:600}
+.dd-name{font-size:0.9rem;font-weight:700;color:var(--text)}
+.dd-timer{font-size:0.8rem;color:var(--purple3);font-family:'Share Tech Mono',monospace}
+.dd-play{width:36px;height:36px;background:var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.2s}
+.dd-play:hover{background:var(--purple2);box-shadow:0 0 16px rgba(124,58,237,0.4)}
+.dash-raze{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem}
+.raze-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#059669,#0d9488);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:2px solid rgba(5,150,105,0.4);position:relative}
+.raze-dot{position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:var(--green);border:2px solid var(--bg2)}
+.raze-name{font-size:0.72rem;color:var(--green);font-weight:600;margin-bottom:0.15rem}
+.raze-msg{font-size:0.88rem;font-weight:600;color:var(--text)}
+.raze-focus{margin-left:auto;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.3);color:var(--green);padding:0.4rem 1rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.perf-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.pc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem}
+.pc-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);display:inline-block;margin-right:0.4rem}
+.pc-title{font-size:0.82rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.5px}
+.pc-count{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.pc-count b{font-size:1rem;color:var(--text);display:block}
+.pc-total{font-size:2rem;font-weight:800;color:var(--text);margin-bottom:0.25rem}
+.pc-sub{font-size:0.75rem;color:var(--purple3);font-weight:600}
+.chart-wrap{height:140px;margin-top:0.75rem}
+.stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:0.875rem}
+.sc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+.sc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin-bottom:0.75rem}
+.sc-icon.g{background:rgba(34,197,94,0.12)}
+.sc-icon.b{background:rgba(59,130,246,0.12)}
+.sc-icon.r{background:rgba(239,68,68,0.12)}
+.sc-icon.y{background:rgba(234,179,8,0.12)}
+.sc-trend{font-size:0.68rem;color:var(--green);font-weight:600;float:right;background:rgba(34,197,94,0.1);padding:1px 6px;border-radius:3px}
+.sc-val{font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:0.15rem}
+.sc-lbl{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
 
-/* ── MISSIONS PAGE ── */
-.missions-wrap{padding:1.25rem}
-.missions-header-bar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem}
-.mh-title{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:0.25rem}
-.mh-sub{font-size:0.8rem;color:var(--text2)}
-.mh-progress{font-size:0.75rem;color:var(--text3)}
-.resume-btn{background:var(--purple);color:#fff;padding:0.55rem 1.1rem;border-radius:8px;border:none;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
-.resume-btn:hover{background:var(--purple2);box-shadow:0 0 16px rgba(124,58,237,0.3)}
-.progress-bars{display:flex;gap:3px;margin-bottom:1.25rem}
-.progress-seg{height:4px;flex:1;background:rgba(255,255,255,0.06);border-radius:2px}
-.progress-seg.done{background:var(--purple)}
-.missions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
-.mission-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
-.mission-card:hover{border-color:rgba(124,58,237,0.35);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
-.mission-card.active-mission{border-color:rgba(124,58,237,0.5);box-shadow:0 0 0 1px rgba(124,58,237,0.2)}
-.mc-tags{display:flex;justify-content:space-between;margin-bottom:1rem}
+/* ──────── MISSIONS ──────── */
+.miss-wrap{padding:1.25rem;max-width:1200px}
+.miss-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem}
+.miss-title{font-size:1.1rem;font-weight:800;color:var(--text)}
+.miss-sub{font-size:0.78rem;color:var(--text2);margin-top:0.2rem}
+.resume-btn{background:var(--purple);color:#fff;padding:0.55rem 1.25rem;border-radius:8px;border:none;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.resume-btn:hover{background:var(--purple2)}
+.prog-segs{display:flex;gap:3px;margin-bottom:1.25rem}
+.ps{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;transition:background 0.3s}
+.ps.done{background:var(--purple)}
+.miss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.mc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden}
+.mc:hover{border-color:rgba(124,58,237,0.35);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+.mc.solved{border-color:rgba(34,197,94,0.2)}
+.mc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.mc-tags{display:flex;gap:0.4rem;flex-wrap:wrap}
 .mc-type{font-size:0.65rem;color:var(--text3);font-weight:600;letter-spacing:0.5px}
-.mc-arrow{width:40px;height:40px;border-radius:8px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:1.1rem;transition:all 0.2s}
-.mission-card:hover .mc-arrow{background:rgba(124,58,237,0.2);color:var(--purple-light)}
-.mc-name{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:0.35rem}
+.mc-arrow{width:36px;height:36px;background:var(--bg3);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:0.9rem;transition:all 0.2s;flex-shrink:0}
+.mc:hover .mc-arrow{background:rgba(124,58,237,0.2);color:var(--purple3)}
+.mc-name{font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:0.35rem}
 .mc-meta{font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem;display:flex;gap:0.75rem}
 .mc-status{font-size:0.72rem;font-weight:600;color:var(--text3)}
-.mc-status.solved{color:var(--green)}
-.mc-start-btn{display:none;margin-top:0.75rem}
-.mission-card:hover .mc-start-btn{display:block}
-.mc-start{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:var(--purple-light);padding:0.45rem 1rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.4rem;width:100%;justify-content:space-between;font-family:'Inter',sans-serif}
-.mc-start:hover{background:rgba(124,58,237,0.25)}
+.mc-status.ok{color:var(--green)}
+.mc-btn{display:none;margin-top:0.75rem}
+.mc:hover .mc-btn{display:block}
+.mc-go{width:100%;background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.25);color:var(--purple3);padding:0.45rem 1rem;border-radius:7px;font-size:0.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'Inter',sans-serif;transition:all 0.2s}
+.mc-go:hover{background:rgba(124,58,237,0.22)}
+.diff{font-size:0.65rem;padding:2px 7px;border-radius:4px;font-weight:700}
+.d-easy{background:rgba(34,197,94,0.12);color:var(--green)}
+.d-medium{background:rgba(234,179,8,0.12);color:var(--yellow)}
+.d-hard{background:rgba(239,68,68,0.12);color:var(--red)}
+.d-expert{background:rgba(124,58,237,0.15);color:var(--purple3)}
+.d-inter{background:rgba(59,130,246,0.12);color:var(--blue)}
 
-/* ── MISSION ROOM ── */
-#missionRoom{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);overflow-y:auto}
-#missionRoom.open{display:flex;flex-direction:column}
-.mr-topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.mr-machines{display:flex;align-items:center;gap:1rem}
-.mr-machine{display:flex;align-items:center;gap:0.65rem;padding:0.4rem 0.875rem;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all 0.2s;font-size:0.78rem;font-weight:500}
-.mr-machine:hover{border-color:var(--border2)}
-.mr-machine.running{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.08)}
-.mr-machine.attacker-running{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.06)}
-.mr-m-dot{width:7px;height:7px;border-radius:50%;background:var(--text3)}
-.mr-m-dot.red{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,0.5)}
-.mr-m-dot.green{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,0.5);animation:pulse-dot 2s infinite}
-@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.5}}
-.mr-m-label{color:var(--text)}
-.mr-m-sub{font-size:0.68rem;color:var(--text3)}
-.mr-stop-btn{background:var(--red);color:#fff;border:none;padding:0.3rem 0.75rem;border-radius:5px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.mr-start-btn{background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:0.3rem 0.75rem;border-radius:5px;font-size:0.72rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:0.35rem;font-family:'Inter',sans-serif}
-.mr-start-btn:hover{border-color:rgba(34,197,94,0.4);color:var(--green)}
-.mr-right{display:flex;align-items:center;gap:0.75rem}
-.mr-vpn{font-size:0.72rem;color:var(--green);display:flex;align-items:center;gap:0.35rem}
-.mr-exit{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:0.4rem 0.875rem;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
-.mr-exit:hover{background:var(--bg4);color:var(--text)}
+/* ──────── MISSION ROOM ──────── */
+#room{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column}
+#room.on{display:flex}
+.room-top{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 1rem;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.rm-machines{display:flex;align-items:center;gap:0.75rem}
+.rm-m{display:flex;align-items:center;gap:0.65rem;padding:0.4rem 0.875rem;border-radius:7px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all 0.2s;font-size:0.78rem}
+.rm-m.run{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.06)}
+.rm-m.att-run{border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.05)}
+.rm-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.rm-dot.r{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,0.6)}
+.rm-dot.g{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,0.6);animation:glow 2s infinite}
+.rm-ml{font-weight:600;color:var(--text)}
+.rm-ms{font-size:0.68rem;color:var(--text3)}
+.rm-stop{background:var(--red);color:#fff;border:none;padding:0.28rem 0.65rem;border-radius:5px;font-size:0.7rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.rm-start{background:transparent;border:none;color:var(--green);font-size:0.7rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.25rem;font-family:'Inter',sans-serif}
+.rm-r{display:flex;align-items:center;gap:1rem}
+.rm-vpn{font-size:0.72rem;color:var(--green);display:flex;align-items:center;gap:0.35rem}
+.rm-exit{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);padding:0.4rem 0.875rem;border-radius:7px;font-size:0.78rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:0.35rem}
+.rm-exit:hover{background:var(--bg4);color:var(--text)}
+.room-body{display:flex;flex:1;overflow:hidden}
 
-/* ROOM BODY */
-.mr-body{display:flex;flex:1;overflow:hidden}
-.mr-left{width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:1rem;flex-shrink:0;overflow-y:auto}
-.mr-tasks-label{font-size:0.68rem;color:var(--text3);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.75rem}
-.task-item{display:flex;align-items:center;gap:0.65rem;padding:0.5rem 0.65rem;border-radius:6px;cursor:pointer;margin-bottom:0.25rem;transition:all 0.2s}
-.task-item:hover{background:var(--bg3)}
-.task-item.active-task{background:rgba(124,58,237,0.1)}
-.task-circle{width:20px;height:20px;border-radius:50%;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;transition:all 0.2s}
-.task-circle.done{border-color:var(--green);background:var(--green);color:#fff}
-.task-circle.active-c{border-color:var(--purple)}
-.task-name{font-size:0.78rem;font-weight:500;color:var(--text2)}
-.task-xp{font-size:0.65rem;color:var(--text3);margin-left:auto}
+/* LEFT TASKS */
+.rm-left{width:215px;background:var(--bg2);border-right:1px solid var(--border);padding:1rem;flex-shrink:0;overflow-y:auto}
+.rm-tl{font-size:0.65rem;color:var(--text3);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.875rem}
+.tk{display:flex;align-items:center;gap:0.65rem;padding:0.5rem 0.65rem;border-radius:7px;cursor:pointer;transition:all 0.2s;margin-bottom:2px}
+.tk:hover{background:var(--bg3)}
+.tk.on{background:rgba(124,58,237,0.1)}
+.tk-c{width:20px;height:20px;border-radius:50%;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;transition:all 0.2s}
+.tk-c.done{border-color:var(--green);background:var(--green);color:#fff}
+.tk-c.act{border-color:var(--purple)}
+.tk-n{font-size:0.8rem;font-weight:500;color:var(--text2)}
+.tk-x{font-size:0.65rem;color:var(--text3);margin-left:auto}
 
-.mr-center{flex:1;padding:1.25rem;overflow-y:auto;background:var(--bg)}
-.mr-breadcrumb{font-size:0.72rem;color:var(--text3);margin-bottom:0.75rem}
-.mr-breadcrumb span{color:var(--purple-light)}
-.mr-mission-title{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:0.75rem}
-.mr-desc{font-size:0.85rem;color:var(--text2);line-height:1.65;margin-bottom:1.25rem}
-
-.target-url-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.875rem 1rem;margin-bottom:1.25rem}
-.tus-label{font-size:0.68rem;color:var(--text3);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem}
-.tus-url{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:var(--blue);font-family:'Share Tech Mono',monospace}
-.tus-url.inactive{color:var(--text3)}
-.tus-copy{background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.85rem;padding:0.2rem;transition:color 0.2s}
-.tus-copy:hover{color:var(--text)}
-
-.mr-actions{display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
-.mr-open-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:0.55rem 1rem;border-radius:6px;font-size:0.8rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;font-family:'Inter',sans-serif}
-.mr-open-btn:hover{border-color:rgba(255,255,255,0.2);background:var(--bg4)}
-.mr-hint-btn{background:rgba(124,58,237,0.12);border:1px solid rgba(124,58,237,0.25);color:var(--purple-light);padding:0.55rem 1rem;border-radius:6px;font-size:0.8rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;font-family:'Inter',sans-serif}
-.mr-hint-btn:hover{background:rgba(124,58,237,0.2)}
-
-.flag-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem}
-.fs-label{font-size:0.7rem;color:var(--text3);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.65rem}
-.fs-row{display:flex;gap:0.65rem}
-.fs-input{flex:1;padding:0.65rem 0.875rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:#fff;font-size:0.85rem;font-family:'Share Tech Mono',monospace;outline:none;transition:border-color 0.2s}
-.fs-input:focus{border-color:var(--purple-light)}
-.fs-input::placeholder{color:var(--text3)}
-.fs-submit{background:var(--purple);color:#fff;border:none;padding:0.65rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.4rem;white-space:nowrap;transition:all 0.2s;font-family:'Inter',sans-serif}
-.fs-submit:hover{background:var(--purple2);box-shadow:0 0 16px rgba(124,58,237,0.3)}
-.fs-feedback{margin-top:0.65rem;padding:0.55rem 0.75rem;border-radius:6px;font-size:0.8rem;display:none}
-.fs-ok{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--green)}
-.fs-fail{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red)}
-
-/* HINT MODAL */
-.hint-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.hint-modal.open{display:flex}
-.hint-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:1.5rem;max-width:440px;width:90%}
-.hint-box-title{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:1rem}
-.hint-item-card{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem;margin-bottom:0.5rem}
-.hi-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
-.hi-label{font-size:0.72rem;color:var(--text3);font-weight:600}
-.hi-unlock{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);color:var(--purple-light);padding:0.25rem 0.65rem;border-radius:5px;font-size:0.72rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
-.hi-text{font-size:0.82rem;color:var(--text2);line-height:1.5}
-.hi-locked{color:rgba(255,255,255,0.1);font-family:'Share Tech Mono',monospace;font-size:0.78rem}
-.hint-close{width:100%;margin-top:1rem;padding:0.55rem;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:6px;cursor:pointer;font-size:0.82rem;font-family:'Inter',sans-serif}
-
-/* WEB DESKTOP VIEW */
-.web-view-section{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:1rem}
-.wvs-header{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.875rem;border-bottom:1px solid var(--border)}
-.wvs-label{font-size:0.68rem;color:var(--text3);font-weight:600;letter-spacing:1px}
-.wvs-actions{display:flex;gap:0.5rem;align-items:center}
-.wvs-btn{font-size:0.7rem;color:var(--text3);cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:'Inter',sans-serif}
-.wvs-btn:hover{color:var(--text)}
-.wvs-body{height:280px;background:#0a0a0a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.wvs-iframe-sim{width:100%;height:100%;background:#1a1a2e;display:flex;flex-direction:column}
-.wvs-sim-bar{height:28px;background:#2d2d44;display:flex;align-items:center;padding:0 0.75rem;gap:0.5rem;flex-shrink:0}
-.wvs-sim-dot{width:8px;height:8px;border-radius:50%}
-.wvs-sim-url{flex:1;background:#1a1a2e;border-radius:3px;height:16px;margin:0 0.5rem;display:flex;align-items:center;padding:0 0.5rem;font-size:0.6rem;color:rgba(255,255,255,0.3);font-family:'Share Tech Mono',monospace}
-.wvs-sim-content{flex:1;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.15);font-size:0.82rem}
+/* CENTER */
+.rm-center{flex:1;padding:1.25rem;overflow-y:auto}
+.rm-bc{font-size:0.7rem;color:var(--text3);margin-bottom:0.65rem;letter-spacing:0.5px}
+.rm-bc span{color:var(--purple3);font-weight:600}
+.rm-title{font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:0.75rem}
+.rm-desc{font-size:0.85rem;color:var(--text2);line-height:1.7;margin-bottom:1.25rem}
+.url-box{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:0.875rem 1rem;margin-bottom:1.25rem}
+.url-lbl{font-size:0.65rem;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem}
+.url-val{display:flex;align-items:center;gap:0.5rem;font-family:'Share Tech Mono',monospace;font-size:0.82rem}
+.url-val.active a{color:var(--blue)}
+.url-val.inactive{color:var(--text3)}
+.url-copy{background:none;border:none;color:var(--text3);cursor:pointer;padding:0.2rem;transition:color 0.2s;font-size:0.9rem}
+.url-copy:hover{color:var(--text)}
+.rm-actions{display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.rm-open{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:0.55rem 1rem;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:0.4rem;transition:all 0.2s;font-family:'Inter',sans-serif}
+.rm-open:hover{border-color:rgba(255,255,255,0.2)}
+.rm-open:disabled{opacity:0.4;cursor:not-allowed}
+.flag-box{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:1rem}
+.flag-lbl{font-size:0.65rem;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.65rem}
+.flag-row{display:flex;gap:0.65rem}
+.flag-inp{flex:1;padding:0.65rem 0.875rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:0.85rem;font-family:'Share Tech Mono',monospace;outline:none;transition:border-color 0.2s}
+.flag-inp:focus{border-color:var(--purple3)}
+.flag-inp::placeholder{color:var(--text3)}
+.flag-sub{background:var(--purple);color:#fff;border:none;padding:0.65rem 1.1rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.4rem;white-space:nowrap;transition:all 0.2s;font-family:'Inter',sans-serif}
+.flag-sub:hover{background:var(--purple2)}
+.flag-fb{margin-top:0.65rem;padding:0.55rem 0.875rem;border-radius:7px;font-size:0.8rem;display:none;font-weight:500}
+.f-ok{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:var(--green)}
+.f-no{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red)}
+.web-view{background:var(--bg2);border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-top:1rem}
+.wv-hdr{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.875rem;border-bottom:1px solid var(--border)}
+.wv-lbl{font-size:0.65rem;color:var(--text3);font-weight:700;letter-spacing:1px}
+.wv-open{font-size:0.72rem;color:var(--text2);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:0.3rem;transition:color 0.2s}
+.wv-open:hover{color:var(--text)}
+.wv-body{height:260px;background:#000;position:relative}
+.wv-sim{width:100%;height:100%;background:var(--bg3);display:flex;flex-direction:column}
+.wv-bar{height:28px;background:var(--bg4);display:flex;align-items:center;padding:0 0.75rem;gap:0.45rem;flex-shrink:0}
+.wv-bar-dot{width:8px;height:8px;border-radius:50%}
+.wv-bar-url{flex:1;background:var(--bg5);border-radius:4px;height:16px;margin:0 0.5rem;display:flex;align-items:center;padding:0 0.5rem;font-size:0.6rem;color:var(--text3);font-family:'Share Tech Mono',monospace;overflow:hidden}
+.wv-content{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:0.8rem;font-family:'Share Tech Mono',monospace}
 
 /* RIGHT PANEL */
-.mr-right-panel{width:220px;background:var(--bg2);border-left:1px solid var(--border);padding:1rem;flex-shrink:0;overflow-y:auto}
-.rp-section{margin-bottom:1.5rem}
-.rp-title{font-size:0.68rem;color:var(--text3);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem}
-.rp-live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse-dot 2s infinite}
-.rp-completion{font-size:0.72rem;color:var(--text2);margin-bottom:0.5rem;display:flex;justify-content:space-between}
-.rp-pct{font-size:1rem;font-weight:700;color:#fff}
-.rp-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-bottom:0.875rem}
-.rp-bar-fill{height:100%;background:var(--purple);border-radius:2px;transition:width 0.5s}
-.rp-tasks-count{font-size:0.75rem;color:var(--text2)}
-.rp-timer-label{font-size:0.68rem;color:var(--text3);margin-bottom:0.25rem}
-.rp-timer{font-size:1.3rem;font-weight:700;color:#fff;font-family:'Share Tech Mono',monospace;letter-spacing:2px}
-.rp-timer.running{color:var(--green)}
-.rp-best{font-size:0.68rem;color:var(--text3);margin-top:0.2rem}
-.rp-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
-.rp-stat{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.6rem}
-.rps-label{font-size:0.65rem;color:var(--text3);margin-bottom:0.2rem}
-.rps-val{font-size:0.88rem;font-weight:700;color:#fff}
-.rp-top-ops{display:flex;flex-direction:column;gap:0.5rem}
-.to-empty{text-align:center;color:var(--text3);font-size:0.75rem;padding:1rem 0}
-.to-item{display:flex;align-items:center;gap:0.5rem;font-size:0.78rem}
-.to-av{width:22px;height:22px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff}
-.to-name{color:var(--text);font-weight:500;flex:1}
-.to-time{color:var(--text3);font-size:0.7rem;font-family:'Share Tech Mono',monospace}
-.view-lb-btn{width:100%;margin-top:0.75rem;padding:0.5rem;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif}
-.view-lb-btn:hover{border-color:var(--border2);color:var(--text)}
+.rm-right{width:220px;background:var(--bg2);border-left:1px solid var(--border);padding:1rem;flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column;gap:1.25rem}
+.rp-sec{}
+.rp-title{font-size:0.65rem;color:var(--text3);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.875rem}
+.rp-prog{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.35rem}
+.rp-pct{font-size:1.1rem;font-weight:800;color:var(--text)}
+.rp-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-bottom:0.5rem}
+.rp-fill{height:100%;background:var(--purple);border-radius:2px;transition:width 0.5s}
+.rp-tasks{font-size:0.75rem;color:var(--text2)}
+.timer-lbl{font-size:0.65rem;color:var(--text3);margin-bottom:0.25rem;font-weight:600}
+.timer-val{font-size:1.4rem;font-weight:800;font-family:'Share Tech Mono',monospace;color:var(--text);letter-spacing:1px}
+.timer-val.run{color:var(--green)}
+.timer-best{font-size:0.68rem;color:var(--text3);margin-top:0.15rem}
+.stats-g{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+.sg{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:0.6rem}
+.sg-l{font-size:0.62rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:0.2rem}
+.sg-v{font-size:0.92rem;font-weight:800;color:var(--text)}
+.top-ops{}
+.to-empty{text-align:center;color:var(--text3);font-size:0.75rem;padding:1rem 0;line-height:1.5}
+.to-item{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem}
+.to-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff;flex-shrink:0}
+.to-n{font-size:0.78rem;font-weight:500;color:var(--text);flex:1}
+.to-t{font-size:0.68rem;color:var(--text3);font-family:'Share Tech Mono',monospace}
+.view-lb{width:100%;margin-top:0.5rem;padding:0.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text2);font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.view-lb:hover{border-color:var(--border2);color:var(--text)}
 
-/* ── LEADERBOARD ── */
-.lb-wrap{padding:1.25rem;max-width:900px}
-.lb-title{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:0.25rem}
-.lb-sub{font-size:0.8rem;color:var(--text2);margin-bottom:1.5rem}
-.lb-podium{display:flex;justify-content:center;align-items:flex-end;gap:1rem;margin-bottom:2rem}
-.lbp-card{text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.4rem}
-.lbp-card.first .lbp-av{width:72px;height:72px;font-size:1.5rem;border:2px solid var(--yellow)}
-.lbp-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#fff;border:2px solid var(--border2)}
-.lbp-name{font-size:0.78rem;font-weight:600;color:#fff;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lbp-xp{font-size:0.72rem;color:var(--yellow);font-weight:600}
-.lbp-pedestal{background:var(--bg3);border:1px solid var(--border);border-radius:4px 4px 0 0;font-size:1rem;display:flex;align-items:center;justify-content:center}
-.lbp-card.second .lbp-pedestal{width:80px;height:50px}
-.lbp-card.first .lbp-pedestal{width:100px;height:70px}
-.lbp-card.third .lbp-pedestal{width:80px;height:40px}
+/* ──────── LEADERBOARD ──────── */
+.lb-wrap{padding:1.25rem;max-width:920px}
+.lb-hdr{margin-bottom:1.5rem}
+.lb-title{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:0.2rem}
+.lb-sub{font-size:0.8rem;color:var(--text2)}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:1.25rem;margin-bottom:2rem}
+.pod{display:flex;flex-direction:column;align-items:center;gap:0.4rem}
+.pod-av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;border:2px solid var(--border2)}
+.pod.p1 .pod-av{width:72px;height:72px;font-size:1.4rem;border-color:var(--yellow)}
+.pod.p2 .pod-av,.pod.p3 .pod-av{width:56px;height:56px;font-size:1rem}
+.pod-name{font-size:0.78rem;font-weight:600;color:var(--text);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+.pod-xp{font-size:0.72rem;color:var(--yellow);font-weight:700}
+.pod-base{border:1px solid var(--border);border-radius:4px 4px 0 0;display:flex;align-items:center;justify-content:center;font-size:1rem;background:var(--bg3)}
+.pod.p1 .pod-base{width:100px;height:70px}
+.pod.p2 .pod-base,.pod.p3 .pod-base{width:80px;height:50px}
 .lb-table{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.lb-thead{display:grid;grid-template-columns:50px 1fr 70px 100px 80px;gap:0.5rem;padding:0.65rem 1rem;border-bottom:1px solid var(--border);font-size:0.68rem;color:var(--text3);font-weight:600;letter-spacing:0.5px;text-transform:uppercase}
-.lb-row{display:grid;grid-template-columns:50px 1fr 70px 100px 80px;gap:0.5rem;padding:0.75rem 1rem;border-bottom:1px solid rgba(255,255,255,0.03);align-items:center;transition:background 0.15s}
+.lb-head,.lb-row{display:grid;grid-template-columns:50px 1fr 70px 100px 80px;gap:0.5rem;padding:0.75rem 1rem;align-items:center}
+.lb-head{border-bottom:1px solid var(--border);font-size:0.68rem;color:var(--text3);font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.lb-row{border-bottom:1px solid rgba(255,255,255,0.03);transition:background 0.15s}
 .lb-row:hover{background:rgba(255,255,255,0.02)}
 .lb-row:last-child{border-bottom:none}
 .lb-row.me{background:rgba(124,58,237,0.06);border-left:2px solid var(--purple)}
-.lb-sticky{position:sticky;bottom:0;background:var(--bg2);border-top:1px solid var(--border);padding:0.75rem 1rem;display:none}
-.lb-sticky.show{display:grid;grid-template-columns:50px 1fr 70px 100px 80px;gap:0.5rem;align-items:center}
-.lbr-rank{font-size:0.8rem;font-weight:700;color:var(--text3);text-align:center}
-.lbr-rank.g{color:var(--yellow)}.lbr-rank.s{color:#94a3b8}.lbr-rank.b{color:#92400e}
-.lbr-user{display:flex;align-items:center;gap:0.6rem}
-.lbr-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:#fff;flex-shrink:0}
-.lbr-name{font-size:0.85rem;font-weight:500;color:#fff}
-.lbr-cell{font-size:0.8rem;color:var(--text2);text-align:center}
-.lbr-cell.green{color:var(--green)}.lbr-cell.yellow{color:var(--yellow)}
+.lbr{font-size:0.8rem;font-weight:700;color:var(--text3);text-align:center}
+.lbr.g{color:var(--yellow)}.lbr.s{color:#94a3b8}.lbr.b{color:#92400e}
+.lb-user{display:flex;align-items:center;gap:0.6rem}
+.lb-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:#fff;flex-shrink:0}
+.lb-nm{font-size:0.85rem;font-weight:600;color:var(--text)}
+.lb-cell{font-size:0.8rem;color:var(--text2);text-align:center}
+.lb-cell.g{color:var(--green)}.lb-cell.y{color:var(--yellow)}
 .lb-empty{padding:3rem;text-align:center;color:var(--text3);font-size:0.85rem}
+.lb-sticky{display:none;position:sticky;bottom:0;background:var(--bg2);border-top:1px solid var(--border);grid-template-columns:50px 1fr 70px 100px 80px;gap:0.5rem;padding:0.75rem 1rem;align-items:center}
+.lb-sticky.on{display:grid}
 
-/* ── PROFILE ── */
-.prof-wrap{padding:1.25rem;max-width:980px}
-.prof-hero{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
-.prof-av-wrap{position:relative;flex-shrink:0}
-.prof-av{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:700;color:#fff;border:3px solid var(--bg4)}
-.prof-av-lvl{position:absolute;bottom:-4px;right:-4px;background:var(--green);color:#000;font-size:0.62rem;font-weight:700;padding:2px 6px;border-radius:10px}
-.prof-av-xp{position:absolute;top:-4px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:var(--yellow);font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
-.prof-info{flex:1;min-width:250px}
-.prof-name{font-size:1.6rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:0.65rem;margin-bottom:0.25rem}
-.prof-rank-badge{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3);padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:600;color:var(--purple-light)}
-.prof-title{font-size:0.78rem;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem}
-.xp-bar-wrap{max-width:420px}
-.xp-labels{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3);margin-bottom:0.35rem}
-.xp-labels span:last-child{color:var(--purple-light)}
-.xp-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
-.xp-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:3px;transition:width 1s ease}
-.xp-range{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--text3);margin-top:0.25rem}
-.prof-stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.5rem}
+/* ──────── PROFILE ──────── */
+.prof-wrap{padding:1.25rem;max-width:1000px}
+.prof-hero{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start;margin-bottom:1.5rem}
+.ph-av-wrap{position:relative;flex-shrink:0}
+.ph-av{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:#fff}
+.ph-lvl{position:absolute;bottom:-4px;right:-4px;background:var(--green);color:#000;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:10px}
+.ph-xp{position:absolute;top:-2px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);color:var(--yellow);font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.ph-info{flex:1;min-width:240px}
+.ph-name{font-size:1.6rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:0.65rem;margin-bottom:0.25rem;flex-wrap:wrap}
+.ph-rb{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3);padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700;color:var(--purple3)}
+.ph-title{font-size:0.78rem;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.875rem}
+.ph-tags{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.ph-tag{font-size:0.72rem;padding:2px 8px;border-radius:4px;font-weight:600}
+.ph-tag.p{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);color:var(--purple3)}
+.ph-tag.g{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:var(--green)}
+.xp-wrap{max-width:400px}
+.xp-lbl{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3);margin-bottom:0.35rem}
+.xp-lbl span:last-child{color:var(--purple3);font-weight:600}
+.xp-b{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.xp-f{height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:3px;transition:width 1s}
+.xp-range{display:flex;justify-content:space-between;font-size:0.62rem;color:var(--text3);margin-top:0.25rem}
+.ph-side{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem}
+.ph-sc{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:0.875rem;text-align:center}
+.ph-sc-lbl{font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:0.3rem}
+.ph-sc-val{font-size:1.1rem;font-weight:800;color:var(--text)}
+/* PROFILE TABS */
+.prof-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:1.5rem}
+.pt{flex:1;padding:0.55rem;border-radius:7px;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--text2);background:transparent;font-family:'Inter',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.35rem}
+.pt:hover{color:var(--text)}
+.pt.on{background:var(--purple);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,0.3)}
+.prof-tab-content{display:none}
+.prof-tab-content.on{display:block}
+.prof-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.875rem;margin-bottom:1.25rem}
 .psc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem}
-.psc-icon{font-size:1.2rem;margin-bottom:0.5rem}
-.psc-val{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:0.2rem}
-.psc-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
-.prof-body{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.prof-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
-.prof-card-title{font-size:0.75rem;font-weight:600;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:1rem}
-.prof-stat-right{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem}
-.psc2{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem}
-.psc2-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.25rem}
-.psc2-val{font-size:1rem;font-weight:700;color:#fff}
-.solved-list{display:flex;flex-direction:column;gap:0.4rem;max-height:280px;overflow-y:auto}
-.sl-item{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.65rem;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:6px;font-size:0.8rem}
-.sl-name{color:#fff;font-weight:500}
-.sl-meta{font-size:0.72rem;color:var(--text3)}
-.sl-xp{color:var(--yellow);font-weight:600}
-.sl-time{color:var(--text3);margin-left:0.5rem}
-.prof-stat-right-top{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
-.psc-sm{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.75rem}
-.psc-sm-lbl{font-size:0.65rem;color:var(--text3);margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.5px}
-.psc-sm-val{font-size:0.95rem;font-weight:700;color:#fff}
+.psc-ic{font-size:1.2rem;margin-bottom:0.5rem}
+.psc-v{font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:0.15rem}
+.psc-l{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
+.psc-sub{font-size:0.68rem;color:var(--text3);margin-top:0.15rem}
+.prof-2col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.p2c{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.p2c-title{font-size:0.72rem;font-weight:700;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:1rem}
+.sol-item{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.65rem;background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-radius:6px;margin-bottom:0.4rem;font-size:0.82rem}
+.si-n{color:var(--text);font-weight:500}
+.si-m{font-size:0.72rem;color:var(--text3)}
+.si-x{color:var(--yellow);font-weight:700}
+.si-t{color:var(--text3);margin-left:0.4rem}
+.badge-grid{display:flex;flex-wrap:wrap;gap:0.75rem}
+.bdg{display:flex;flex-direction:column;align-items:center;gap:0.3rem}
+.bdg-hex{width:52px;height:58px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.bdg-hex.e{background:linear-gradient(135deg,rgba(124,58,237,0.4),rgba(59,130,246,0.2));box-shadow:0 0 16px rgba(124,58,237,0.25)}
+.bdg-hex.l{background:rgba(255,255,255,0.04);filter:grayscale(1) brightness(0.3)}
+.bdg-n{font-size:0.58rem;color:var(--text3);text-align:center;max-width:56px;line-height:1.3}
+/* Activity */
+.activity-hm{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:0.5rem}
+.hm-d{width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,0.04)}
+.hm-d.l1{background:rgba(124,58,237,0.2)}.hm-d.l2{background:rgba(124,58,237,0.45)}.hm-d.l3{background:var(--purple)}
+/* Pulse tab */
+.pulse-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem}
+.pulse-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.1rem}
+.pulse-val{font-size:1.5rem;font-weight:800;color:var(--text)}
+.pulse-lbl{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-top:0.25rem}
+/* Neural tab */
+.dom-bar{margin-bottom:0.875rem}
+.dom-lbl{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text2);margin-bottom:0.35rem}
+.dom-b{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.dom-f{height:100%;border-radius:3px;transition:width 0.8s}
+/* Legacy tab */
+.legacy-empty{text-align:center;padding:3rem;color:var(--text3);font-size:0.85rem}
+
+/* ──────── VNC FULLSCREEN ──────── */
+#vnc{display:none;position:fixed;inset:0;z-index:999;background:#0a0a0a;flex-direction:column}
+#vnc.on{display:flex}
+.vnc-top{height:38px;background:#111;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;border-bottom:1px solid rgba(255,255,255,0.08)}
+.vnc-title-bar{font-size:0.78rem;color:rgba(255,255,255,0.5);font-family:'Share Tech Mono',monospace}
+.vnc-close{background:#333;border:none;color:rgba(255,255,255,0.7);padding:0.25rem 0.75rem;border-radius:4px;font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.2s}
+.vnc-close:hover{background:#444}
+.vnc-area{flex:1;position:relative;overflow:hidden}
+.kali-bg{width:100%;height:100%;background:linear-gradient(145deg,#1a237e 0%,#283593 50%,#1565c0 100%);position:relative}
+.kali-icons{position:absolute;top:0.75rem;left:0.75rem;display:flex;flex-direction:column;gap:0.875rem}
+.ki{display:flex;flex-direction:column;align-items:center;gap:0.2rem;cursor:pointer;padding:0.4rem;border-radius:4px;transition:background 0.15s}
+.ki:hover{background:rgba(255,255,255,0.1)}
+.ki-ic{width:44px;height:44px;border-radius:7px;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+.ki-lbl{font-size:0.6rem;color:rgba(255,255,255,0.85);text-shadow:0 1px 2px rgba(0,0,0,0.8)}
+.kali-wm{position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);opacity:0.18;text-align:right}
+.kali-wm-logo{font-size:3rem;font-weight:900;color:#fff;letter-spacing:4px;font-family:'Orbitron',monospace}
+.kali-wm-sub{font-size:0.7rem;color:#fff;letter-spacing:3px}
+.kali-term{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(640px,80%);background:#1a1a1a;border:1px solid #333;border-radius:5px;box-shadow:0 24px 64px rgba(0,0,0,0.9)}
+.kali-term.minimized{display:none}
+.kt-bar{background:#2d2d2d;padding:0.4rem 0.75rem;display:flex;align-items:center;gap:0.45rem;border-radius:5px 5px 0 0;cursor:default}
+.kt-btn{width:11px;height:11px;border-radius:50%;cursor:pointer}
+.kt-body{padding:0.75rem 0.875rem;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#00ff00;line-height:1.65;min-height:180px;max-height:260px;overflow-y:auto;background:#0d1117}
+.kt-body::-webkit-scrollbar{width:3px}
+.kt-body::-webkit-scrollbar-thumb{background:#333}
+.kt-prompt{color:#00ff00}
+.kt-out{color:rgba(255,255,255,0.65)}
+.kt-err{color:#ff5555}
+.kt-cursor{display:inline-block;width:7px;height:14px;background:#00ff00;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.kali-taskbar{position:absolute;bottom:0;left:0;right:0;height:30px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);display:flex;align-items:center;padding:0 0.75rem;gap:0.5rem;border-top:1px solid rgba(255,255,255,0.06)}
+.kb-app{width:24px;height:20px;background:rgba(255,255,255,0.08);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;cursor:pointer;transition:background 0.15s}
+.kb-app:hover{background:rgba(255,255,255,0.15)}
+.kb-clock{margin-left:auto;font-size:0.65rem;color:rgba(255,255,255,0.5);font-family:'Share Tech Mono',monospace}
+
+/* VNC PASSWORD */
+#vncPwd{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#vncPwd.on{display:flex}
+.vpwd-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:2rem;width:340px;text-align:center}
+.vpwd-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem}
+.vpwd-sub{font-size:0.8rem;color:var(--text2);margin-bottom:1.25rem}
+.vpwd-inp{width:100%;padding:0.65rem 0.875rem;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:0.9rem;font-family:'Share Tech Mono',monospace;outline:none;text-align:center;letter-spacing:3px;margin-bottom:0.875rem;transition:border-color 0.2s}
+.vpwd-inp:focus{border-color:var(--purple3)}
+.vpwd-hint{font-size:0.72rem;color:var(--text3);margin-bottom:1rem}
+.vpwd-hint b{color:var(--purple3)}
+.vpwd-btn{width:100%;padding:0.65rem;background:var(--purple);color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s}
+.vpwd-btn:hover{background:var(--purple2)}
+.vpwd-err{color:var(--red);font-size:0.78rem;margin-top:0.5rem;display:none}
 
 /* TOAST */
-.toast{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9998;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:0.75rem 1rem;font-size:0.82rem;max-width:300px;transform:translateY(120%);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 24px rgba(0,0,0,0.4);display:flex;align-items:center;gap:0.5rem}
-.toast.show{transform:translateY(0)}
+.toast{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9998;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:0.75rem 1rem;font-size:0.82rem;max-width:300px;transform:translateY(120%);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 24px rgba(0,0,0,0.4);display:flex;align-items:center;gap:0.5rem;font-weight:500}
+.toast.on{transform:translateY(0)}
 
 /* SPINNER */
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.15);border-top-color:var(--purple-light);border-radius:50%;animation:s 0.7s linear infinite;vertical-align:middle;margin-right:4px}
-@keyframes s{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.1);border-top-color:var(--purple3);border-radius:50%;animation:sp 0.7s linear infinite;vertical-align:middle;margin-right:4px}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-/* VNC ATTACKER */
-.vnc-fullpage{display:none;position:fixed;inset:0;z-index:999;background:#000;flex-direction:column}
-.vnc-fullpage.open{display:flex}
-.vnc-topbar{height:36px;background:#1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0}
-.vnc-title{font-size:0.78rem;color:rgba(255,255,255,0.6);font-family:'Share Tech Mono',monospace}
-.vnc-close{background:#333;border:none;color:rgba(255,255,255,0.7);padding:0.25rem 0.75rem;border-radius:4px;font-size:0.75rem;cursor:pointer;font-family:'Inter',sans-serif}
-.vnc-screen-area{flex:1;position:relative;overflow:hidden}
-.kali-desktop{width:100%;height:100%;background:linear-gradient(135deg,#1a237e 0%,#283593 100%);position:relative}
-.kali-desktop-icons{position:absolute;top:0.75rem;left:0.75rem;display:flex;flex-direction:column;gap:0.75rem}
-.kali-icon{display:flex;flex-direction:column;align-items:center;gap:0.25rem;cursor:pointer;padding:0.4rem}
-.kali-icon:hover{background:rgba(255,255,255,0.1);border-radius:4px}
-.ki-img{width:40px;height:40px;background:var(--bg3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
-.ki-lbl{font-size:0.6rem;color:rgba(255,255,255,0.8);text-align:center}
-.kali-watermark{position:absolute;right:1rem;top:50%;transform:translateY(-50%);opacity:0.25;text-align:right}
-.kw-logo{font-size:2.5rem;font-weight:900;color:#fff;font-family:'Orbitron',monospace}
-.kw-sub{font-size:0.65rem;color:rgba(255,255,255,0.7);letter-spacing:2px}
-.kali-terminal{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;background:#1a1a1a;border:1px solid #333;border-radius:4px;box-shadow:0 16px 48px rgba(0,0,0,0.8)}
-.kt-titlebar{background:#2d2d2d;padding:0.4rem 0.75rem;display:flex;align-items:center;gap:0.5rem;border-radius:4px 4px 0 0}
-.kt-btn{width:10px;height:10px;border-radius:50%}
-.kt-body{padding:0.75rem;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#00ff00;line-height:1.6;min-height:160px;max-height:250px;overflow-y:auto}
-.kt-prompt{color:#00ff00}
-.kt-output{color:rgba(255,255,255,0.7)}
-.kali-taskbar{position:absolute;bottom:0;left:0;right:0;height:30px;background:rgba(0,0,0,0.7);display:flex;align-items:center;padding:0 0.75rem;gap:0.5rem}
-.kt-task{width:24px;height:20px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;cursor:pointer}
-.kt-clock{margin-left:auto;font-size:0.65rem;color:rgba(255,255,255,0.6);font-family:'Share Tech Mono',monospace}
-
-@media(max-width:768px){.prof-body{grid-template-columns:1fr}.prof-stat-cards{grid-template-columns:1fr 1fr}.mr-body{flex-direction:column}.mr-left,.mr-right-panel{width:100%;height:auto}}
+@media(max-width:768px){.prof-stat-row{grid-template-columns:1fr 1fr}.prof-2col{grid-template-columns:1fr}.dash-grid{grid-template-columns:1fr}.room-body{flex-direction:column}.rm-left,.rm-right{width:100%;max-height:200px}}
 </style>
 </head>
 <body>
 
 <!-- ══ SPLASH ══ -->
 <div id="splash">
-  <canvas id="splashBg"></canvas>
-  <div class="sp-card">
-    <div class="sp-brand">
-      <div class="sp-brand-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-      <div class="sp-brand-name">LETUSHACK</div>
+  <canvas id="sBg"></canvas>
+  <div class="sp-wrap">
+    <div class="sp-card">
+      <div class="sp-logo">
+        <div class="sp-logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="sp-logo-text">LETUSHACK</div>
+      </div>
+      <div class="sp-tabs">
+        <div class="sp-tab on" id="stL" onclick="spTab('l')">Sign In</div>
+        <div class="sp-tab" id="stR" onclick="spTab('r')">Register</div>
+      </div>
+      <div id="sL">
+        <button class="ob" onclick="oAuth('google')"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Continue with Google</button>
+        <button class="ob" onclick="oAuth('github')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Continue with GitHub</button>
+        <div class="sp-div">or continue with email</div>
+        <div class="fg"><label>Username</label><input id="slU" type="text" placeholder="hacker_alias" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <div class="fg"><label>Password</label><div class="pw-wrap"><input id="slP" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><span class="pw-eye" onclick="tPwd('slP',this)">👁</span></div></div>
+        <div class="sp-err" id="slE"></div>
+        <button class="sp-btn" id="slBtn" onclick="doLogin()">Sign In</button>
+        <div class="sp-sw">New here? <a onclick="spTab('r')">Create a free account</a></div>
+      </div>
+      <div id="sR" style="display:none">
+        <button class="ob" onclick="oAuth('google')"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Sign up with Google</button>
+        <button class="ob" onclick="oAuth('github')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Sign up with GitHub</button>
+        <div class="sp-div">or continue with email</div>
+        <div class="fg"><label>Username</label><input id="srU" type="text" placeholder="hacker_alias"/></div>
+        <div class="fg"><label>Email</label><input id="srE" type="email" placeholder="you@example.com"/></div>
+        <div class="fg"><label>Password</label><div class="pw-wrap"><input id="srP" type="password" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')doReg()"/><span class="pw-eye" onclick="tPwd('srP',this)">👁</span></div></div>
+        <div class="sp-err" id="srErr"></div>
+        <button class="sp-btn" id="srBtn" onclick="doReg()">Create Account</button>
+        <div class="sp-sw">Already have an account? <a onclick="spTab('l')">Sign in</a></div>
+      </div>
+      <div class="sp-credit">Made with ❤️ by <b>Shahdullah</b> · © 2026 LetUsHack</div>
     </div>
-    <div class="sp-tabs">
-      <div class="sp-tab active" id="stL" onclick="spTab('login')">Login</div>
-      <div class="sp-tab" id="stR" onclick="spTab('register')">Register</div>
-    </div>
-    <!-- LOGIN -->
-    <div id="sL">
-      <button class="oauth-btn" onclick="oAuth('google')">
-        <svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
-        Continue with Google
-      </button>
-      <button class="oauth-btn" onclick="oAuth('github')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        Continue with GitHub
-      </button>
-      <div class="sp-divider">or</div>
-      <div class="sp-form-group"><label class="sp-label">Username</label><input class="sp-input" id="slU" type="text" placeholder="hacker_alias" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <div class="sp-form-group"><label class="sp-label">Password</label><div class="pwd-row"><input class="sp-input" id="slP" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/><span class="pwd-eye" onclick="tPwd('slP',this)">👁</span></div></div>
-      <div class="sp-err" id="slE"></div>
-      <button class="sp-btn" id="slBtn" onclick="doLogin()">Sign In</button>
-      <div class="sp-switch">No account? <a onclick="spTab('register')">Create one free</a></div>
-    </div>
-    <!-- REGISTER -->
-    <div id="sR" style="display:none">
-      <button class="oauth-btn" onclick="oAuth('google')"><svg width="16" height="16" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>Sign up with Google</button>
-      <button class="oauth-btn" onclick="oAuth('github')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>Sign up with GitHub</button>
-      <div class="sp-divider">or</div>
-      <div class="sp-form-group"><label class="sp-label">Username</label><input class="sp-input" id="srU" type="text" placeholder="hacker_alias"/></div>
-      <div class="sp-form-group"><label class="sp-label">Email</label><input class="sp-input" id="srE" type="email" placeholder="you@example.com"/></div>
-      <div class="sp-form-group"><label class="sp-label">Password</label><div class="pwd-row"><input class="sp-input" id="srP" type="password" placeholder="min 6 characters" onkeydown="if(event.key==='Enter')doRegister()"/><span class="pwd-eye" onclick="tPwd('srP',this)">👁</span></div></div>
-      <div class="sp-err" id="srE2"></div>
-      <button class="sp-btn" id="srBtn" onclick="doRegister()">Create Account</button>
-      <div class="sp-switch">Have an account? <a onclick="spTab('login')">Sign in</a></div>
-    </div>
-    <div class="sp-credit">Made with ❤️ by <span>Shahdullah</span> · © 2026 LetUsHack</div>
   </div>
 </div>
 
 <!-- ══ APP ══ -->
 <div class="app" id="app" style="display:none">
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar" onmouseenter="this.classList.add('expanded')" onmouseleave="this.classList.remove('expanded')">
-    <div class="sb-logo" onclick="showPage('dashboard')">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-    </div>
+  <div class="sidebar" id="sb" onmouseenter="this.classList.add('exp')" onmouseleave="this.classList.remove('exp')">
+    <div class="sb-logo" onclick="pg('dashboard')"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
     <div class="sb-nav">
-      <div class="sb-item active" id="sbn-dashboard" onclick="showPage('dashboard')"><div class="sb-icon">⊞</div><span class="sb-label">Dashboard</span></div>
-      <div class="sb-item" id="sbn-missions" onclick="showPage('missions')"><div class="sb-icon">🎯</div><span class="sb-label">Missions</span></div>
-      <div class="sb-item" id="sbn-leaderboard" onclick="showPage('leaderboard')"><div class="sb-icon">🏆</div><span class="sb-label">Leaderboard</span></div>
+      <div class="sbi on" id="sbi-dashboard" onclick="pg('dashboard')"><div class="sb-ic">⊞</div><span class="sb-lbl">Dashboard</span></div>
+      <div class="sbi" id="sbi-missions" onclick="pg('missions')"><div class="sb-ic">🎯</div><span class="sb-lbl">Missions</span></div>
+      <div class="sbi" id="sbi-leaderboard" onclick="pg('leaderboard')"><div class="sb-ic">🏆</div><span class="sb-lbl">Leaderboard</span></div>
+      <div class="sbi" id="sbi-profile" onclick="pg('profile')"><div class="sb-ic">👤</div><span class="sb-lbl">Profile</span></div>
     </div>
-    <div class="sb-bottom">
-      <div class="sb-darkmode"><div class="dm-icon">🌙</div><span class="dm-label">Dark Mode</span></div>
-      <div class="sb-user" onclick="showPage('profile')">
-        <div class="sb-avatar" id="sbAvatar">?</div>
-        <span class="sb-uname" id="sbUname">Operator</span>
-      </div>
+    <div class="sb-bot">
+      <div class="sb-dm" onclick="toggleDark()"><div class="sb-dm-ic" id="dmIc">🌙</div><span class="sb-dm-lbl" id="dmLbl">Dark Mode</span></div>
+      <div class="sb-usr" onclick="pg('profile')"><div class="sb-av" id="sbAv">?</div><span class="sb-un" id="sbUn">Operator</span></div>
     </div>
   </div>
-
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <div class="tb-left">
-        <div class="tb-breadcrumb" id="tbBreadcrumb"><span>Dashboard</span></div>
-      </div>
-      <div class="tb-right">
-        <div class="tb-xp" id="tbXP">⚡ 0 XP</div>
-        <div class="tb-vpn"><div class="tb-vpn-dot"></div>VPN TUNNEL: ACTIVE</div>
+      <div class="tb-l"><div class="tb-bc" id="tbc"><b>Dashboard</b></div></div>
+      <div class="tb-r">
+        <div class="xp-pill" id="tbXP">⚡ 0 XP</div>
+        <div class="vpn-badge"><div class="vpn-dot"></div>VPN TUNNEL: ACTIVE</div>
       </div>
     </div>
-    <div class="content-area">
+    <div class="content">
 
       <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div class="dash-wrap">
-          <div class="dash-hero">
-            <div class="dash-continue">
-              <div class="dash-continue-label">Continue Mission</div>
-              <div class="dash-mission-card" id="dashContCard" onclick="showPage('missions')">
-                <div class="dmc-top"><div class="dmc-name" id="dashContName">No active mission</div><div class="dmc-diff diff-medium" id="dashContDiff">MEDIUM</div></div>
-                <div class="dmc-meta" id="dashContMeta">Start a mission to track progress</div>
-                <div class="dmc-progress"><div class="dmc-progress-fill" id="dashContProg" style="width:0%"></div></div>
+      <div class="page on" id="page-dashboard">
+        <div class="dash">
+          <div class="dash-welcome">
+            <div>
+              <div class="dw-greeting" id="dwGreeting">Good Afternoon</div>
+              <div class="dw-title">Welcome Back, <span id="dwName">Operator</span></div>
+              <div class="dw-sub">System status nominal. All parameters within defined thresholds.</div>
+              <div class="dw-meta">
+                <div class="dw-meta-item">🏆 Current Rank <b id="dwRank">Infiltrator #1</b></div>
+                <div class="dw-meta-item">⚡ Level <b id="dwLvl">1</b></div>
+                <div class="dw-meta-item">XP Progress <div class="dw-xp-bar"><div class="dw-xp-fill" id="dwXPBar" style="width:0%"></div></div></div>
+                <div style="margin-left:auto"><a style="font-size:0.78rem;color:var(--purple3);cursor:pointer;font-weight:600" onclick="pg('profile')">VIEW SYSTEM PROFILE →</a></div>
               </div>
             </div>
-            <div class="dash-side">
-              <div class="dash-side-label">Last Activity</div>
-              <div class="last-activity"><div><div class="la-status">LAST ACTIVITY</div><div class="la-val" id="dashLastAct">STANDBY / OFFLINE</div></div></div>
+            <div class="dw-directive" id="dwDir">
+              <div><div class="dd-label">Current Directive</div><div class="dd-name" id="ddName">No active mission</div><div class="dd-timer" id="ddTimer"></div></div>
+              <div class="dd-play" onclick="pg('missions')" title="Resume Mission">▶</div>
             </div>
           </div>
+          <div class="dash-raze">
+            <div class="raze-av">🤖<div class="raze-dot"></div></div>
+            <div><div class="raze-name">● RAZE</div><div class="raze-msg">READY WHEN YOU ARE, OPERATOR.</div></div>
+            <button class="raze-focus" onclick="pg('missions')">FOCUS</button>
+          </div>
           <div class="dash-grid">
-            <div>
-              <div class="dash-badge-progress">
-                <div class="dbp-header"><div class="dbp-title">Badge Progress</div><div class="dbp-cycle">7D CYCLE</div></div>
-                <div class="badge-bars" id="badgeBars"></div>
+            <div class="perf-card">
+              <div class="pc-header">
+                <div><span class="pc-dot"></span><span class="pc-title">Performance Analysis</span></div>
+                <div class="pc-count">VECTOR COUNT<b id="vecCount">0</b></div>
               </div>
-              <div class="dash-heatmap" style="margin-top:1.25rem">
-                <div class="hm-title">Activity Heat Map — Last 7 Days</div>
-                <div class="hm-grid" id="heatmap"></div>
-                <div class="hm-labels"><span>7D AGO</span><span>TODAY</span></div>
-              </div>
+              <div class="pc-total" id="pcTotal">0 <span style="font-size:1rem;color:var(--purple3);font-weight:600">TOTAL XP</span></div>
+              <div class="pc-sub">+0% this week</div>
+              <div class="chart-wrap"><canvas id="perfChart"></canvas></div>
             </div>
-            <div class="dash-events">
-              <div class="de-header"><div class="de-dot"></div><div class="de-title">Event Schedule</div></div>
-              <div class="event-item"><div class="ei-top"><div class="ei-name">CyberNexus CTF 2026</div><div class="ei-badge ei-multi">MULTISTAGE</div></div><div class="ei-meta"><span>📅 Feb 22, 2026</span><span>👥 842</span><span>💰 $5,000</span></div></div>
-              <div class="event-item"><div class="ei-top"><div class="ei-name">King of the Hill — Nightfall</div><div class="ei-badge ei-live">STARTING SOON</div></div><div class="ei-meta"><span>📅 Feb 28, 2026</span><span>👥 128</span><span>⚡ 288 XP</span></div></div>
-              <div class="event-item"><div class="ei-top"><div class="ei-name">Weekly Challenge #47</div><div class="ei-badge ei-opt">OPTIONAL</div></div><div class="ei-meta"><span>📅 Feb 24, 2026</span><span>👥 2,340</span><span>⚡ 288 XP</span></div></div>
+            <div class="stat-cards">
+              <div class="sc"><div class="sc-icon g">🚩</div><span class="sc-trend">+3</span><div class="sc-val" id="scFlags">0</div><div class="sc-lbl">Flags Captured</div></div>
+              <div class="sc"><div class="sc-icon b">🎯</div><span class="sc-trend">+12</span><div class="sc-val" id="scMachines">0</div><div class="sc-lbl">Missions Done</div></div>
+              <div class="sc"><div class="sc-icon r">⚡</div><span class="sc-trend">+1</span><div class="sc-val" id="scStreak">0</div><div class="sc-lbl">Day Streak</div></div>
+              <div class="sc"><div class="sc-icon y">🏆</div><span class="sc-trend">+328</span><div class="sc-val" id="scTotalXP">0</div><div class="sc-lbl">Total XP</div></div>
             </div>
           </div>
         </div>
@@ -533,27 +560,23 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 
       <!-- MISSIONS -->
       <div class="page" id="page-missions">
-        <div class="missions-wrap">
-          <div class="missions-header-bar">
-            <div>
-              <div class="mh-title">Missions</div>
-              <div class="mh-sub">PHASE 1 / <span id="solvedCount">0</span> COMPLETED</div>
-            </div>
+        <div class="miss-wrap">
+          <div class="miss-hdr">
+            <div><div class="miss-title">Missions</div><div class="miss-sub">PHASE 1 / <span id="solvedCnt">0</span> COMPLETED</div></div>
             <button class="resume-btn" onclick="resumeMission()">RESUME MISSION</button>
           </div>
-          <div class="progress-bars" id="progressBars"></div>
-          <div class="missions-grid" id="missionsGrid"></div>
+          <div class="prog-segs" id="progSegs"></div>
+          <div class="miss-grid" id="missGrid"></div>
         </div>
       </div>
 
       <!-- LEADERBOARD -->
       <div class="page" id="page-leaderboard">
         <div class="lb-wrap">
-          <div class="lb-title">Operational Leaderboard</div>
-          <div class="lb-sub">Command Center // Global Rankings — Real users only, updated live</div>
-          <div class="lb-podium" id="lbPodium"></div>
+          <div class="lb-hdr"><div class="lb-title">Operational Leaderboard</div><div class="lb-sub">Command Center // Global Rankings — Real users only</div></div>
+          <div class="podium" id="podium"></div>
           <div class="lb-table">
-            <div class="lb-thead"><div>RANK</div><div>OPERATOR</div><div style="text-align:center">LABS</div><div style="text-align:center">BEST TIME</div><div style="text-align:right">XP</div></div>
+            <div class="lb-head"><div>RANK</div><div>OPERATOR</div><div style="text-align:center">LABS</div><div style="text-align:center">BEST TIME</div><div style="text-align:right">XP</div></div>
             <div id="lbBody"><div class="lb-empty"><span class="spin"></span> Loading...</div></div>
           </div>
           <div class="lb-sticky" id="lbSticky"></div>
@@ -562,7 +585,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 
       <!-- PROFILE -->
       <div class="page" id="page-profile">
-        <div class="prof-wrap"><div id="profContent"></div></div>
+        <div class="prof-wrap"><div id="profHTML"></div></div>
       </div>
 
     </div>
@@ -570,221 +593,210 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 </div>
 
 <!-- ══ MISSION ROOM ══ -->
-<div id="missionRoom">
-  <div class="mr-topbar">
-    <div class="mr-machines">
-      <!-- TARGET -->
-      <div class="mr-machine" id="targetMachine">
-        <div>
-          <div style="font-size:0.68rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Target Machine</div>
-          <div class="mr-m-label" id="targetLabel">Stopped</div>
-        </div>
-        <div id="targetDot" class="mr-m-dot"></div>
-        <button class="mr-stop-btn" id="targetStopBtn" style="display:none" onclick="stopTarget()">■ STOP</button>
-        <button class="mr-start-btn" id="targetStartBtn" onclick="startTarget()">▶ START TARGET</button>
+<div id="room">
+  <div class="room-top">
+    <div class="rm-machines">
+      <div class="rm-m" id="rmTarget">
+        <div><div style="font-size:0.62rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Target Machine</div><div class="rm-ml" id="rmTL">Stopped</div></div>
+        <div class="rm-dot" id="rmTD"></div>
+        <button class="rm-stop" id="rmTS" style="display:none" onclick="stopTgt()">■ STOP</button>
+        <button class="rm-start" id="rmTA" onclick="startTgt()">▶ START TARGET</button>
       </div>
-      <!-- ATTACKER -->
-      <div class="mr-machine attacker-machine" id="attackerMachine">
-        <div>
-          <div style="font-size:0.68rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Attacker Box</div>
-          <div class="mr-m-label" id="attackerLabel">Stopped</div>
-        </div>
-        <div id="attackerDot" class="mr-m-dot"></div>
-        <button class="mr-stop-btn" id="attackerStopBtn" style="display:none" onclick="stopAttacker()">■ STOP</button>
-        <button class="mr-start-btn" id="attackerStartBtn" onclick="startAttacker()">▶ START ATTACKER</button>
+      <div class="rm-m" id="rmAttacker">
+        <div><div style="font-size:0.62rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">Attacker Box</div><div class="rm-ml" id="rmAL">Stopped</div></div>
+        <div class="rm-dot" id="rmAD"></div>
+        <button class="rm-stop" id="rmAS" style="display:none" onclick="stopAtt()">■ STOP</button>
+        <button class="rm-start" id="rmAA" onclick="startAtt()">▶ START ATTACKER</button>
       </div>
     </div>
-    <div class="mr-right">
-      <div class="mr-vpn"><div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>VPN TUNNEL: ACTIVE</div>
-      <button class="mr-exit" onclick="closeRoom()">← Exit Mission</button>
+    <div class="rm-r">
+      <div class="rm-vpn"><div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>VPN TUNNEL: ACTIVE</div>
+      <button class="rm-exit" onclick="closeRoom()">← Exit Mission</button>
     </div>
   </div>
-  <div class="mr-body">
-    <!-- LEFT TASKS -->
-    <div class="mr-left">
-      <div class="mr-tasks-label">Mission Tasks</div>
-      <div id="tasksList"></div>
+  <div class="room-body">
+    <div class="rm-left">
+      <div class="rm-tl">Mission Tasks</div>
+      <div id="rmTasks"></div>
     </div>
-    <!-- CENTER -->
-    <div class="mr-center">
-      <div class="mr-breadcrumb">ACTIVE TASK / <span id="mrTaskName">CLUE</span></div>
-      <div class="mr-mission-title" id="mrTitle">Mission Name</div>
-      <div class="mr-desc" id="mrDesc"></div>
-      <div class="target-url-section">
-        <div class="tus-label">Target URL</div>
-        <div class="tus-url inactive" id="tusUrl">
+    <div class="rm-center">
+      <div class="rm-bc">ACTIVE TASK / <span id="rmBC">CLUE</span></div>
+      <div class="rm-title" id="rmTitle">Mission</div>
+      <div class="rm-desc" id="rmDesc"></div>
+      <div class="url-box">
+        <div class="url-lbl">Target URL</div>
+        <div class="url-val inactive" id="urlVal">
           <span>🌐</span>
-          <span id="tusUrlText">Start target machine to get URL</span>
-          <button class="tus-copy" id="tusCopyBtn" onclick="copyUrl()" style="display:none" title="Copy URL">📋</button>
+          <span id="urlText">Start target machine to get URL</span>
+          <button class="url-copy" id="urlCopy" style="display:none" onclick="copyURL()">📋</button>
         </div>
       </div>
-      <div class="mr-actions">
-        <button class="mr-open-btn" id="openTargetBtn" onclick="openTargetSite()" disabled>↗ OPEN TARGET SITE</button>
-        <button class="mr-hint-btn" onclick="openHints()">💡 GET HINT</button>
+      <div class="rm-actions">
+        <button class="rm-open" id="openBtn" onclick="openTarget()" disabled>↗ OPEN TARGET SITE</button>
       </div>
-      <div class="flag-section">
-        <div class="fs-label">Submit Mission Flag</div>
-        <div class="fs-row">
-          <input class="fs-input" id="flagInput" type="text" placeholder="LUH{CAPTURED_FLAG}" onkeydown="if(event.key==='Enter')submitFlag()"/>
-          <button class="fs-submit" onclick="submitFlag()">🚩 SUBMIT FLAG</button>
+      <div class="flag-box">
+        <div class="flag-lbl">Submit Mission Flag</div>
+        <div class="flag-row">
+          <input class="flag-inp" id="flagInp" type="text" placeholder="LUH{CAPTURED_FLAG}" onkeydown="if(event.key==='Enter')subFlag()"/>
+          <button class="flag-sub" onclick="subFlag()">🚩 SUBMIT FLAG</button>
         </div>
-        <div class="fs-feedback" id="fsFeedback"></div>
+        <div class="flag-fb" id="flagFB"></div>
       </div>
-      <div class="web-view-section" id="webViewSection" style="display:none">
-        <div class="wvs-header">
-          <div class="wvs-label">WEB DESKTOP VIEW</div>
-          <div class="wvs-actions">
-            <button class="wvs-btn" onclick="refreshWebView()">⟳</button>
-            <button class="wvs-btn" onclick="openVNCFullscreen()">OPEN IN FULLSCREEN</button>
-          </div>
+      <div class="web-view" id="webView" style="display:none">
+        <div class="wv-hdr">
+          <div class="wv-lbl">WEB DESKTOP VIEW</div>
+          <button class="wv-open" onclick="openVNC()">⟳ OPEN IN FULLSCREEN</button>
         </div>
-        <div class="wvs-body" id="wvsBody">
-          <div class="wvs-iframe-sim">
-            <div class="wvs-sim-bar">
-              <div class="wvs-sim-dot" style="background:#ff5f57"></div>
-              <div class="wvs-sim-dot" style="background:#ffbd2e"></div>
-              <div class="wvs-sim-dot" style="background:#28ca40"></div>
-              <div class="wvs-sim-url" id="wvsSimUrl">about:blank</div>
+        <div class="wv-body">
+          <div class="wv-sim">
+            <div class="wv-bar">
+              <div class="wv-bar-dot" style="background:#ff5f57"></div>
+              <div class="wv-bar-dot" style="background:#ffbd2e"></div>
+              <div class="wv-bar-dot" style="background:#28ca40"></div>
+              <div class="wv-bar-url" id="wvURL"></div>
             </div>
-            <div class="wvs-sim-content" id="wvsContent">Target machine offline</div>
+            <div class="wv-content" id="wvContent">Target machine offline</div>
           </div>
         </div>
       </div>
     </div>
-    <!-- RIGHT PANEL -->
-    <div class="mr-right-panel">
-      <div class="rp-section">
+    <div class="rm-right">
+      <div class="rp-sec">
         <div class="rp-title">Mission Control</div>
-        <div class="rp-completion"><div>COMPLETION</div><div class="rp-pct" id="rpPct">0%</div></div>
-        <div class="rp-bar"><div class="rp-bar-fill" id="rpBar" style="width:0%"></div></div>
-        <div class="rp-tasks-count">TASKS <span id="rpTasksDone">0</span> / <span id="rpTasksTotal">3</span></div>
+        <div class="rp-prog"><span style="font-size:0.72rem;color:var(--text2)">COMPLETION</span><div class="rp-pct" id="rpPct">0%</div></div>
+        <div class="rp-bar"><div class="rp-fill" id="rpFill" style="width:0%"></div></div>
+        <div class="rp-tasks">TASKS <span id="rpTD">0</span> / <span id="rpTT">1</span></div>
       </div>
-      <div class="rp-section">
-        <div class="rp-title"><div class="rp-live-dot"></div>LIVE TIMER</div>
-        <div class="rp-timer-label">Elapsed Time</div>
-        <div class="rp-timer" id="rpTimer">00:00</div>
-        <div class="rp-best">Personal Best: <span id="rpBest">—</span></div>
+      <div class="rp-sec">
+        <div class="rp-title"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;animation:glow 2s infinite"></span>LIVE TIMER</div>
+        <div class="timer-lbl">Elapsed Time</div>
+        <div class="timer-val" id="rmTimer">00:00</div>
+        <div class="timer-best">Personal Best: <span id="rmBest">—</span></div>
       </div>
-      <div class="rp-section">
+      <div class="rp-sec">
         <div class="rp-title">YOUR STATS</div>
-        <div class="rp-stats-grid">
-          <div class="rp-stat"><div class="rps-label">YOUR RANK</div><div class="rps-val" id="rpRank">—</div></div>
-          <div class="rp-stat"><div class="rps-label">BEST TIME</div><div class="rps-val" id="rpBestTime">—</div></div>
+        <div class="stats-g">
+          <div class="sg"><div class="sg-l">YOUR RANK</div><div class="sg-v" id="rpRank">#—</div></div>
+          <div class="sg"><div class="sg-l">BEST TIME</div><div class="sg-v" id="rpBT">—</div></div>
         </div>
-        <div style="margin-top:0.5rem"><div class="rp-stat"><div class="rps-label">ATTEMPTS</div><div class="rps-val" id="rpAttempts">0</div></div></div>
+        <div style="margin-top:0.5rem"><div class="sg"><div class="sg-l">ATTEMPTS</div><div class="sg-v" id="rpAttempts">0</div></div></div>
       </div>
-      <div class="rp-section">
+      <div class="rp-sec">
         <div class="rp-title">TOP OPERATIVES</div>
-        <div class="rp-top-ops" id="rpTopOps"></div>
-        <button class="view-lb-btn" onclick="closeRoom();showPage('leaderboard')">VIEW FULL LEADERBOARD →</button>
+        <div id="topOps"></div>
+        <button class="view-lb" onclick="closeRoom();pg('leaderboard')">VIEW FULL LEADERBOARD →</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- VNC PASSWORD PROMPT -->
+<div id="vncPwd">
+  <div class="vpwd-box">
+    <div style="font-size:2rem;margin-bottom:0.75rem">🔐</div>
+    <div class="vpwd-title">Attacker Box Authentication</div>
+    <div class="vpwd-sub">Enter the VNC password to connect to your Kali Linux attacker box</div>
+    <input class="vpwd-inp" id="vncPwdInp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')vncAuth()"/>
+    <div class="vpwd-hint">Default password: <b>debian</b></div>
+    <button class="vpwd-btn" onclick="vncAuth()">Connect</button>
+    <div class="vpwd-err" id="vncPwdErr">Incorrect password. Try again.</div>
+    <button style="width:100%;margin-top:0.5rem;padding:0.5rem;background:transparent;border:1px solid var(--border);color:var(--text2);border-radius:7px;cursor:pointer;font-size:0.78rem;font-family:Inter,sans-serif" onclick="document.getElementById('vncPwd').classList.remove('on')">Cancel</button>
   </div>
 </div>
 
 <!-- VNC FULLSCREEN -->
-<div class="vnc-fullpage" id="vncFullpage">
-  <div class="vnc-topbar">
-    <div class="vnc-title" id="vncTitle">attacker-box — Kali Linux</div>
+<div id="vnc">
+  <div class="vnc-top">
+    <div class="vnc-title-bar" id="vncTitleBar">kali@attacker-box:~</div>
     <button class="vnc-close" onclick="closeVNC()">✕ Close</button>
   </div>
-  <div class="vnc-screen-area">
-    <div class="kali-desktop">
-      <div class="kali-desktop-icons">
-        <div class="kali-icon"><div class="ki-img">📁</div><div class="ki-lbl">File Manager</div></div>
-        <div class="kali-icon"><div class="ki-img">🦊</div><div class="ki-lbl">Firefox</div></div>
-        <div class="kali-icon"><div class="ki-img">⬛</div><div class="ki-lbl">Terminal</div></div>
+  <div class="vnc-area">
+    <div class="kali-bg">
+      <div class="kali-icons">
+        <div class="ki"><div class="ki-ic">📁</div><div class="ki-lbl">File Manager</div></div>
+        <div class="ki"><div class="ki-ic">🦊</div><div class="ki-lbl">Firefox</div></div>
+        <div class="ki" onclick="focusTerminal()"><div class="ki-ic">⬛</div><div class="ki-lbl">Terminal</div></div>
       </div>
-      <div class="kali-watermark"><div class="kw-logo">KALI</div><div class="kw-sub">BY OFFENSIVE SECURITY</div></div>
-      <div class="kali-terminal">
-        <div class="kt-titlebar">
-          <div class="kt-btn" style="background:#ff5f57"></div>
-          <div class="kt-btn" style="background:#ffbd2e"></div>
+      <div class="kali-wm"><div class="kali-wm-logo">KALI</div><div class="kali-wm-sub">BY OFFENSIVE SECURITY</div></div>
+      <div class="kali-term" id="kaliTerm">
+        <div class="kt-bar">
+          <div class="kt-btn" style="background:#ff5f57" onclick="closeVNC()"></div>
+          <div class="kt-btn" style="background:#ffbd2e" onclick="minimizeTerm()"></div>
           <div class="kt-btn" style="background:#28ca40"></div>
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-left:0.5rem;font-family:Share Tech Mono,monospace" id="vncTermTitle">kali@attacker-box:~</div>
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-left:0.5rem;font-family:Share Tech Mono,monospace" id="termTitle">root@kali:~</div>
         </div>
-        <div class="kt-body" id="kaliTerminal"></div>
+        <div class="kt-body" id="kaliBody" onclick="kaliBody_click()" tabindex="0" onkeydown="kaliKeydown(event)"></div>
       </div>
       <div class="kali-taskbar">
-        <div class="kt-task" title="Terminal">⬛</div>
-        <div class="kt-task" title="Firefox">🦊</div>
-        <div class="kt-task" title="Files">📁</div>
-        <div class="kt-clock" id="vncClock">00:00</div>
+        <div class="kb-app" onclick="focusTerminal()">⬛</div>
+        <div class="kb-app">🦊</div>
+        <div class="kb-app">📁</div>
+        <div class="kb-clock" id="kClock">00:00</div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- HINT MODAL -->
-<div class="hint-modal" id="hintModal">
-  <div class="hint-box">
-    <div class="hint-box-title">💡 Mission Hints</div>
-    <div id="hintsList"></div>
-    <button class="hint-close" onclick="closeHints()">Close</button>
   </div>
 </div>
 
 <div class="toast" id="toast"><span id="toastTxt"></span></div>
 
 <script>
-// ════════════════════════════════════════
-// SUPABASE CONFIG
-// ════════════════════════════════════════
+// ════════════ SUPABASE ════════════
 const SB_URL='https://wzjokgdtzdntatfchgtb.supabase.co';
 const SB_KEY='sb_publishable_MrRziH8oebH1a67e-z2BKw_ZM5kQU7h';
-let sb=null,sbOk=false;
+let sb=null,sbOK=false;
 
+function initSB(){
+  try{
+    sb=window.supabase.createClient(SB_URL,SB_KEY);sbOK=true;
+    sb.auth.onAuthStateChange(async(e,s)=>{
+      if(s){await loadProf(s.user);showApp();toast('🎉 Welcome back, '+(CU.username||'Operator')+'!');}
+      else if(e==='SIGNED_OUT'){CU=null;document.getElementById('app').style.display='none';document.getElementById('splash').style.display='flex';}
+    });
+  }catch(e){sbOK=false;}
+}
+
+// ════════════ MISSIONS ════════════
 const MISSIONS=[
-  {id:'m1',name:'Clue',diff:'easy',xp:250,cat:'GENERAL',time:'2 hours',
+  {id:'m1',name:'Clue',diff:'medium',xp:250,time:'2 hours',
    desc:'Clue-Lab recreates the OffSec Proving Grounds "Clue" box. Players enumerate Apache (403), discover cassandra-web (port 3000) vulnerable to Local File Inclusion (CVE exploit-db 49362), extract Cassandra credentials, find SSH keys, pivot via FreeSSWITCH Event Socket RCE (port 8021), and escalate privileges through a sudo-enabled cassandra-web running as root.',
-   targetUrl:'https://mission.letushack.com/lab/target-clue-32-1773466568185/',
-   attackerUrl:'https://mission.letushack.com/lab/attacker-32-1773466580022/',
-   flag:'FLAG{clue_completed_rce_root}',
-   tasks:[{name:'Clue',xp:'30 XP'}],
-   hints:[{cost:0,txt:'Start with nmap -sV to enumerate open ports on the target.'},{cost:50,txt:'Port 3000 runs cassandra-web which has a path traversal vulnerability.'},{cost:75,txt:'FLAG{clue_completed_rce_root}'}]},
-  {id:'m2',name:'Base64 Decoded',diff:'easy',xp:100,cat:'GENERAL',time:'30 mins',
-   desc:'An encoded transmission was intercepted. Decode the Base64 payload to extract the hidden flag. Use your attacker box terminal or browser console.',
-   targetUrl:'http://target-base64.letushack.internal/',
-   attackerUrl:'',
+   targetUrl:'https://mission.letushack.com/lab/target-clue-32-'+Date.now()+'/',
+   flag:'FLAG{clue_rce_root_pwned}',
+   tasks:[{n:'Clue',x:'30 XP'}]},
+  {id:'m2',name:'Base64 Decoded',diff:'easy',xp:100,time:'20 mins',
+   desc:'An encoded payload was intercepted. Decode the Base64 string to reveal the hidden flag. Use the attacker terminal or browser developer tools.',
+   targetUrl:'https://mission.letushack.com/lab/target-b64-'+Date.now()+'/',
    flag:'FLAG{h3llo_w0rld_b4s364}',
-   tasks:[{name:'Decode Payload',xp:'100 XP'}],
-   hints:[{cost:0,txt:'echo "RkxBR3toM2xsb193MHJsZF9iNHMzNjR9" | base64 -d'},{cost:20,txt:'Browser: atob("RkxBR3toM2xsb193MHJsZF9iNHMzNjR9")'},{cost:25,txt:'FLAG{h3llo_w0rld_b4s364}'}]},
-  {id:'m3',name:'Busqueda',diff:'expert',xp:300,cat:'GENERAL',time:'2 hours',
-   desc:'Busqueda is a medium-difficulty Linux machine featuring a Python web app vulnerable to code injection through the Searchor library. Exploit it to get a foothold, then abuse a sudo Git configuration script for privilege escalation.',
-   targetUrl:'https://mission.letushack.com/lab/target-busqueda/',
-   attackerUrl:'',
-   flag:'FLAG{busqueda_gitconfig_privesc}',
-   tasks:[{name:'Initial Access',xp:'100 XP'},{name:'User Flag',xp:'100 XP'},{name:'Root Flag',xp:'100 XP'}],
-   hints:[{cost:0,txt:'The web app uses Searchor 2.4.0 which has a eval() injection vulnerability.'},{cost:50,txt:'sudo -l reveals a script that can be exploited via git config.'},{cost:75,txt:'FLAG{busqueda_gitconfig_privesc}'}]},
-  {id:'m4',name:'blaze',diff:'intermediate',xp:200,cat:'GENERAL',time:'1 hour',
-   desc:'Blaze is an intermediate Linux box. Enumerate services, exploit a misconfigured web application, and escalate to root through a SUID binary.',
-   targetUrl:'https://mission.letushack.com/lab/target-blaze/',
-   attackerUrl:'',
+   tasks:[{n:'Decode Payload',x:'100 XP'}]},
+  {id:'m3',name:'Busqueda',diff:'expert',xp:300,time:'2 hours',
+   desc:'Busqueda is a Linux machine featuring a Python web application vulnerable to code injection through the Searchor library. Gain a foothold, then abuse a sudo Git configuration script for privilege escalation.',
+   targetUrl:'https://mission.letushack.com/lab/target-busqueda-'+Date.now()+'/',
+   flag:'FLAG{busqueda_gitconfig_root}',
+   tasks:[{n:'Initial Access',x:'100 XP'},{n:'User Flag',x:'100 XP'},{n:'Root Flag',x:'100 XP'}]},
+  {id:'m4',name:'Blaze',diff:'intermediate',xp:200,time:'1 hour',
+   desc:'Blaze is an intermediate Linux box. Enumerate services, exploit a misconfigured web application, then escalate to root through a SUID binary misconfiguration.',
+   targetUrl:'https://mission.letushack.com/lab/target-blaze-'+Date.now()+'/',
    flag:'FLAG{blaze_suid_escalation}',
-   tasks:[{name:'Web Foothold',xp:'100 XP'},{name:'Root Flag',xp:'100 XP'}],
-   hints:[{cost:0,txt:'Start with a full port scan: nmap -sV -sC -p-'},{cost:50,txt:'Look for SUID binaries: find / -perm -4000 2>/dev/null'},{cost:75,txt:'FLAG{blaze_suid_escalation}'}]},
-  {id:'m5',name:'Source Leak',diff:'easy',xp:100,cat:'GENERAL',time:'20 mins',
-   desc:'A developer left a secret flag in the HTML source code. View the target page source to find it.',
-   targetUrl:'http://target-sourceleak.letushack.internal/',
-   attackerUrl:'',
+   tasks:[{n:'Web Foothold',x:'100 XP'},{n:'Root Flag',x:'100 XP'}]},
+  {id:'m5',name:'Source Leak',diff:'easy',xp:100,time:'15 mins',
+   desc:'A developer accidentally pushed sensitive credentials to a public repository. Navigate to the target URL and inspect the page source to find the hidden flag.',
+   targetUrl:'https://mission.letushack.com/lab/target-srcleak-'+Date.now()+'/',
    flag:'FLAG{d3v_n0t3s_4r3_d4ng3r0us}',
-   tasks:[{name:'Find Hidden Flag',xp:'100 XP'}],
-   hints:[{cost:0,txt:'Right click → View Page Source or Ctrl+U in browser'},{cost:10,txt:'Search for FLAG in the HTML comments'},{cost:15,txt:'FLAG{d3v_n0t3s_4r3_d4ng3r0us}'}]},
-  {id:'m6',name:'SQLi Bypass',diff:'medium',xp:200,cat:'GENERAL',time:'45 mins',
-   desc:"Exploit a SQL injection vulnerability on the target's login page. Bypass authentication and retrieve the admin flag.",
-   targetUrl:'http://target-sqli.letushack.internal/',
-   attackerUrl:'',
+   tasks:[{n:'Find Hidden Flag',x:'100 XP'}]},
+  {id:'m6',name:'SQL Injection 101',diff:'medium',xp:200,time:'30 mins',
+   desc:"Exploit a SQL injection vulnerability on the target's login page. Craft a payload to bypass authentication and retrieve the admin flag from the database.",
+   targetUrl:'https://mission.letushack.com/lab/target-sqli-'+Date.now()+'/',
    flag:'FLAG{0r_1nj3ct10n_byp4ss}',
-   tasks:[{name:'Bypass Login',xp:'100 XP'},{name:'Admin Flag',xp:'100 XP'}],
-   hints:[{cost:0,txt:"Username: ' OR '1'='1' --"},{cost:30,txt:"The OR injection makes WHERE clause always TRUE"},{cost:40,txt:'FLAG{0r_1nj3ct10n_byp4ss}'}]}
+   tasks:[{n:'Bypass Login',x:'100 XP'},{n:'Admin Flag',x:'100 XP'}]}
 ];
 
-const AC=[['#7c3aed','#6d28d9'],['#dc2626','#b91c1c'],['#0891b2','#0e7490'],['#059669','#047857'],['#d97706','#b45309'],['#7c3aed','#4f46e5']];
+const AVATARS=[['#7c3aed','#6d28d9'],['#dc2626','#b91c1c'],['#0891b2','#0e7490'],['#059669','#047857'],['#d97706','#b45309'],['#7c3aed','#4f46e5'],['#db2777','#9d174d'],['#4f46e5','#3730a3']];
+const BADGES=[{id:'first_blood',ic:'🩸',n:'First Blood'},{id:'triple',ic:'⚡',n:'Triple Threat'},{id:'web_master',ic:'🌐',n:'Web Master'},{id:'elite',ic:'👑',n:'Elite Operator'},{id:'crypto',ic:'🔐',n:'Crypto King'}];
 
-let CU=null,CM=null,timerSec=0,timerInt=null,timerOn=false;
-let targetOn=false,attackerOn=false,attempts=0,unlockedHints={};
+let CU=null,CM=null,timerSec=0,timerInterval=null,timerOn=false;
+let tgtOn=false,attOn=false,attempts=0;
+let darkMode=true,chartInst=null;
 
-// ── LS FALLBACK ──
+// LS fallback
 const LS={
   getAll:()=>JSON.parse(localStorage.getItem('luh_u')||'{}'),
   save:(u)=>{const a=LS.getAll();a[u.username]=u;localStorage.setItem('luh_u',JSON.stringify(a));localStorage.setItem('luh_cu',JSON.stringify(u));},
@@ -792,620 +804,685 @@ const LS={
   clear:()=>localStorage.removeItem('luh_cu')
 };
 
-// ── SUPABASE INIT ──
-function initSB(){
-  try{
-    sb=window.supabase.createClient(SB_URL,SB_KEY);sbOk=true;
-    sb.auth.onAuthStateChange(async(e,s)=>{
-      if(s){await loadProfile(s.user);showApp();toast('🎉 Welcome, '+(CU.username||'hacker')+'!');}
-      else if(e==='SIGNED_OUT'){CU=null;showSplash();}
-    });
-  }catch(e){sbOk=false;}
-}
-async function loadProfile(u){
+// ════════════ PROFILE SAVE/LOAD ════════════
+async function loadProf(u){
   try{
     let{data}=await sb.from('profiles').select('*').eq('id',u.id).single();
     if(!data){
       const n=u.user_metadata?.preferred_username||u.email.split('@')[0];
-      data={id:u.id,username:n,email:u.email,xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:Math.floor(Math.random()*6),join_date:new Date().toLocaleDateString()};
+      data={id:u.id,username:n,email:u.email,xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:Math.floor(Math.random()*8),join_date:new Date().toLocaleDateString()};
       await sb.from('profiles').insert(data);
     }
     CU=data;
   }catch(e){console.error(e);}
 }
-async function saveProfile(){
+async function saveProf(){
   if(!CU)return;
-  if(sbOk){try{await sb.from('profiles').update({xp:CU.xp,level:CU.level,solved:CU.solved,solve_times:CU.solve_times||{},badges:CU.badges,attempts:CU.attempts||{}}).eq('id',CU.id);}catch(e){console.error(e);}}
-  else LS.save(CU);
-  updateTopbar();
+  if(sbOK){
+    try{await sb.from('profiles').update({xp:CU.xp,level:CU.level,solved:CU.solved,solve_times:CU.solve_times||{},badges:CU.badges,attempts:CU.attempts||{}}).eq('id',CU.id);}
+    catch(e){console.error(e);}
+  }else LS.save(CU);
+  updateNav();
 }
 async function fetchLB(){
-  if(sbOk){try{const{data}=await sb.from('profiles').select('id,username,xp,solved,solve_times,avatar_color').order('xp',{ascending:false}).limit(50);return data||[];}catch{return[];}}
+  if(sbOK){try{const{data}=await sb.from('profiles').select('id,username,xp,solved,solve_times,avatar_color').order('xp',{ascending:false}).limit(50);return data||[];}catch{return[];}}
   return Object.values(LS.getAll()).sort((a,b)=>(b.xp||0)-(a.xp||0));
 }
 
-// ── AUTH ──
+// ════════════ AUTH ════════════
 async function oAuth(p){
-  if(!sbOk){toast('⚠️ OAuth needs Supabase providers configured');return;}
+  if(!sbOK){toast('⚠️ Configure Supabase OAuth first');return;}
   await sb.auth.signInWithOAuth({provider:p,options:{redirectTo:window.location.href}});
 }
 async function doLogin(){
   const u=document.getElementById('slU').value.trim(),p=document.getElementById('slP').value;
-  const e=document.getElementById('slE'),btn=document.getElementById('slBtn');
-  e.style.display='none';
-  if(!u||!p){showE2('slE','All fields required');return;}
-  setLoad(btn,true,'Signing in...');
-  if(sbOk){
+  const E=document.getElementById('slE'),btn=document.getElementById('slBtn');
+  E.style.display='none';
+  if(!u||!p){E.textContent='All fields required.';E.style.display='block';return;}
+  setL(btn,true,'Signing in...');
+  if(sbOK){
     try{
-      const{data:prof}=await sb.from('profiles').select('email').eq('username',u).single();
-      if(!prof){showE2('slE','Username not found');setLoad(btn,false,'Sign In');return;}
-      const{error}=await sb.auth.signInWithPassword({email:prof.email,password:p});
-      if(error){showE2('slE','Wrong password');setLoad(btn,false,'Sign In');return;}
-    }catch(err){showE2('slE','Error: '+err.message);setLoad(btn,false,'Sign In');}
+      const{data:pr}=await sb.from('profiles').select('email').eq('username',u).single();
+      if(!pr){E.textContent='Username not found.';E.style.display='block';setL(btn,false,'Sign In');return;}
+      const{error}=await sb.auth.signInWithPassword({email:pr.email,password:p});
+      if(error){E.textContent='Wrong password.';E.style.display='block';setL(btn,false,'Sign In');return;}
+    }catch(e){E.textContent='Error: '+e.message;E.style.display='block';setL(btn,false,'Sign In');}
   }else{
     await delay(400);
     const all=LS.getAll();
-    if(!all[u]){showE2('slE','Username not found');setLoad(btn,false,'Sign In');return;}
-    if(all[u].password!==btoa(p)){showE2('slE','Wrong password');setLoad(btn,false,'Sign In');return;}
-    CU=all[u];LS.save(CU);hideSplash();showApp();toast('🎉 Welcome back, '+CU.username+'!');
-    setLoad(btn,false,'Sign In');
+    if(!all[u]){E.textContent='Username not found.';E.style.display='block';setL(btn,false,'Sign In');return;}
+    if(all[u].password!==btoa(p)){E.textContent='Wrong password.';E.style.display='block';setL(btn,false,'Sign In');return;}
+    CU=all[u];LS.save(CU);hideSplash();showApp();toast('🎉 Welcome back, '+CU.username+'!');setL(btn,false,'Sign In');
   }
 }
-async function doRegister(){
+async function doReg(){
   const u=document.getElementById('srU').value.trim(),e=document.getElementById('srE').value.trim(),p=document.getElementById('srP').value;
-  const err=document.getElementById('srE2'),btn=document.getElementById('srBtn');
-  err.style.display='none';
-  if(!u||!e||!p){showE2('srE2','All fields required');return;}
-  if(u.length<3){showE2('srE2','Username min 3 chars');return;}
-  if(p.length<6){showE2('srE2','Password min 6 chars');return;}
-  if(!e.includes('@')){showE2('srE2','Valid email required');return;}
-  setLoad(btn,true,'Creating...');
-  if(sbOk){
+  const E=document.getElementById('srErr'),btn=document.getElementById('srBtn');
+  E.style.display='none';
+  if(!u||!e||!p){E.textContent='All fields required.';E.style.display='block';return;}
+  if(u.length<3){E.textContent='Username min 3 characters.';E.style.display='block';return;}
+  if(p.length<6){E.textContent='Password min 6 characters.';E.style.display='block';return;}
+  if(!e.includes('@')){E.textContent='Valid email required.';E.style.display='block';return;}
+  setL(btn,true,'Creating account...');
+  if(sbOK){
     try{
       const{data:ex}=await sb.from('profiles').select('username').eq('username',u).single();
-      if(ex){showE2('srE2','Username taken');setLoad(btn,false,'Create Account');return;}
+      if(ex){E.textContent='Username taken.';E.style.display='block';setL(btn,false,'Create Account');return;}
       const{error}=await sb.auth.signUp({email:e,password:p,options:{data:{preferred_username:u}}});
-      if(error){showE2('srE2',error.message);setLoad(btn,false,'Create Account');return;}
-      toast('📧 Check your email to confirm!');setLoad(btn,false,'Create Account');
-    }catch(err2){showE2('srE2',err2.message);setLoad(btn,false,'Create Account');}
+      if(error){E.textContent=error.message;E.style.display='block';setL(btn,false,'Create Account');return;}
+      toast('📧 Check your email to confirm your account!');setL(btn,false,'Create Account');
+    }catch(er){E.textContent=er.message;E.style.display='block';setL(btn,false,'Create Account');}
   }else{
     await delay(400);
     const all=LS.getAll();
-    if(all[u]){showE2('srE2','Username taken');setLoad(btn,false,'Create Account');return;}
-    CU={username:u,email:e,password:btoa(p),xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:Math.floor(Math.random()*6),join_date:new Date().toLocaleDateString()};
-    LS.save(CU);hideSplash();showApp();toast('🚀 Account created! Welcome!');setLoad(btn,false,'Create Account');
+    if(all[u]){E.textContent='Username taken.';E.style.display='block';setL(btn,false,'Create Account');return;}
+    CU={username:u,email:e,password:btoa(p),xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:Math.floor(Math.random()*8),join_date:new Date().toLocaleDateString()};
+    LS.save(CU);hideSplash();showApp();toast('🚀 Account created! Welcome, '+u+'!');setL(btn,false,'Create Account');
   }
 }
 async function doLogout(){
-  stopTimer();if(sbOk)await sb.auth.signOut();else{CU=null;LS.clear();}
-  document.getElementById('app').style.display='none';showSplash();toast('👋 Logged out!');
+  stopTimer();stopAtt_silent();
+  if(sbOK)await sb.auth.signOut();
+  else{CU=null;LS.clear();}
+  document.getElementById('app').style.display='none';
+  document.getElementById('splash').style.display='flex';
+  toast('👋 Signed out!');
 }
 
-// ── SPLASH ──
+// ════════════ UI HELPERS ════════════
 function spTab(t){
-  document.getElementById('sL').style.display=t==='login'?'block':'none';
-  document.getElementById('sR').style.display=t==='register'?'block':'none';
-  document.getElementById('stL').className='sp-tab'+(t==='login'?' active':'');
-  document.getElementById('stR').className='sp-tab'+(t==='register'?' active':'');
+  document.getElementById('sL').style.display=t==='l'?'block':'none';
+  document.getElementById('sR').style.display=t==='r'?'block':'none';
+  document.getElementById('stL').className='sp-tab'+(t==='l'?' on':'');
+  document.getElementById('stR').className='sp-tab'+(t==='r'?' on':'');
 }
-function showSplash(){document.getElementById('splash').style.display='flex';initBg();}
 function hideSplash(){document.getElementById('splash').style.display='none';}
-function showApp(){hideSplash();document.getElementById('app').style.display='flex';updateTopbar();showPage('dashboard');}
-function tPwd(id,el){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';el.textContent=i.type==='password'?'👁':'🙈';}
-function showE2(id,m){const e=document.getElementById(id);e.textContent=m;e.style.display='block';}
-function setLoad(b,l,t){b.disabled=l;b.textContent=l?'...'+t:t;}
-function delay(ms){return new Promise(r=>setTimeout(r,ms));}
-
-// ── TOPBAR / NAV ──
-function updateTopbar(){
+function showApp(){
+  hideSplash();
+  document.getElementById('app').style.display='flex';
+  updateNav();pg('dashboard');
+}
+function updateNav(){
   if(!CU)return;
-  const n=CU.username||CU.email||'Operator';
+  const n=CU.username||'Operator';
   document.getElementById('tbXP').textContent='⚡ '+(CU.xp||0)+' XP';
-  const ci=((CU.avatar_color??0))%AC.length;
-  const av=document.getElementById('sbAvatar');
-  av.style.background=`linear-gradient(135deg,${AC[ci][0]},${AC[ci][1]})`;
+  const ci=(CU.avatar_color??0)%AVATARS.length;
+  const av=document.getElementById('sbAv');
+  av.style.background=`linear-gradient(135deg,${AVATARS[ci][0]},${AVATARS[ci][1]})`;
   av.textContent=n[0].toUpperCase();
-  document.getElementById('sbUname').textContent=n;
+  document.getElementById('sbUn').textContent=n;
 }
-function showPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.sb-item').forEach(x=>x.classList.remove('active'));
-  const sbn=document.getElementById('sbn-'+p);if(sbn)sbn.classList.add('active');
-  const labels={dashboard:'Dashboard',missions:'Missions',leaderboard:'Leaderboard',profile:'Profile'};
-  document.getElementById('tbBreadcrumb').innerHTML=`<span>${labels[p]||p}</span>`;
-  if(p==='dashboard')renderDash();
-  if(p==='missions')renderMissions();
-  if(p==='leaderboard')renderLB();
-  if(p==='profile')renderProfile();
+function tPwd(id,el){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';el.textContent=i.type==='password'?'👁':'🙈';}
+function setL(b,l,t){b.disabled=l;b.textContent=t;}
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+function fmtT(s){if(!s)return'0s';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+'h '+m+'m';if(m>0)return m+'m'+sec+'s';return sec+'s';}
+function fmtTT(s){const m=Math.floor(s/60),sec=s%60;return m.toString().padStart(2,'0')+':'+sec.toString().padStart(2,'0');}
+function avGrad(ci){const c=AVATARS[(ci??0)%AVATARS.length];return `linear-gradient(135deg,${c[0]},${c[1]})`;}
+
+// ════════════ DARK MODE ════════════
+function toggleDark(){
+  darkMode=!darkMode;
+  document.body.classList.toggle('light-mode',!darkMode);
+  document.getElementById('dmIc').textContent=darkMode?'🌙':'☀️';
+  document.getElementById('dmLbl').textContent=darkMode?'Dark Mode':'Light Mode';
+  if(chartInst)rebuildChart();
+  toast(darkMode?'🌙 Dark mode on':'☀️ Light mode on');
 }
 
-// ── DASHBOARD ──
+// ════════════ PAGES ════════════
+function pg(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  document.querySelectorAll('.sbi').forEach(s=>s.classList.remove('on'));
+  const sbi=document.getElementById('sbi-'+name);if(sbi)sbi.classList.add('on');
+  const titles={dashboard:'Dashboard',missions:'Missions',leaderboard:'Leaderboard',profile:'Profile'};
+  document.getElementById('tbc').innerHTML=`<b>${titles[name]||name}</b>`;
+  if(name==='dashboard')renderDash();
+  if(name==='missions')renderMiss();
+  if(name==='leaderboard')renderLB();
+  if(name==='profile')renderProf();
+}
+
+// ════════════ DASHBOARD ════════════
 async function renderDash(){
   if(!CU)return;
-  const solved=CU.solved||[];
-  document.getElementById('solvedCount')&&(document.getElementById('solvedCount').textContent=solved.length);
+  const n=CU.username||'Operator',xp=CU.xp||0,lvl=CU.level||1;
+  const solved=CU.solved||[],h=new Date().getHours();
+  const greeting=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
+  document.getElementById('dwGreeting').textContent=greeting;
+  document.getElementById('dwName').textContent=n;
+  document.getElementById('dwLvl').textContent=lvl;
+  const xpIn=xp-((lvl-1)*500),pct=Math.min(100,Math.round((xpIn/500)*100));
+  document.getElementById('dwXPBar').style.width=pct+'%';
+  // rank
+  const all=await fetchLB();
+  const myIdx=all.findIndex(u=>u.username===n||u.id===CU.id);
+  document.getElementById('dwRank').textContent='Infiltrator #'+(myIdx>=0?myIdx+1:1);
+  // directive
   const lastM=solved.length?MISSIONS.find(m=>m.id===solved[solved.length-1]):null;
-  if(lastM){
-    document.getElementById('dashContName').textContent=lastM.name;
-    document.getElementById('dashContDiff').textContent=lastM.diff.toUpperCase();
-    document.getElementById('dashContDiff').className='dmc-diff diff-'+lastM.diff;
-    document.getElementById('dashContMeta').textContent=lastM.time+' · '+lastM.xp+' XP';
-    document.getElementById('dashContProg').style.width=Math.round((solved.length/MISSIONS.length)*100)+'%';
-  }
-  document.getElementById('dashLastAct').textContent=lastM?lastM.name+' / COMPLETED':'STANDBY / OFFLINE';
-  // Badge bars
-  const bb=document.getElementById('badgeBars');
-  bb.innerHTML=MISSIONS.slice(0,7).map(m=>`<div class="badge-bar${solved.includes(m.id)?' filled':''}"></div>`).join('');
-  // Heatmap
-  const hm=document.getElementById('heatmap');
-  const levels=['','low','mid','high'];
-  hm.innerHTML=Array.from({length:7}).map((_,i)=>{
-    const l=solved.length>0&&i>=7-solved.length?levels[Math.min(3,solved.length-1)]:levels[0];
-    return `<div class="hm-cell ${l}"></div>`;
-  }).join('');
+  document.getElementById('ddName').textContent=lastM?lastM.name:'Start a Mission';
+  // stats
+  document.getElementById('vecCount').textContent=solved.length;
+  document.getElementById('pcTotal').innerHTML=xp.toLocaleString()+' <span style="font-size:1rem;color:var(--purple3);font-weight:600">TOTAL XP</span>';
+  document.getElementById('scFlags').textContent=solved.length;
+  document.getElementById('scMachines').textContent=solved.length;
+  document.getElementById('scStreak').textContent=solved.length>0?solved.length:0;
+  document.getElementById('scTotalXP').textContent=xp.toLocaleString();
+  buildChart(solved);
 }
+function buildChart(solved){
+  const ctx=document.getElementById('perfChart').getContext('2d');
+  if(chartInst){chartInst.destroy();chartInst=null;}
+  const base=Math.max(0,(CU?.xp||0)-solved.length*150);
+  const data=Array.from({length:7}).map((_,i)=>Math.max(0,base+i*50+(Math.random()*80|0)));
+  data[6]=(CU?.xp||0);
+  chartInst=new Chart(ctx,{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{data,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,0.08)',borderWidth:2,pointRadius:0,tension:0.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(255,255,255,0.3)',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'rgba(255,255,255,0.3)',font:{size:10}}}}}});
+}
+function rebuildChart(){if(CU)buildChart(CU.solved||[]);}
 
-// ── MISSIONS ──
-function renderMissions(){
+// ════════════ MISSIONS ════════════
+function renderMiss(){
   const solved=CU?.solved||[];
-  document.getElementById('solvedCount').textContent=solved.length;
-  const pb=document.getElementById('progressBars');
-  pb.innerHTML=MISSIONS.map(m=>`<div class="progress-seg${solved.includes(m.id)?' done':''}"></div>`).join('');
-  document.getElementById('missionsGrid').innerHTML=MISSIONS.map(m=>{
-    const s=solved.includes(m.id);
-    const t=CU?.solve_times?.[m.id];
-    return `<div class="mission-card ${s?'':''}${CM?.id===m.id?' active-mission':''}" onclick="openMission('${m.id}')">
-      <div class="mc-tags">
-        <div style="display:flex;gap:0.4rem;align-items:center"><span class="mc-type">GENERAL</span><span class="dmc-diff diff-${m.diff}">${m.diff.toUpperCase()}</span></div>
+  document.getElementById('solvedCnt').textContent=solved.length;
+  const ps=document.getElementById('progSegs');
+  ps.innerHTML=MISSIONS.map(m=>`<div class="ps${solved.includes(m.id)?' done':''}"></div>`).join('');
+  document.getElementById('missGrid').innerHTML=MISSIONS.map(m=>{
+    const s=solved.includes(m.id),t=CU?.solve_times?.[m.id];
+    return `<div class="mc${s?' solved':''}" onclick="openMission('${m.id}')">
+      <div class="mc-top">
+        <div class="mc-tags"><span class="mc-type">GENERAL</span><span class="diff d-${m.diff}">${m.diff.toUpperCase()}</span></div>
         <div class="mc-arrow">›</div>
       </div>
       <div class="mc-name">${m.name}</div>
-      <div class="mc-meta"><span>⏱ ${m.time}</span><span>⚡ ${s?m.xp+' XP':m.xp+' XP'}</span></div>
-      <div class="mc-status${s?' solved':''}">${s?'✓ COMPLETED'+(t?' · '+fmtT(t):''):'NOT STARTED'}</div>
-      <div class="mc-start-btn"><button class="mc-start" onclick="event.stopPropagation();openMission('${m.id}')"><span>${s?'Review Mission':'START'}</span><span>›</span></button></div>
+      <div class="mc-meta"><span>⏱ ${m.time}</span><span>⚡ ${m.xp} XP</span></div>
+      <div class="mc-status${s?' ok':''}">${s?'✓ COMPLETED'+(t?' · '+fmtT(t):''):'NOT STARTED'}</div>
+      <div class="mc-btn"><button class="mc-go" onclick="event.stopPropagation();openMission('${m.id}')"><span>${s?'Review':'START'}</span><span>›</span></button></div>
     </div>`;
   }).join('');
 }
 function resumeMission(){
-  if(CM){openMission(CM.id);return;}
   const solved=CU?.solved||[];
   const next=MISSIONS.find(m=>!solved.includes(m.id));
   if(next)openMission(next.id);else toast('🎉 All missions completed!');
 }
 
-// ── MISSION ROOM ──
+// ════════════ MISSION ROOM ════════════
 function openMission(id){
-  if(!CU){toast('🔒 Please login first');return;}
-  CM=MISSIONS.find(m=>m.id===id);
-  if(!CM)return;
-  if(!unlockedHints[id])unlockedHints[id]=[];
-  attempts=0;timerSec=0;targetOn=false;attackerOn=false;
+  if(!CU){toast('🔒 Login required');return;}
+  CM=MISSIONS.find(m=>m.id===id);if(!CM)return;
+  attempts=0;timerSec=0;tgtOn=false;attOn=false;
   document.getElementById('rpAttempts').textContent='0';
-  document.getElementById('rpTimer').textContent='00:00';
-  document.getElementById('rpTimer').className='rp-timer';
-  document.getElementById('flagInput').value='';
-  const fb=document.getElementById('fsFeedback');fb.style.display='none';fb.className='fs-feedback';
-  // Title & desc
-  document.getElementById('mrTitle').textContent=CM.name;
-  document.getElementById('mrDesc').textContent=CM.desc;
-  document.getElementById('mrTaskName').textContent=CM.name.toUpperCase();
-  document.getElementById('roomName')&&(document.getElementById('roomName').textContent=CM.name);
-  // URL
-  document.getElementById('tusUrlText').textContent='Start target machine to get URL';
-  document.getElementById('tusUrl').className='tus-url inactive';
-  document.getElementById('tusCopyBtn').style.display='none';
-  document.getElementById('openTargetBtn').disabled=true;
-  document.getElementById('webViewSection').style.display='none';
-  // Tasks
-  renderTasks();
-  // Stats
-  updateRoomStats();
-  // Machines
-  resetMachineUI('target');resetMachineUI('attacker');
-  // Best
-  const bt=CU.solve_times?.[id];
-  document.getElementById('rpBest').textContent=bt?fmtT(bt):'—';
-  document.getElementById('rpBestTime').textContent=bt?fmtT(bt):'—';
-  // Completion
-  updateCompletion();
-  // Top ops from LB
-  loadTopOps();
-  document.getElementById('missionRoom').classList.add('open');
+  document.getElementById('rmTimer').textContent='00:00';
+  document.getElementById('rmTimer').className='timer-val';
+  document.getElementById('flagInp').value='';
+  const fb=document.getElementById('flagFB');fb.style.display='none';fb.className='flag-fb';
+  document.getElementById('rmTitle').textContent=CM.name;
+  document.getElementById('rmBC').textContent=CM.name.toUpperCase();
+  document.getElementById('rmDesc').textContent=CM.desc;
+  resetMachine('tgt');resetMachine('att');
+  renderRoomTasks();updateCompletion();
+  document.getElementById('rpTT').textContent=CM.tasks.length;
+  document.getElementById('rpTD').textContent=(CU.solved||[]).includes(CM.id)?CM.tasks.length:'0';
+  const bt=CU.solve_times?.[CM.id];
+  document.getElementById('rmBest').textContent=bt?fmtT(bt):'—';
+  document.getElementById('rpBT').textContent=bt?fmtT(bt):'—';
+  loadTopOps();loadRank();
+  document.getElementById('room').classList.add('on');
   document.body.style.overflow='hidden';
-  renderMissions();
+  renderMiss();
 }
 function closeRoom(){
-  stopTimer();stopTarget();stopAttacker();
-  document.getElementById('missionRoom').classList.remove('open');
+  stopTimer();stopAtt_silent();
+  document.getElementById('room').classList.remove('on');
   document.body.style.overflow='';
-  renderMissions();
+  renderMiss();
 }
-function renderTasks(){
+function renderRoomTasks(){
   if(!CM)return;
-  const solved=(CU?.solved||[]).includes(CM.id);
-  document.getElementById('tasksList').innerHTML=CM.tasks.map((t,i)=>`
-    <div class="task-item${i===0?' active-task':''}">
-      <div class="task-circle${solved?' done':i===0?' active-c':''}">${solved?'✓':i+1}</div>
-      <div class="task-name">${t.name}</div>
-      <div class="task-xp">${t.xp}</div>
-    </div>`).join('');
-  document.getElementById('rpTasksTotal').textContent=CM.tasks.length;
-  document.getElementById('rpTasksDone').textContent=solved?CM.tasks.length:'0';
+  const s=(CU?.solved||[]).includes(CM.id);
+  document.getElementById('rmTasks').innerHTML=CM.tasks.map((t,i)=>`<div class="tk${i===0?' on':''}">
+    <div class="tk-c${s?' done':i===0?' act':''}">${s?'✓':i+1}</div>
+    <div class="tk-n">${t.n}</div><div class="tk-x">${t.x}</div>
+  </div>`).join('');
 }
 function updateCompletion(){
-  const solved=(CU?.solved||[]).includes(CM?.id);
-  const pct=solved?100:0;
+  const s=(CU?.solved||[]).includes(CM?.id);
+  const pct=s?100:0;
   document.getElementById('rpPct').textContent=pct+'%';
-  document.getElementById('rpBar').style.width=pct+'%';
+  document.getElementById('rpFill').style.width=pct+'%';
 }
-async function updateRoomStats(){
+async function loadRank(){
   const all=await fetchLB();
-  const myIdx=all.findIndex(u=>u.username===(CU?.username||CU?.email)||u.id===CU?.id);
-  document.getElementById('rpRank').textContent=myIdx>=0?'#'+(myIdx+1):'#—';
+  const idx=all.findIndex(u=>u.username===(CU?.username)||u.id===CU?.id);
+  document.getElementById('rpRank').textContent=idx>=0?'#'+(idx+1):'#—';
 }
 async function loadTopOps(){
   const all=await fetchLB();
-  const withTime=all.filter(u=>(u.solve_times||{})[CM?.id]).slice(0,3);
-  const el=document.getElementById('rpTopOps');
-  if(!withTime.length){el.innerHTML='<div class="to-empty">NO COMPLETIONS YET<br>Be the first to conquer this mission</div>';return;}
-  const ci=i=>((i?.avatar_color??0))%AC.length;
-  el.innerHTML=withTime.map(u=>`<div class="to-item">
-    <div class="to-av" style="background:${AC[ci(u)][0]}">${(u.username||'?')[0].toUpperCase()}</div>
-    <div class="to-name">${u.username||'hacker'}</div>
-    <div class="to-time">${fmtT(u.solve_times[CM.id])}</div>
+  const withT=all.filter(u=>(u.solve_times||{})[CM?.id]).slice(0,3);
+  const el=document.getElementById('topOps');
+  if(!withT.length){el.innerHTML='<div class="to-empty">NO COMPLETIONS YET<br>Be the first to conquer this mission</div>';return;}
+  el.innerHTML=withT.map(u=>`<div class="to-item">
+    <div class="to-av" style="background:${avGrad(u.avatar_color)}">${(u.username||'?')[0].toUpperCase()}</div>
+    <div class="to-n">${u.username||'hacker'}</div>
+    <div class="to-t">${fmtT(u.solve_times[CM.id])}</div>
   </div>`).join('');
 }
 
-// ── MACHINES ──
-function resetMachineUI(type){
-  const cap=type==='target'?'Target':'Attacker';
-  document.getElementById(type+'Label').textContent='Stopped';
-  document.getElementById(type+'Dot').className='mr-m-dot';
-  document.getElementById(type+'StopBtn').style.display='none';
-  document.getElementById(type+'StartBtn').style.display='inline-flex';
-  document.getElementById(type+'Machine').className='mr-machine'+(type==='attacker'?' attacker-machine':'');
+// ════════════ MACHINES ════════════
+function resetMachine(type){
+  const isT=type==='tgt';
+  const pfx=isT?'rmT':'rmA';
+  document.getElementById(pfx+'L').textContent='Stopped';
+  document.getElementById(pfx+'D').className='rm-dot';
+  document.getElementById(pfx+'S').style.display='none';
+  document.getElementById(pfx+'A').style.display='inline-flex';
+  document.getElementById(isT?'rmTarget':'rmAttacker').className='rm-m';
+  if(isT){
+    document.getElementById('urlText').textContent='Start target machine to get URL';
+    document.getElementById('urlVal').className='url-val inactive';
+    document.getElementById('urlCopy').style.display='none';
+    document.getElementById('openBtn').disabled=true;
+    document.getElementById('webView').style.display='none';
+  }
 }
-function startTarget(){
-  document.getElementById('targetStartBtn').style.display='none';
-  document.getElementById('targetLabel').textContent='Starting...';
-  document.getElementById('targetDot').style.background='var(--yellow)';
-  let c=0;
-  const msgs=['Provisioning...','Binding ports...','Loading app...','Ready!'];
+function startTgt(){
+  document.getElementById('rmTA').style.display='none';
+  document.getElementById('rmTL').textContent='Starting...';
+  document.getElementById('rmTD').style.background='var(--yellow)';
+  let c=0;const msgs=['Provisioning...','Binding ports...','Loading app...','Ready!'];
   const iv=setInterval(()=>{
-    document.getElementById('targetLabel').textContent=msgs[c]||'Ready!';c++;
+    document.getElementById('rmTL').textContent=msgs[c]||'Ready!';c++;
     if(c>=msgs.length){
-      clearInterval(iv);targetOn=true;
-      document.getElementById('targetDot').className='mr-m-dot red';
-      document.getElementById('targetMachine').className='mr-machine running';
-      document.getElementById('targetStopBtn').style.display='inline-block';
-      document.getElementById('targetLabel').textContent='Running';
-      // Show URL
+      clearInterval(iv);tgtOn=true;
+      document.getElementById('rmTD').className='rm-dot r';
+      document.getElementById('rmTarget').className='rm-m run';
+      document.getElementById('rmTS').style.display='inline-block';
+      document.getElementById('rmTL').textContent='Running';
       const url=CM.targetUrl;
-      document.getElementById('tusUrlText').textContent=url;
-      document.getElementById('tusUrl').className='tus-url';
-      document.getElementById('tusCopyBtn').style.display='inline';
-      document.getElementById('openTargetBtn').disabled=false;
-      // Web view
-      document.getElementById('webViewSection').style.display='block';
-      document.getElementById('wvsSimUrl').textContent=url;
-      document.getElementById('wvsContent').innerHTML='<div style="color:rgba(255,255,255,0.3);font-size:0.82rem">Target running at '+url+'</div>';
+      document.getElementById('urlText').textContent=url;
+      document.getElementById('urlVal').className='url-val active';
+      document.getElementById('urlCopy').style.display='inline';
+      document.getElementById('openBtn').disabled=false;
+      document.getElementById('webView').style.display='block';
+      document.getElementById('wvURL').textContent=url;
+      document.getElementById('wvContent').innerHTML='<span style="color:var(--text3)">Target running — click OPEN IN FULLSCREEN or open in browser</span>';
       if(!timerOn)startTimer();
       toast('🎯 Target machine started!');
     }
-  },600);
+  },650);
 }
-function stopTarget(){
-  targetOn=false;resetMachineUI('target');
-  document.getElementById('tusUrlText').textContent='Start target machine to get URL';
-  document.getElementById('tusUrl').className='tus-url inactive';
-  document.getElementById('tusCopyBtn').style.display='none';
-  document.getElementById('openTargetBtn').disabled=true;
-  document.getElementById('webViewSection').style.display='none';
-  if(!attackerOn)stopTimer();
+function stopTgt(){
+  tgtOn=false;resetMachine('tgt');
+  if(!attOn)stopTimer();
+  toast('🛑 Target stopped');
 }
-function startAttacker(){
-  if(!CM.attackerUrl&&CM.id!=='m1'){toast('⚠️ No attacker box for this mission — use your browser tools');return;}
-  document.getElementById('attackerStartBtn').style.display='none';
-  document.getElementById('attackerLabel').textContent='Booting Kali...';
-  let c=0;
-  const boot=['Loading kernel...','Starting services...','VNC server started...','Kali ready!'];
+function startAtt(){
+  document.getElementById('rmAA').style.display='none';
+  document.getElementById('rmAL').textContent='Booting Kali...';
+  let c=0;const boot=['Loading kernel...','Starting services...','VNC server :5900...','Kali Linux ready!'];
   const iv=setInterval(()=>{
-    document.getElementById('attackerLabel').textContent=boot[c]||'Ready!';c++;
+    document.getElementById('rmAL').textContent=boot[c]||'Ready!';c++;
     if(c>=boot.length){
-      clearInterval(iv);attackerOn=true;
-      document.getElementById('attackerDot').className='mr-m-dot green';
-      document.getElementById('attackerMachine').className='mr-machine attacker-machine attacker-running';
-      document.getElementById('attackerStopBtn').style.display='inline-block';
-      document.getElementById('attackerLabel').textContent='Kali Linux • VNC';
+      clearInterval(iv);attOn=true;
+      document.getElementById('rmAD').className='rm-dot g';
+      document.getElementById('rmAttacker').className='rm-m att-run';
+      document.getElementById('rmAS').style.display='inline-block';
+      document.getElementById('rmAL').textContent='Kali Linux • VNC';
       if(!timerOn)startTimer();
-      // Open VNC
-      openVNCFullscreen();
-      toast('🐧 Attacker box ready! Kali Linux launched.');
+      // Show password prompt
+      document.getElementById('vncPwd').classList.add('on');
+      document.getElementById('vncPwdInp').value='';
+      document.getElementById('vncPwdErr').style.display='none';
     }
-  },500);
+  },550);
 }
-function stopAttacker(){
-  attackerOn=false;resetMachineUI('attacker');
-  closeVNC();
-  if(!targetOn)stopTimer();
+function stopAtt(){
+  attOn=false;resetMachine('att');closeVNC();
+  if(!tgtOn)stopTimer();
+  toast('🛑 Attacker box stopped');
 }
-function copyUrl(){
-  const url=document.getElementById('tusUrlText').textContent;
+function stopAtt_silent(){attOn=false;resetMachine('att');closeVNC();}
+function vncAuth(){
+  const pwd=document.getElementById('vncPwdInp').value;
+  if(pwd==='debian'||pwd==='kali'){
+    document.getElementById('vncPwd').classList.remove('on');
+    openVNC();toast('🐧 Kali Linux connected!');
+  }else{
+    document.getElementById('vncPwdErr').style.display='block';
+    document.getElementById('vncPwdInp').value='';
+    document.getElementById('vncPwdInp').focus();
+  }
+}
+function copyURL(){
+  const url=document.getElementById('urlText').textContent;
   navigator.clipboard?.writeText(url).catch(()=>{});
-  toast('📋 URL copied to clipboard!');
+  toast('📋 URL copied!');
 }
-function openTargetSite(){
-  const url=document.getElementById('tusUrlText').textContent;
+function openTarget(){
+  const url=document.getElementById('urlText').textContent;
   if(url&&!url.includes('Start'))window.open(url,'_blank');
 }
 
-// ── VNC ──
-function openVNCFullscreen(){
-  const d=document.getElementById('vncFullpage');d.classList.add('open');
+// ════════════ VNC ════════════
+function openVNC(){
   const name=CM?CM.name.toLowerCase().replace(/ /g,'-'):'box';
-  document.getElementById('vncTitle').textContent='kali@attacker-'+name+':~';
-  document.getElementById('vncTermTitle').textContent='kali@attacker-'+name+':~';
-  startKaliTerminal();
-  setInterval(()=>{const n=new Date();document.getElementById('vncClock').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');},1000);
+  document.getElementById('vncTitleBar').textContent='root@kali-'+name+':~ [VNC]';
+  document.getElementById('termTitle').textContent='root@kali-'+name+':~';
+  document.getElementById('vnc').classList.add('on');
+  startKaliSession();
+  setInterval(()=>{const d=new Date();document.getElementById('kClock').textContent=d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');},1000);
 }
-function closeVNC(){document.getElementById('vncFullpage').classList.remove('open');}
-let termLines=[];
-function startKaliTerminal(){
-  const t=document.getElementById('kaliTerminal');t.innerHTML='';termLines=[];
-  const url=targetOn?document.getElementById('tusUrlText').textContent:'<target>';
-  const seq=[
-    {type:'prompt',text:'whoami'},{type:'out',text:'root'},
-    {type:'prompt',text:'uname -a'},{type:'out',text:'Linux kali 6.6.9 #1 SMP PREEMPT_DYNAMIC kali x86_64 GNU/Linux'},
-    {type:'prompt',text:'ifconfig eth0 | grep inet'},{type:'out',text:'inet 10.10.10.5  netmask 255.255.255.0'},
-    {type:'prompt',text:'nmap -sV '+url},{type:'out',text:'Starting Nmap 7.94...\nPORT     STATE SERVICE VERSION\n80/tcp   open  http    Apache httpd 2.4.59\n3000/tcp open  http    Node.js Express'},
-    {type:'prompt',text:'# Tools ready: nmap netcat curl python3 sqlmap burpsuite'},{type:'out',text:''}
+function closeVNC(){document.getElementById('vnc').classList.remove('on');}
+function minimizeTerm(){document.getElementById('kaliTerm').classList.add('minimized');}
+function focusTerminal(){document.getElementById('kaliTerm').classList.remove('minimized');document.getElementById('kaliBody').focus();}
+
+let kaliHistory=[],kaliHistIdx=0,kaliInput='';
+function startKaliSession(){
+  const body=document.getElementById('kaliBody');body.innerHTML='';kaliHistory=[];kaliHistIdx=0;kaliInput='';
+  const url=tgtOn?document.getElementById('urlText').textContent:'<target_url>';
+  const lines=[
+    {t:'p',c:'whoami'},{t:'o',c:'root'},
+    {t:'p',c:'uname -a'},{t:'o',c:'Linux kali 6.6.9-amd64 #1 SMP PREEMPT_DYNAMIC Kali x86_64 GNU/Linux'},
+    {t:'p',c:'ifconfig eth0 | grep inet'},{t:'o',c:'inet 10.10.10.5  netmask 255.255.255.0  broadcast 10.10.10.255'},
+    {t:'o',c:''},
+    {t:'o',c:'<span style="color:#50fa7b">Tools ready: nmap netcat curl wget python3 sqlmap burpsuite nikto gobuster</span>'},
+    {t:'o',c:'Target: <span style="color:#8be9fd">'+url+'</span>'},
+    {t:'o',c:''},
   ];
   let i=0;
-  function addLine(){
-    if(i>=seq.length){t.innerHTML+=`<span class="kt-prompt">root@kali:~# </span><span class="blink" style="display:inline-block;width:6px;height:12px;background:#00ff00;animation:s 1s step-end infinite;vertical-align:middle"></span>`;t.scrollTop=t.scrollHeight;return;}
-    const l=seq[i++];
-    if(l.type==='prompt'){t.innerHTML+=`<div><span class="kt-prompt">root@kali:~# </span>${l.text}</div>`;t.scrollTop=t.scrollHeight;setTimeout(addLine,100+l.text.length*8);}
-    else{l.text.split('\n').forEach(ln=>{t.innerHTML+=`<div class="kt-output">${ln}</div>`;});t.scrollTop=t.scrollHeight;setTimeout(addLine,300);}
+  function next(){
+    if(i>=lines.length){renderPrompt();return;}
+    const l=lines[i++];
+    if(l.t==='p'){addLine('<span class="kt-prompt">root@kali:~# </span>'+l.c);setTimeout(next,80+l.c.length*10);}
+    else{addLine('<span class="kt-out">'+l.c+'</span>');setTimeout(next,200);}
   }
-  setTimeout(addLine,200);
+  setTimeout(next,300);
 }
-function refreshWebView(){toast('🔄 Refreshing web view...');}
+function addLine(html){const b=document.getElementById('kaliBody');b.innerHTML+=`<div>${html}</div>`;b.scrollTop=b.scrollHeight;}
+function renderPrompt(){const b=document.getElementById('kaliBody');b.innerHTML+=`<div id="kaliPLine"><span class="kt-prompt">root@kali:~# </span><span id="kaliCurrent">${kaliInput}</span><span class="kt-cursor"></span></div>`;b.scrollTop=b.scrollHeight;}
+function kaliBody_click(){document.getElementById('kaliBody').focus();}
+const CMD_RESPONSES={
+  'whoami':'root',
+  'id':'uid=0(root) gid=0(root) groups=0(root)',
+  'pwd':'/root',
+  'ls':'.bashrc  .profile  tools/  targets/',
+  'ls -la':'total 32\ndrwx------ 4 root root 4096 Mar 14 11:09 .\ndrwxr-xr-x 18 root root 4096 Mar 14 11:09 ..\n-rw-r--r-- 1 root root  570 Jan  5  2024 .bashrc\ndrwxr-xr-x 2 root root 4096 Mar 14 11:09 tools\ndrwxr-xr-x 2 root root 4096 Mar 14 11:09 targets',
+  'ifconfig':'eth0: flags=4163  mtu 1500\n        inet 10.10.10.5  netmask 255.255.255.0',
+  'uname -a':'Linux kali 6.6.9-amd64 #1 SMP PREEMPT_DYNAMIC Kali x86_64 GNU/Linux',
+  'clear':'__CLEAR__',
+  'help':'Available commands: nmap, curl, wget, python3, nc, sqlmap, gobuster\nType any command to execute it in this simulated terminal.',
+  'date':new Date().toString(),
+  'hostname':'kali-attacker-box',
+  'cat /etc/passwd':'root:x:0:0:root:/root:/bin/bash\nkali:x:1000:1000:Kali,,,:/home/kali:/bin/bash',
+  'python3 --version':'Python 3.11.6',
+  'nmap --version':'Nmap 7.94 ( https://nmap.org )',
+  'sqlmap --version':'sqlmap/1.7.8',
+};
+function kaliKeydown(e){
+  if(e.key==='Enter'){
+    const cmd=kaliInput.trim();
+    // Remove prompt line
+    const pl=document.getElementById('kaliPLine');if(pl)pl.remove();
+    addLine('<span class="kt-prompt">root@kali:~# </span>'+cmd);
+    kaliHistory.unshift(cmd);kaliHistIdx=0;kaliInput='';
+    if(cmd){
+      const resp=CMD_RESPONSES[cmd]||(cmd.startsWith('nmap')?'Starting Nmap 7.94...\nNote: This is a simulated environment.\nPORT     STATE SERVICE VERSION\n80/tcp   open  http    Apache httpd 2.4.59\n3000/tcp open  http    Node.js Express\n8021/tcp open  ftp?':cmd.startsWith('curl')?'<!DOCTYPE html>\n<html><head><title>Target Application</title></head>\n<body><h1>Welcome</h1><p>Application running.</p></body></html>':cmd.startsWith('python3')?'Python 3.11.6 (Interactive mode)\nType "exit()" to quit.':cmd.startsWith('nc ')||cmd.startsWith('netcat')?'Connection established.\n[Waiting for data...]':'bash: '+cmd+': command not found');
+      if(resp==='__CLEAR__'){document.getElementById('kaliBody').innerHTML='';}
+      else{resp.split('\n').forEach(l=>addLine('<span class="kt-out">'+l+'</span>'));}
+    }
+    renderPrompt();
+    e.preventDefault();
+  }else if(e.key==='Backspace'){kaliInput=kaliInput.slice(0,-1);updateKaliCurrent();}
+  else if(e.key==='ArrowUp'){if(kaliHistIdx<kaliHistory.length){kaliInput=kaliHistory[kaliHistIdx++]||'';updateKaliCurrent();}e.preventDefault();}
+  else if(e.key==='ArrowDown'){kaliHistIdx=Math.max(0,kaliHistIdx-1);kaliInput=kaliHistIdx===0?'':kaliHistory[kaliHistIdx-1]||'';updateKaliCurrent();}
+  else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){kaliInput+=e.key;updateKaliCurrent();}
+  else if(e.key==='c'&&e.ctrlKey){kaliInput='';addLine('<span class="kt-prompt">root@kali:~# </span>^C');renderPrompt();}
+}
+function updateKaliCurrent(){const el=document.getElementById('kaliCurrent');if(el)el.textContent=kaliInput;}
 
-// ── TIMER ──
+// ════════════ TIMER ════════════
 function startTimer(){
   if(timerOn)return;timerOn=true;timerSec=0;
-  document.getElementById('rpTimer').className='rp-timer running';
-  timerInt=setInterval(()=>{timerSec++;const m=Math.floor(timerSec/60),s=timerSec%60;document.getElementById('rpTimer').textContent=m.toString().padStart(2,'0')+':'+s.toString().padStart(2,'0');},1000);
+  document.getElementById('rmTimer').className='timer-val run';
+  timerInterval=setInterval(()=>{timerSec++;document.getElementById('rmTimer').textContent=fmtTT(timerSec);},1000);
 }
-function stopTimer(){timerOn=false;clearInterval(timerInt);timerInt=null;}
+function stopTimer(){timerOn=false;clearInterval(timerInterval);timerInterval=null;}
 
-// ── HINTS ──
-function openHints(){
-  if(!CM)return;
-  if(!unlockedHints[CM.id])unlockedHints[CM.id]=[];
-  document.getElementById('hintsList').innerHTML=CM.hints.map((h,i)=>{
-    const unlocked=unlockedHints[CM.id].includes(i)||h.cost===0;
-    return `<div class="hint-item-card">
-      <div class="hi-header"><div class="hi-label">HINT ${i+1}</div>${!unlocked?`<button class="hi-unlock" onclick="unlockHint(${i},${h.cost})">🔓 -${h.cost} XP</button>`:'<span style="font-size:0.68rem;color:var(--green)">✓ UNLOCKED</span>'}</div>
-      ${unlocked?`<div class="hi-text">${h.txt}</div>`:'<div class="hi-locked">██████████████████████</div>'}
-    </div>`;
-  }).join('');
-  document.getElementById('hintModal').classList.add('open');
-}
-function closeHints(){document.getElementById('hintModal').classList.remove('open');}
-async function unlockHint(idx,cost){
-  if(!CU)return;
-  if((CU.xp||0)<cost){toast('❌ Not enough XP!');return;}
-  if(!unlockedHints[CM.id])unlockedHints[CM.id]=[];
-  if(unlockedHints[CM.id].includes(idx))return;
-  CU.xp-=cost;unlockedHints[CM.id].push(idx);
-  await saveProfile();openHints();toast('💡 Hint unlocked! -'+cost+' XP');
-}
-
-// ── FLAG SUBMIT ──
-async function submitFlag(){
-  const inp=document.getElementById('flagInput').value.trim();
-  const fb=document.getElementById('fsFeedback');
+// ════════════ FLAG ════════════
+async function subFlag(){
+  const inp=document.getElementById('flagInp').value.trim();
+  const fb=document.getElementById('flagFB');
   if(!inp||!CM)return;
   attempts++;document.getElementById('rpAttempts').textContent=attempts;
   if(!CU.attempts)CU.attempts={};
   CU.attempts[CM.id]=(CU.attempts[CM.id]||0)+1;
   const already=(CU.solved||[]).includes(CM.id);
   if(inp===CM.flag){
-    fb.className='fs-feedback fs-ok';
-    const elapsed=timerSec;
-    fb.textContent='🚩 Flag accepted! '+(already?'(already solved)':'+'+CM.xp+' XP — Time: '+fmtT(elapsed));
+    fb.className='flag-fb f-ok';
+    const t=timerSec;
+    fb.textContent='🚩 Flag accepted! '+(already?'Already solved.':'+'+CM.xp+' XP · Time: '+fmtT(t));
     fb.style.display='block';
     if(!already){
       stopTimer();
-      if(!CU.solved)CU.solved=[];
-      if(!CU.solve_times)CU.solve_times={};
-      CU.solved.push(CM.id);
-      CU.solve_times[CM.id]=elapsed;
-      CU.xp=(CU.xp||0)+CM.xp;
-      CU.level=Math.floor(CU.xp/500)+1;
-      checkBadges();await saveProfile();
+      if(!CU.solved)CU.solved=[];if(!CU.solve_times)CU.solve_times={};
+      CU.solved.push(CM.id);CU.solve_times[CM.id]=t;
+      CU.xp=(CU.xp||0)+CM.xp;CU.level=Math.floor(CU.xp/500)+1;
+      awardBadges();await saveProf();
       toast('🎉 Mission complete! +'+CM.xp+' XP');
-      renderTasks();updateCompletion();
-      document.getElementById('rpTasksDone').textContent=CM.tasks.length;
-      document.getElementById('rpBest').textContent=fmtT(elapsed);
-      document.getElementById('rpBestTime').textContent=fmtT(elapsed);
+      renderRoomTasks();updateCompletion();
+      document.getElementById('rpTD').textContent=CM.tasks.length;
+      document.getElementById('rmBest').textContent=fmtT(t);
+      document.getElementById('rpBT').textContent=fmtT(t);
       loadTopOps();
     }
   }else{
-    fb.className='fs-feedback fs-fail';
-    fb.textContent='✗ Incorrect flag. Keep trying!';
-    fb.style.display='block';
-    await saveProfile();
+    fb.className='flag-fb f-no';fb.textContent='✗ Incorrect flag. Keep trying!';fb.style.display='block';
+    await saveProf();
   }
 }
-function checkBadges(){
+function awardBadges(){
   const s=CU.solved||[],b=CU.badges||[];
-  const add=(id,msg)=>{if(!b.includes(id)){b.push(id);setTimeout(()=>toast('🏅 Badge unlocked: '+msg),1500);}};
+  const add=(id,msg)=>{if(!b.includes(id)){b.push(id);setTimeout(()=>toast('🏅 Badge: '+msg+'!'),1500);}};
   if(s.length>=1)add('first_blood','First Blood');
   if(s.length>=3)add('triple','Triple Threat');
   if(s.length>=6)add('elite','Elite Operator');
   CU.badges=b;
 }
 
-// ── LEADERBOARD ──
+// ════════════ LEADERBOARD ════════════
 async function renderLB(){
-  const body=document.getElementById('lbBody');
-  const podium=document.getElementById('lbPodium');
-  body.innerHTML='<div class="lb-empty"><span class="spin"></span> Loading...</div>';
-  podium.innerHTML='';
+  const body=document.getElementById('lbBody'),pod=document.getElementById('podium');
+  body.innerHTML='<div class="lb-empty"><span class="spin"></span> Loading...</div>';pod.innerHTML='';
   const all=await fetchLB();
-  if(!all.length){body.innerHTML='<div class="lb-empty">No operators ranked yet. Complete a mission first! 🏆</div>';return;}
+  if(!all.length){body.innerHTML='<div class="lb-empty">No operators ranked yet. Complete a mission first!</div>';return;}
   const myId=CU?.username||CU?.email;
-  const top=all.slice(0,3);
-  const pOrder=[1,0,2],pClass=['second','first','third'],pMed=['🥈','🥇','🥉'];
-  podium.innerHTML=pOrder.filter(i=>top[i]).map(pi=>{
-    const u=top[pi];const ci=((u.avatar_color??0))%AC.length;const n=u.username||'hacker';
-    return `<div class="lbp-card ${pClass[pi]}">
-      <div class="lbp-av" style="background:linear-gradient(135deg,${AC[ci][0]},${AC[ci][1]})">${n[0].toUpperCase()}</div>
-      <div class="lbp-name">${n}</div><div class="lbp-xp">${u.xp||0} XP</div>
-      <div class="lbp-pedestal">${pMed[pi]}</div>
+  const top=all.slice(0,3),pOrd=[1,0,2],pCls=['p2','p1','p3'],pMed=['🥈','🥇','🥉'];
+  pod.innerHTML=pOrd.filter(i=>top[i]).map(pi=>{
+    const u=top[pi],n=u.username||'hacker';
+    return `<div class="pod ${pCls[pi]}">
+      <div class="pod-av" style="background:${avGrad(u.avatar_color)}">${n[0].toUpperCase()}</div>
+      <div class="pod-name">${n}</div><div class="pod-xp">${u.xp||0} XP</div>
+      <div class="pod-base">${pMed[pi]}</div>
     </div>`;
   }).join('');
   const medals=['g','s','b'];
   body.innerHTML=all.map((u,i)=>{
-    const isMe=u.username===myId||u.id===CU?.id;
-    const ci=((u.avatar_color??0))%AC.length;const n=u.username||'hacker';
-    const labs=(u.solved||[]).length;
-    const times=u.solve_times?Object.values(u.solve_times).filter(v=>v>0):[];
+    const isMe=u.username===myId||u.id===CU?.id,n=u.username||'hacker';
+    const labs=(u.solved||[]).length,times=u.solve_times?Object.values(u.solve_times).filter(v=>v>0):[];
     const bt=times.length?fmtT(Math.min(...times)):'—';
     return `<div class="lb-row${isMe?' me':''}">
-      <div class="lbr-rank${i<3?' '+medals[i]:''}">${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}</div>
-      <div class="lbr-user"><div class="lbr-av" style="background:linear-gradient(135deg,${AC[ci][0]},${AC[ci][1]})">${n[0].toUpperCase()}</div><div class="lbr-name">${n}${isMe?' <span style="font-size:0.65rem;color:var(--purple-light);margin-left:4px">(you)</span>':''}</div></div>
-      <div class="lbr-cell">${labs}</div>
-      <div class="lbr-cell green">${bt}</div>
-      <div class="lbr-cell yellow">${(u.xp||0).toLocaleString()}</div>
+      <div class="lbr${i<3?' '+medals[i]:''}">${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}</div>
+      <div class="lb-user"><div class="lb-av" style="background:${avGrad(u.avatar_color)}">${n[0].toUpperCase()}</div><div class="lb-nm">${n}${isMe?' <span style="font-size:0.65rem;color:var(--purple3)">(you)</span>':''}</div></div>
+      <div class="lb-cell">${labs}</div>
+      <div class="lb-cell g">${bt}</div>
+      <div class="lb-cell y">${(u.xp||0).toLocaleString()}</div>
     </div>`;
   }).join('');
-  // Sticky my row if not in top 10
   const myIdx=all.findIndex(u=>u.username===myId||u.id===CU?.id);
   if(myIdx>9){
-    const u=all[myIdx];const ci=((u.avatar_color??0))%AC.length;const n=u.username||'hacker';
-    const labs=(u.solved||[]).length;const times=u.solve_times?Object.values(u.solve_times).filter(v=>v>0):[];const bt=times.length?fmtT(Math.min(...times)):'—';
-    const sticky=document.getElementById('lbSticky');
-    sticky.className='lb-sticky show';
-    sticky.innerHTML=`<div class="lbr-rank">#${myIdx+1}</div>
-      <div class="lbr-user"><div class="lbr-av" style="background:linear-gradient(135deg,${AC[ci][0]},${AC[ci][1]})">${n[0].toUpperCase()}</div><div class="lbr-name">${n} <span style="font-size:0.65rem;color:var(--purple-light)">(you)</span></div></div>
-      <div class="lbr-cell">${labs}</div><div class="lbr-cell green">${bt}</div><div class="lbr-cell yellow">${(u.xp||0).toLocaleString()}</div>`;
+    const u=all[myIdx],n=u.username||'hacker';
+    const labs=(u.solved||[]).length,times=u.solve_times?Object.values(u.solve_times).filter(v=>v>0):[];
+    const bt=times.length?fmtT(Math.min(...times)):'—';
+    const sticky=document.getElementById('lbSticky');sticky.className='lb-sticky on';
+    sticky.innerHTML=`<div class="lbr">#${myIdx+1}</div><div class="lb-user"><div class="lb-av" style="background:${avGrad(u.avatar_color)}">${n[0].toUpperCase()}</div><div class="lb-nm">${n} <span style="font-size:0.65rem;color:var(--purple3)">(you)</span></div></div><div class="lb-cell">${labs}</div><div class="lb-cell g">${bt}</div><div class="lb-cell y">${(u.xp||0).toLocaleString()}</div>`;
   }
 }
 
-// ── PROFILE ──
-async function renderProfile(){
-  if(!CU){return;}
+// ════════════ PROFILE ════════════
+let profTab='overview';
+async function renderProf(){
+  if(!CU)return;
   const all=await fetchLB();
-  const myIdx=all.findIndex(u=>u.username===(CU.username||CU.email)||u.id===CU.id);
+  const myIdx=all.findIndex(u=>u.username===(CU.username)||u.id===CU.id);
   const rank=myIdx>=0?'#'+(myIdx+1):'Unranked';
-  const xp=CU.xp||0,lvl=CU.level||1;
+  const xp=CU.xp||0,lvl=CU.level||1,solved=CU.solved||[],badges=CU.badges||[];
   const xpIn=xp-((lvl-1)*500),xpPct=Math.min(100,Math.round((xpIn/500)*100));
-  const ci=((CU.avatar_color??CU.avatarColor??0))%AC.length;
-  const n=CU.username||CU.email||'hacker';
-  const solved=CU.solved||[],badges=CU.badges||[];
+  const ci=(CU.avatar_color??0)%AVATARS.length;
+  const n=CU.username||'hacker';
   const times=CU.solve_times||{};
   const tVals=Object.values(times).filter(v=>v>0);
   const bt=tVals.length?fmtT(Math.min(...tVals)):'—';
-  const totalAttempts=Object.values(CU.attempts||{}).reduce((a,b)=>a+b,0);
   const solvedMs=MISSIONS.filter(m=>solved.includes(m.id));
-  const BADGES=[{id:'first_blood',icon:'🩸',name:'First Blood'},{id:'triple',icon:'⚡',name:'Triple Threat'},{id:'elite',icon:'👑',name:'Elite Operator'},{id:'web_master',icon:'🌐',name:'Web Master'},{id:'crypto_king',icon:'🔐',name:'Crypto King'}];
-  document.getElementById('profContent').innerHTML=`
+  const secTier=xp>=1000?'Vanguard':xp>=500?'Elite':xp>=200?'Recon':'Recruit';
+  const neuralIdx=Math.min(99.9,(xp/10)).toFixed(1);
+  document.getElementById('profHTML').innerHTML=`
   <div class="prof-hero">
-    <div class="prof-av-wrap">
-      <div class="prof-av" style="background:linear-gradient(135deg,${AC[ci][0]},${AC[ci][1]})">${n[0].toUpperCase()}</div>
-      <div class="prof-av-xp">${xp} XP</div>
-      <div class="prof-av-lvl">LVL ${lvl}</div>
+    <div class="ph-av-wrap">
+      <div class="ph-av" style="background:${avGrad(ci)}">${n[0].toUpperCase()}</div>
+      <div class="ph-xp">${xp} XP</div>
+      <div class="ph-lvl">LVL ${lvl}</div>
     </div>
-    <div class="prof-info">
-      <div class="prof-name">${n} <span class="prof-rank-badge">${rank}</span></div>
-      <div class="prof-title">ELITE OPERATOR · SECTOR 7-G</div>
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.875rem">
-        <span style="font-size:0.72rem;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);padding:2px 8px;border-radius:4px;color:var(--purple-light)">Global Rank ${rank}</span>
-        <span style="font-size:0.72rem;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);padding:2px 8px;border-radius:4px;color:var(--green)">Level ${lvl}</span>
+    <div class="ph-info">
+      <div class="ph-name">${n} <span class="ph-rb">${rank}</span></div>
+      <div class="ph-title">ELITE OPERATOR · SECTOR 7-G</div>
+      <div class="ph-tags">
+        <span class="ph-tag p">Global Rank ${rank}</span>
+        <span class="ph-tag g">Level ${lvl}</span>
       </div>
-      <div class="xp-bar-wrap">
-        <div class="xp-labels"><span>Experience Matrix</span><span style="color:var(--purple-light)">${Math.round((xpIn/500)*100*10)/10}% TO NEXT LEVEL</span></div>
-        <div class="xp-bar"><div class="xp-fill" style="width:${xpPct}%"></div></div>
+      <div class="xp-wrap">
+        <div class="xp-lbl"><span>Experience Matrix</span><span>${xpPct}% TO NEXT LEVEL</span></div>
+        <div class="xp-b"><div class="xp-f" style="width:${xpPct}%"></div></div>
         <div class="xp-range"><span>SECTOR ZERO</span><span>ASCENDANT CORE</span></div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.65rem">
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem;text-align:center"><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.25rem">GLOBAL RANK</div><div style="font-size:1.1rem;font-weight:700;color:var(--yellow)">${rank}</div></div>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem;text-align:center"><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.25rem">ACTIVE STREAK</div><div style="font-size:1.1rem;font-weight:700;color:#fff">${solved.length>0?solved.length:0} Days</div></div>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem;text-align:center"><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.25rem">NEURAL INDEX</div><div style="font-size:1.1rem;font-weight:700;color:var(--blue)">${Math.min(99.9,(xp/10)).toFixed(1)}%</div></div>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.875rem;text-align:center"><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.25rem">SECURITY TIER</div><div style="font-size:1.1rem;font-weight:700;color:var(--green)">${xp>=500?'Vanguard':xp>=200?'Elite':'Recruit'}</div></div>
+    <div class="ph-side">
+      <div class="ph-sc"><div class="ph-sc-lbl">GLOBAL RANK</div><div class="ph-sc-val" style="color:var(--yellow)">${rank}</div></div>
+      <div class="ph-sc"><div class="ph-sc-lbl">ACTIVE STREAK</div><div class="ph-sc-val">${solved.length} Days</div></div>
+      <div class="ph-sc"><div class="ph-sc-lbl">NEURAL INDEX</div><div class="ph-sc-val" style="color:var(--blue)">${neuralIdx}%</div></div>
+      <div class="ph-sc"><div class="ph-sc-lbl">SECURITY TIER</div><div class="ph-sc-val" style="color:var(--green)">${secTier}</div></div>
     </div>
   </div>
-  <div style="display:flex;gap:0.65rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.5rem;margin-bottom:1.5rem">
-    <button style="flex:1;padding:0.55rem;border-radius:6px;border:none;background:var(--purple);color:#fff;font-size:0.82rem;font-weight:600;cursor:pointer">⊞ Overview</button>
-    <button style="flex:1;padding:0.55rem;border-radius:6px;border:none;background:transparent;color:var(--text2);font-size:0.82rem;cursor:pointer">⚡ Pulse</button>
-    <button style="flex:1;padding:0.55rem;border-radius:6px;border:none;background:transparent;color:var(--text2);font-size:0.82rem;cursor:pointer">🧠 Neural</button>
-    <button style="flex:1;padding:0.55rem;border-radius:6px;border:none;background:transparent;color:var(--text2);font-size:0.82rem;cursor:pointer">📜 Legacy</button>
+  <div class="prof-tabs">
+    <button class="pt${profTab==='overview'?' on':''}" onclick="switchProfTab('overview')">⊞ Overview</button>
+    <button class="pt${profTab==='pulse'?' on':''}" onclick="switchProfTab('pulse')">⚡ Pulse</button>
+    <button class="pt${profTab==='neural'?' on':''}" onclick="switchProfTab('neural')">🧠 Neural</button>
+    <button class="pt${profTab==='legacy'?' on':''}" onclick="switchProfTab('legacy')">📜 Legacy</button>
   </div>
-  <div class="prof-stat-cards">
-    <div class="psc"><div class="psc-icon">🎯</div><div class="psc-val">${solved.length}</div><div class="psc-label">Operations</div><div style="font-size:0.68rem;color:var(--text3);">${solved.length>0?Math.round((solved.length/MISSIONS.length)*100)+'% success rate':'0% success rate'}</div></div>
-    <div class="psc"><div class="psc-icon">⚡</div><div class="psc-val">${xp}</div><div class="psc-label">Total XP</div><div style="font-size:0.68rem;color:var(--text3)">Experience earned</div></div>
-    <div class="psc"><div class="psc-icon">🏆</div><div class="psc-val">${badges.length}</div><div class="psc-label">Artifacts</div><div style="font-size:0.68rem;color:var(--text3)">Relics discovered</div></div>
-    <div class="psc"><div class="psc-icon">⏱</div><div class="psc-val">${bt!=='—'?bt:'0h'}</div><div class="psc-label">System Age</div><div style="font-size:0.68rem;color:var(--text3)">Uptime log</div></div>
-  </div>
-  <div class="prof-body">
-    <div class="prof-card">
-      <div class="prof-card-title">Completed Missions</div>
-      ${solvedMs.length===0?`<div style="color:var(--text3);font-size:0.82rem;text-align:center;padding:1.5rem 0">No missions completed yet.<br><a style="color:var(--purple-light);cursor:pointer" onclick="showPage('missions')">Start now →</a></div>`:
-      '<div class="solved-list">'+solvedMs.map(m=>`<div class="sl-item"><div class="sl-name">${m.name}</div><div class="sl-meta"><span class="sl-xp">+${m.xp} XP</span>${times[m.id]?`<span class="sl-time">⏱ ${fmtT(times[m.id])}</span>`:''}</div></div>`).join('')+'</div>'}
+  <!-- OVERVIEW -->
+  <div class="prof-tab-content${profTab==='overview'?' on':''}" id="pt-overview">
+    <div class="prof-stat-row">
+      <div class="psc"><div class="psc-ic">🎯</div><div class="psc-v">${solved.length}</div><div class="psc-l">Operations</div><div class="psc-sub">${solved.length>0?Math.round((solved.length/MISSIONS.length)*100)+'% success rate':'0% success rate'}</div></div>
+      <div class="psc"><div class="psc-ic">⚡</div><div class="psc-v">${xp.toLocaleString()}</div><div class="psc-l">Total XP</div><div class="psc-sub">Experience earned</div></div>
+      <div class="psc"><div class="psc-ic">🏆</div><div class="psc-v">${badges.length}</div><div class="psc-l">Artifacts</div><div class="psc-sub">Relics discovered</div></div>
+      <div class="psc"><div class="psc-ic">⏱</div><div class="psc-v" style="font-size:1rem">${bt}</div><div class="psc-l">Best Time</div><div class="psc-sub">Fastest solve</div></div>
     </div>
-    <div class="prof-card">
-      <div class="prof-card-title">Achievement Badges</div>
-      <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
-        ${BADGES.map(b=>`<div style="display:flex;flex-direction:column;align-items:center;gap:0.25rem" title="${b.name}">
-          <div style="width:50px;height:56px;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-size:1.2rem;${badges.includes(b.id)?'background:linear-gradient(135deg,rgba(124,58,237,0.3),rgba(59,130,246,0.2));box-shadow:0 0 12px rgba(124,58,237,0.3)':'background:rgba(255,255,255,0.04);filter:grayscale(1) brightness(0.3)'}">${b.icon}</div>
-          <div style="font-size:0.58rem;color:var(--text3);text-align:center;max-width:52px">${b.name}</div>
-        </div>`).join('')}
+    <div class="prof-2col">
+      <div class="p2c">
+        <div class="p2c-title">Completed Missions</div>
+        ${solvedMs.length===0?'<div style="color:var(--text3);font-size:0.82rem;text-align:center;padding:1.5rem 0">No missions completed yet.<br><a style="color:var(--purple3);cursor:pointer" onclick="pg(\'missions\')">Start now →</a></div>':
+        solvedMs.map(m=>`<div class="sol-item"><div class="si-n">${m.name}</div><div class="si-m"><span class="si-x">+${m.xp} XP</span>${times[m.id]?`<span class="si-t">· ${fmtT(times[m.id])}</span>`:''}</div></div>`).join('')}
       </div>
-      ${badges.length===0?'<div style="color:var(--text3);font-size:0.78rem;margin-top:0.75rem">Complete missions to unlock badges!</div>':''}
-      <div style="margin-top:1.25rem">
-        <div class="prof-card-title">System Activity</div>
-        <div style="display:flex;gap:3px;margin-bottom:0.5rem">${Array.from({length:14}).map((_,i)=>`<div style="flex:1;height:14px;background:${i<solved.length*2?'rgba(124,58,237,0.4)':'rgba(255,255,255,0.04)'};border-radius:2px"></div>`).join('')}</div>
-        <button style="font-size:0.72rem;color:var(--purple-light);background:none;border:none;cursor:pointer;padding:0">ANALYZE LOGS →</button>
+      <div class="p2c">
+        <div class="p2c-title">Achievement Badges</div>
+        <div class="badge-grid">
+          ${BADGES.map(b=>`<div class="bdg" title="${b.n}"><div class="bdg-hex ${badges.includes(b.id)?'e':'l'}">${b.ic}</div><div class="bdg-n">${b.n}</div></div>`).join('')}
+        </div>
+        ${badges.length===0?'<div style="color:var(--text3);font-size:0.78rem;margin-top:0.875rem">Complete missions to unlock badges!</div>':''}
+        <div style="margin-top:1.25rem">
+          <div class="p2c-title">System Activity</div>
+          <div class="activity-hm">${Array.from({length:28}).map((_,i)=>{const l=i<solved.length*4?['l1','l2','l3'][Math.min(2,Math.floor(i/(solved.length+1)))]:'';return`<div class="hm-d ${l}"></div>`;}).join('')}</div>
+          <a style="font-size:0.72rem;color:var(--purple3);cursor:pointer;font-weight:600">ANALYZE LOGS →</a>
+        </div>
       </div>
-      <div style="margin-top:1.25rem">
-        <div class="prof-card-title">Domain Proficiency</div>
-        ${['Web','Crypto','Forensics','OSINT'].map(cat=>{const done=MISSIONS.filter(m=>m.cat===cat&&(CU.solved||[]).includes(m.id)).length;const total=MISSIONS.filter(m=>m.cat===cat).length||1;return `<div style="margin-bottom:0.5rem"><div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text3);margin-bottom:0.25rem"><span>${cat}</span><span>${done}/${total}</span></div><div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px"><div style="height:100%;width:${(done/total)*100}%;background:var(--purple);border-radius:2px"></div></div></div>`;}).join('')}
+    </div>
+  </div>
+  <!-- PULSE -->
+  <div class="prof-tab-content${profTab==='pulse'?' on':''}" id="pt-pulse">
+    <div class="pulse-grid">
+      <div class="pulse-card"><div class="pulse-val">${solved.length}</div><div class="pulse-lbl">Missions Completed</div></div>
+      <div class="pulse-card"><div class="pulse-val">${xp}</div><div class="pulse-lbl">Total XP Earned</div></div>
+      <div class="pulse-card"><div class="pulse-val">${bt}</div><div class="pulse-lbl">Best Completion Time</div></div>
+      <div class="pulse-card"><div class="pulse-val">${Object.values(CU.attempts||{}).reduce((a,b)=>a+b,0)}</div><div class="pulse-lbl">Total Attempts</div></div>
+      <div class="pulse-card"><div class="pulse-val">${badges.length}</div><div class="pulse-lbl">Badges Earned</div></div>
+      <div class="pulse-card"><div class="pulse-val">${lvl}</div><div class="pulse-lbl">Current Level</div></div>
+    </div>
+    <div class="p2c">
+      <div class="p2c-title">Recent Activity</div>
+      ${solvedMs.length===0?'<div style="color:var(--text3);font-size:0.82rem">No activity yet.</div>':
+      solvedMs.slice(-5).reverse().map(m=>`<div class="sol-item"><div class="si-n">✓ ${m.name}</div><div class="si-m"><span class="si-x">+${m.xp} XP</span>${times[m.id]?`<span class="si-t">· ${fmtT(times[m.id])}</span>`:''}</div></div>`).join('')}
+    </div>
+  </div>
+  <!-- NEURAL -->
+  <div class="prof-tab-content${profTab==='neural'?' on':''}" id="pt-neural">
+    <div class="p2c" style="margin-bottom:1rem">
+      <div class="p2c-title">Domain Proficiency</div>
+      ${['Web','Forensics','Crypto','OSINT','Pwn'].map(cat=>{
+        const total=MISSIONS.length,done=solved.length;
+        const pct=Math.min(100,Math.round((done/total)*100));
+        const colors={'Web':'var(--blue)','Crypto':'var(--yellow)','Forensics':'var(--purple3)','OSINT':'var(--green)','Pwn':'var(--red)'};
+        return `<div class="dom-bar"><div class="dom-lbl"><span>${cat}</span><span>${done}/${total}</span></div><div class="dom-b"><div class="dom-f" style="width:${pct}%;background:${colors[cat]||'var(--purple)'}"></div></div></div>`;
+      }).join('')}
+    </div>
+    <div class="p2c">
+      <div class="p2c-title">Neural Index: ${neuralIdx}%</div>
+      <div style="font-size:0.82rem;color:var(--text2);line-height:1.65">Your neural efficiency score is calculated based on total XP, completion rate, average solve time, and badge achievements. Keep solving missions to improve your score.</div>
+      <div style="margin-top:1rem;background:var(--bg3);border-radius:8px;padding:1rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.2rem">XP SCORE</div><div style="font-weight:700">${xp}</div></div>
+          <div><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.2rem">COMPLETION</div><div style="font-weight:700">${solved.length}/${MISSIONS.length}</div></div>
+          <div><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.2rem">LEVEL</div><div style="font-weight:700">${lvl}</div></div>
+          <div><div style="font-size:0.65rem;color:var(--text3);margin-bottom:0.2rem">TIER</div><div style="font-weight:700;color:var(--green)">${secTier}</div></div>
+        </div>
       </div>
+    </div>
+  </div>
+  <!-- LEGACY -->
+  <div class="prof-tab-content${profTab==='legacy'?' on':''}" id="pt-legacy">
+    <div class="p2c">
+      <div class="p2c-title">Mission History</div>
+      ${solvedMs.length===0?`<div class="legacy-empty">🏛️<br><br>No legacy yet.<br><span style="font-size:0.78rem">Complete missions to build your legacy.</span></div>`:
+      solvedMs.map((m,i)=>`<div class="sol-item"><div><div class="si-n">${m.name}</div><div style="font-size:0.7rem;color:var(--text3)">${m.diff.toUpperCase()} · ${m.time}</div></div><div class="si-m"><span class="si-x">+${m.xp} XP</span>${times[m.id]?`<span class="si-t">· ${fmtT(times[m.id])}</span>`:''}</div></div>`).join('')}
     </div>
   </div>`;
 }
+function switchProfTab(t){profTab=t;renderProf();}
 
-// ── UTILS ──
-function fmtT(s){if(!s||s===0)return'0s';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+'h '+m+'m';if(m>0)return m+'m '+sec+'s';return sec+'s';}
-let toastT;
-function toast(msg){const e=document.getElementById('toast');document.getElementById('toastTxt').textContent=msg;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),3200);}
-
-// ── BG MATRIX ──
-function initBg(){
-  const cv=document.getElementById('splashBg');if(!cv)return;
+// ════════════ BG MATRIX ════════════
+function initBG(){
+  const cv=document.getElementById('sBg');if(!cv)return;
   const ctx=cv.getContext('2d');
   function rsz(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;}rsz();
-  const ch='01アイウエABCDEF',fs=12;let dr=[];
+  const ch='01アイABCDEF',fs=11;let dr=[];
   function reset(){dr=Array(Math.floor(cv.width/fs)).fill(1);}reset();
-  setInterval(()=>{ctx.fillStyle='rgba(13,15,20,0.05)';ctx.fillRect(0,0,cv.width,cv.height);ctx.fillStyle='#7c3aed';ctx.font=fs+'px Share Tech Mono';dr.forEach((d,i)=>{ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,d*fs);if(d*fs>cv.height&&Math.random()>0.975)dr[i]=0;dr[i]++;});},60);
+  window.addEventListener('resize',rsz);
+  setInterval(()=>{ctx.fillStyle='rgba(13,15,20,0.05)';ctx.fillRect(0,0,cv.width,cv.height);ctx.fillStyle='#7c3aed';ctx.font=fs+'px Share Tech Mono';dr.forEach((d,i)=>{ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*fs,d*fs);if(d*fs>cv.height&&Math.random()>0.975)dr[i]=0;dr[i]++;});},65);
 }
 
-// ── INIT ──
+// ════════════ TOAST ════════════
+let toastT;
+function toast(msg){const e=document.getElementById('toast');document.getElementById('toastTxt').textContent=msg;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),3200);}
+
+// ════════════ INIT ════════════
 window.addEventListener('load',async()=>{
-  initSB();
-  if(sbOk){
+  initBG();initSB();
+  if(sbOK){
     const{data:{session}}=await sb.auth.getSession();
-    if(session){await loadProfile(session.user);hideSplash();showApp();}
-    else{showSplash();}
+    if(session){await loadProf(session.user);hideSplash();showApp();}
+    else document.getElementById('splash').style.display='flex';
   }else{
     const s=LS.get();
     if(s){CU=s;hideSplash();showApp();}
-    else showSplash();
+    else document.getElementById('splash').style.display='flex';
   }
 });
 </script>
