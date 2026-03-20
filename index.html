@@ -749,18 +749,25 @@ function initSB(){
   try{
     sb=window.supabase.createClient(SB_URL,SB_KEY);sbOK=true;
     sb.auth.onAuthStateChange(async(e,s)=>{
-      if((e==='SIGNED_IN'||e==='TOKEN_REFRESHED')&&s&&!CU){
+      console.log('Auth event:',e,s?.user?.email);
+      if(e==='SIGNED_IN'&&s){
+        // Always reload profile on SIGNED_IN (handles OAuth callback)
         await loadProf(s.user);
         window.history.replaceState({},'',window.location.pathname);
-        hideSplash();showApp();
-        toast('🎉 Welcome, '+(CU?.username||'Operator')+'!');
+        hideSplash();
+        document.getElementById('app').style.display='flex';
+        updateNav();pg('dashboard');
+        toast('🎉 Welcome, '+(CU?.username||s.user.email.split('@')[0])+'!');
+      }else if(e==='TOKEN_REFRESHED'&&s&&CU){
+        // Already logged in, just refresh
+        updateNav();
       }else if(e==='SIGNED_OUT'){
         CU=null;
         document.getElementById('app').style.display='none';
         document.getElementById('splash').style.display='flex';
       }
     });
-  }catch(e){sbOK=false;}
+  }catch(e){sbOK=false;console.error('Supabase init error:',e);}
 }
 
 // ════════════ MISSIONS ════════════
@@ -815,14 +822,23 @@ const LS={
 // ════════════ PROFILE SAVE/LOAD ════════════
 async function loadProf(u){
   try{
-    let{data}=await sb.from('profiles').select('*').eq('id',u.id).single();
-    if(!data){
-      const n=u.user_metadata?.preferred_username||u.email.split('@')[0];
-      data={id:u.id,username:n,email:u.email,xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:Math.floor(Math.random()*8),join_date:new Date().toLocaleDateString()};
+    let{data,error}=await sb.from('profiles').select('*').eq('id',u.id).single();
+    if(error||!data){
+      // New user - get best name from metadata
+      const meta=u.user_metadata||{};
+      const n=meta.preferred_username||meta.name||meta.full_name||u.email.split('@')[0];
+      // Make username URL-safe
+      const username=n.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_]/g,'').substring(0,20)||'user_'+u.id.substring(0,6);
+      data={id:u.id,username,email:u.email,xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:Math.floor(Math.random()*8),join_date:new Date().toLocaleDateString()};
       await sb.from('profiles').insert(data);
     }
     CU=data;
-  }catch(e){console.error(e);}
+    console.log('Profile loaded:',CU.username);
+  }catch(e){
+    console.error('loadProf error:',e);
+    // Create minimal profile so app still works
+    CU={id:u.id,username:u.email.split('@')[0],email:u.email,xp:0,level:1,solved:[],solve_times:{},badges:[],attempts:{},avatar_color:0,join_date:new Date().toLocaleDateString()};
+  }
 }
 async function saveProf(){
   if(!CU)return;
