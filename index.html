@@ -856,7 +856,8 @@ async function fetchLB(){
 // ════════════ AUTH ════════════
 async function oAuth(p){
   if(!sbOK){toast('⚠️ Configure Supabase OAuth first');return;}
-  const redirectTo=window.location.origin+window.location.pathname;
+  // Must match exactly what's in Supabase redirect URLs list
+  const redirectTo='https://shahdullah.github.io/letushack/';
   await sb.auth.signInWithOAuth({provider:p,options:{redirectTo}});
 }
 async function doLogin(){
@@ -1501,28 +1502,35 @@ function toast(msg){const e=document.getElementById('toast');document.getElement
 window.addEventListener('load',async()=>{
   initBG();initSB();
   if(sbOK){
-    // Handle OAuth callback - Supabase puts tokens in URL hash or query
+    // Check for OAuth tokens in URL (Supabase puts them in hash after redirect)
     const hash=window.location.hash;
     const params=new URLSearchParams(window.location.search);
-    const hasOAuthCallback=hash.includes('access_token')||hash.includes('error')||params.get('code')||params.get('error');
-    if(hasOAuthCallback){
-      // Let Supabase process the callback automatically
-      // onAuthStateChange will fire and handle login
-      // Clean URL without reloading
-      try{
-        const{data,error}=await sb.auth.getSession();
-        if(data?.session){
-          await loadProf(data.session.user);
-          // Clean the URL
-          window.history.replaceState({},'',window.location.pathname);
-          hideSplash();showApp();
-          return;
-        }
-      }catch(e){console.error(e);}
+    const isOAuthCallback=hash.includes('access_token')||hash.includes('error_description')||params.get('code');
+
+    if(isOAuthCallback){
+      // Wait for Supabase to process the hash tokens
+      await new Promise(r=>setTimeout(r,500));
+      const{data:{session}}=await sb.auth.getSession();
+      if(session){
+        await loadProf(session.user);
+        window.history.replaceState({},'','/letushack/');
+        hideSplash();
+        document.getElementById('app').style.display='flex';
+        updateNav();pg('dashboard');
+        toast('🎉 Welcome, '+(CU?.username||'Operator')+'!');
+        return;
+      }
     }
+    // Normal page load - check existing session
     const{data:{session}}=await sb.auth.getSession();
-    if(session){await loadProf(session.user);hideSplash();showApp();}
-    else document.getElementById('splash').style.display='flex';
+    if(session){
+      await loadProf(session.user);
+      hideSplash();
+      document.getElementById('app').style.display='flex';
+      updateNav();pg('dashboard');
+    } else {
+      document.getElementById('splash').style.display='flex';
+    }
   }else{
     const s=LS.get();
     if(s){CU=s;hideSplash();showApp();}
