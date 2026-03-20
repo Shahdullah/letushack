@@ -1502,33 +1502,27 @@ function toast(msg){const e=document.getElementById('toast');document.getElement
 window.addEventListener('load',async()=>{
   initBG();initSB();
   if(sbOK){
-    // Check for OAuth tokens in URL (Supabase puts them in hash after redirect)
     const hash=window.location.hash;
-    const params=new URLSearchParams(window.location.search);
-    const isOAuthCallback=hash.includes('access_token')||hash.includes('error_description')||params.get('code');
+    const search=window.location.search;
+    const isCallback=hash.includes('access_token')||hash.includes('error_description')||search.includes('code=')||search.includes('error=');
 
-    if(isOAuthCallback){
-      // Wait for Supabase to process the hash tokens
-      await new Promise(r=>setTimeout(r,500));
-      const{data:{session}}=await sb.auth.getSession();
-      if(session){
-        await loadProf(session.user);
-        window.history.replaceState({},'','/letushack/');
-        hideSplash();
-        document.getElementById('app').style.display='flex';
-        updateNav();pg('dashboard');
-        toast('🎉 Welcome, '+(CU?.username||'Operator')+'!');
-        return;
-      }
+    if(isCallback){
+      // Supabase JS SDK automatically parses the hash - just wait briefly
+      await new Promise(r=>setTimeout(r,800));
     }
-    // Normal page load - check existing session
-    const{data:{session}}=await sb.auth.getSession();
+
+    const{data:{session},error}=await sb.auth.getSession();
     if(session){
       await loadProf(session.user);
+      // Clean URL - remove hash/query tokens
+      if(hash.includes('access_token')||search.includes('code=')){
+        window.history.replaceState({},'',window.location.pathname);
+      }
       hideSplash();
       document.getElementById('app').style.display='flex';
       updateNav();pg('dashboard');
-    } else {
+      if(isCallback) toast('🎉 Welcome, '+(CU?.username||'Operator')+'!');
+    }else{
       document.getElementById('splash').style.display='flex';
     }
   }else{
