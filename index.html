@@ -749,8 +749,16 @@ function initSB(){
   try{
     sb=window.supabase.createClient(SB_URL,SB_KEY);sbOK=true;
     sb.auth.onAuthStateChange(async(e,s)=>{
-      if(s){await loadProf(s.user);showApp();toast('🎉 Welcome back, '+(CU.username||'Operator')+'!');}
-      else if(e==='SIGNED_OUT'){CU=null;document.getElementById('app').style.display='none';document.getElementById('splash').style.display='flex';}
+      if((e==='SIGNED_IN'||e==='TOKEN_REFRESHED')&&s&&!CU){
+        await loadProf(s.user);
+        window.history.replaceState({},'',window.location.pathname);
+        hideSplash();showApp();
+        toast('🎉 Welcome, '+(CU?.username||'Operator')+'!');
+      }else if(e==='SIGNED_OUT'){
+        CU=null;
+        document.getElementById('app').style.display='none';
+        document.getElementById('splash').style.display='flex';
+      }
     });
   }catch(e){sbOK=false;}
 }
@@ -1477,6 +1485,25 @@ function toast(msg){const e=document.getElementById('toast');document.getElement
 window.addEventListener('load',async()=>{
   initBG();initSB();
   if(sbOK){
+    // Handle OAuth callback - Supabase puts tokens in URL hash or query
+    const hash=window.location.hash;
+    const params=new URLSearchParams(window.location.search);
+    const hasOAuthCallback=hash.includes('access_token')||hash.includes('error')||params.get('code')||params.get('error');
+    if(hasOAuthCallback){
+      // Let Supabase process the callback automatically
+      // onAuthStateChange will fire and handle login
+      // Clean URL without reloading
+      try{
+        const{data,error}=await sb.auth.getSession();
+        if(data?.session){
+          await loadProf(data.session.user);
+          // Clean the URL
+          window.history.replaceState({},'',window.location.pathname);
+          hideSplash();showApp();
+          return;
+        }
+      }catch(e){console.error(e);}
+    }
     const{data:{session}}=await sb.auth.getSession();
     if(session){await loadProf(session.user);hideSplash();showApp();}
     else document.getElementById('splash').style.display='flex';
