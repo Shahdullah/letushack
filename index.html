@@ -832,7 +832,8 @@ async function fetchLB(){
 // ════════════ AUTH ════════════
 async function oAuth(p){
   if(!sbOK){toast('⚠️ Configure Supabase OAuth first');return;}
-  await sb.auth.signInWithOAuth({provider:p,options:{redirectTo:window.location.href}});
+  const redirectTo=window.location.origin+window.location.pathname;
+  await sb.auth.signInWithOAuth({provider:p,options:{redirectTo}});
 }
 async function doLogin(){
   const u=document.getElementById('slU').value.trim(),p=document.getElementById('slP').value;
